@@ -1,0 +1,37 @@
+package studio.lunabee.plugins
+
+import org.gradle.api.DefaultTask
+import org.gradle.api.provider.Property
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.TaskAction
+import org.gradle.process.ExecOperations
+import java.io.File
+import javax.inject.Inject
+
+abstract class DownloadStringsTask : DefaultTask() {
+    @get:Input
+    abstract val providerApiKey: Property<String>
+
+    @get:Input
+    abstract val projectDir: Property<String>
+
+    @get:Inject
+    abstract val eo: ExecOperations
+
+    @TaskAction
+    fun downloadStrings() {
+        val projectDir = projectDir.get()
+        val locoApiKey = providerApiKey.get()
+        val configFile = this::class.java.classLoader.getResource("downloadStrings.sh")!!.readText()
+        val destFolder = File("${project.rootProject.layout.buildDirectory.asFile.get().absolutePath}/lbApplication")
+        if (!destFolder.exists()) destFolder.mkdirs()
+        val destFile = File(destFolder, "downloadStrings.sh")
+        if (destFile.exists()) destFile.delete()
+        destFile.createNewFile()
+        destFile.setExecutable(true)
+        destFile.writeText(configFile)
+        val stringsPath = File("$projectDir/src/main/")
+        val stringsFilename = "strings"
+        eo.exec { commandLine(destFile.absolutePath, locoApiKey, stringsPath, stringsFilename) }
+    }
+}
