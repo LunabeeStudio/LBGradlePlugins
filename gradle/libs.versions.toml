@@ -15,7 +15,7 @@ lbResources = { id = "studio.lunabee.plugins.resources", version.ref = "lbResour
 [versions]
 
 androidxAppcompat = "1.7.0"
-androidxComposeBom = "2024.12.01"
+androidxComposeBom = "2025.01.00"
 detekt = "1.23.7"
 gradle ="8.8.0"
 ## ⬆ = "8.9.0-alpha01"
