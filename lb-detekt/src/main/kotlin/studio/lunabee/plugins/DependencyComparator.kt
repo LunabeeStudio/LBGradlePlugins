@@ -6,6 +6,7 @@ private const val Verbose: Boolean = false
 /**
  * Compare two line of dependencies
  *   • Use the dependency part first
+ *   • Handle multiline dependency with custom blocks (if/else, exclude, etc.)
  */
 class DependencyComparator(
     private val catalogName: String = "libs",

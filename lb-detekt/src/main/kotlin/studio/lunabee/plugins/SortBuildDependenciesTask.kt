@@ -2,6 +2,7 @@ package studio.lunabee.plugins
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
+import kotlin.system.measureTimeMillis
 
 open class SortBuildDependenciesTask : DefaultTask() {
 
@@ -17,7 +18,11 @@ open class SortBuildDependenciesTask : DefaultTask() {
         }.forEach { buildFile ->
             // Read the file content
             val lines = buildFile.readLines()
-            val sortedLines = sortBuildDependenciesFile.sortLines(lines)
+            val sortedLines: List<String>
+            val time = measureTimeMillis {
+                sortedLines = sortBuildDependenciesFile.sortLines(lines)
+            }
+            println("Sorted file ${buildFile.name} in $time ms")
             // Ensure an empty line at the end of the file
             // Write the sorted content back to the file
             buildFile.writeText(sortedLines.joinToString("\n"))
