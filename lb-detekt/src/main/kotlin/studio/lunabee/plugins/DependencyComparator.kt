@@ -1,7 +1,7 @@
 package studio.lunabee.plugins
 
 // TODO add VERBOSE env option around println
-private const val Verbose: Boolean = true
+private const val Verbose: Boolean = false
 
 /**
  * Compare two line of dependencies
