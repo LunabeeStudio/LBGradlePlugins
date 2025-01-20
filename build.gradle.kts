@@ -9,9 +9,6 @@ plugins {
     alias(libs.plugins.gradleAndroidApplication).apply(false)
     alias(libs.plugins.gradleAndroidLibrary).apply(false)
     alias(libs.plugins.detekt).apply(false)
-    alias(libs.plugins.lbAndroidApplication).apply(false)
-    alias(libs.plugins.lbAndroidLibrary).apply(false)
-    alias(libs.plugins.lbMultiplatformLibrary).apply(false)
     alias(libs.plugins.lbDetekt)
     alias(libs.plugins.lbResources)
 }
@@ -28,7 +25,7 @@ lbDetekt {
 lbResources {
     strings {
         providerKey = "maZteRAXR20kWa9XBlOfZ7Pgnwy8uor3"
-        targetDirectory = "${project.rootDir.absolutePath}/app"
+        targetDirectory = "${project.rootDir.absolutePath}/demo/app"
         provider = LBResourcesExtension.Provider.Loco
     }
 }

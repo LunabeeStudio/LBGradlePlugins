@@ -111,6 +111,7 @@ open class LBAndroidApplicationExtension @Inject constructor(private val project
                 }
             }
 
+            // TODO allow custom path for keystore (better default in app or _Android dir)
             // Configure signing config for debug. [debug.keystore] file must be located at root level.
             signingConfigs {
                 maybeCreate("debug").apply {
@@ -137,7 +138,6 @@ open class LBAndroidApplicationExtension @Inject constructor(private val project
             buildTypes {
                 debug {
                     isMinifyEnabled = false
-                    println(signingConfigs.getByName("debug"))
                     signingConfig = signingConfigs.getByName("debug")
                 }
                 release {

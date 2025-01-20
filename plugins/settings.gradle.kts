@@ -7,8 +7,7 @@ pluginManagement {
         google()
         mavenCentral()
         gradlePluginPortal()
-        mavenLocal()
-        includeBuild("plugins")
+        // mavenLocal()
     }
 }
 
@@ -26,12 +25,10 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "LBGradlePluginsDemo"
-include(":app")
-project(":app").projectDir = File("./demo/app")
-include(":app-demo-core-ui")
-project(":app-demo-core-ui").projectDir = File("./demo/app-demo-core-ui")
-include(":app-demo-multiplatform")
-project(":app-demo-multiplatform").projectDir = File("./demo/app-demo-multiplatform")
-include(":app-demo-shared")
-project(":app-demo-shared").projectDir = File("./demo/app-demo-shared")
+rootProject.name = "LBGradlePlugins"
+include(":lb-android-application")
+include(":lb-android-library")
+include(":lb-detekt")
+include(":lb-multiplatform-library")
+include(":lb-plugin-core")
+include(":lb-resources")

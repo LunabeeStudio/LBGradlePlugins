@@ -7,9 +7,9 @@ plugins {
 }
 
 dependencies {
-    implementation(libs.gradleAndroid)
-    implementation(libs.kotlinAndroid)
-    implementation(libs.kotlinCompose)
+    implementation("com.android.tools.build:gradle:8.8.0")
+    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:2.1.0")
+    implementation("org.jetbrains.kotlin:compose-compiler-gradle-plugin:2.1.0")
 
     implementation(projects.lbPluginCore)
 }
@@ -30,8 +30,8 @@ gradlePlugin {
     }
 }
 
-publishing {
-    repositories {
-        mavenLocal()
-    }
-}
+//publishing {
+//    repositories {
+// mavenLocal()
+//    }
+//}

@@ -3,7 +3,7 @@
 plugins {
     `java-gradle-plugin`
     `kotlin-dsl`
-    alias(libs.plugins.gradlePublish)
+    id("com.gradle.plugin-publish")
 }
 
 dependencies {
@@ -32,6 +32,6 @@ gradlePlugin {
 
 publishing {
     repositories {
-        mavenLocal()
+        // mavenLocal()
     }
 }

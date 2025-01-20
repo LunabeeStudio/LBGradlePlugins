@@ -32,6 +32,6 @@ gradlePlugin {
 
 publishing {
     repositories {
-        mavenLocal()
+        // mavenLocal()
     }
 }
