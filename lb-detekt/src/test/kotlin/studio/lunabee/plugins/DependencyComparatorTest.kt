@@ -8,7 +8,7 @@ class DependencyComparatorTest {
     private val comparator = DependencyComparator()
 
     @Test
-    fun api_implementation_test() {
+    fun configuration_test() {
         val expected = listOf(
             "implementation(aaa)",
             "api(bbb)",
