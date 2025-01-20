@@ -10,10 +10,13 @@ class DependencyComparatorTest {
     @Test
     fun api_implementation_test() {
         val expected = listOf(
-            "implementation(\"aaa\")",
-            "api(\"bbb\")",
-            "api(\"ooo\")",
-            "implementation(\"ooo\")",
+            "implementation(aaa)",
+            "api(bbb)",
+            "implementation(platform(libs.compose.bom))",
+            "androidTestImplementation(libs.datastore.preferences)",
+            "api(ooo)",
+            "implementation(ooo)",
+            "androidTestImplementation(project(\":remote\"))",
         )
         val actual = expected.shuffled().sortedWith(comparator)
 

@@ -2,11 +2,11 @@ package studio.lunabee.plugins
 
 class SortBuildDependenciesFile {
 
-    private val platformMatcher = "platform("
-    private val projectMatcher = "project("
-    private val projectsMatcher = "(projects."
-    private val kspMatcher = "ksp("
-    private val testMatcher = "test("
+    private val platformMatcher = Regex("platform\\(")
+    private val projectMatcher = Regex("project\\(")
+    private val projectsMatcher = Regex("\\(projects.")
+    private val kspMatcher = Regex("ksp\\(")
+    private val testMatcher = Regex("test.*\\(")
 
     private val comparator = DependencyComparator()
 
@@ -21,7 +21,10 @@ class SortBuildDependenciesFile {
             "dependencies {",
         )
         val dependencyLines = mutableListOf<String>()
-        lines.forEach { line ->
+
+        val lineIterator = lines.iterator()
+        while (lineIterator.hasNext()) {
+            val line = lineIterator.next()
             // Check if the line matches one of the target blocks
             if (targetBlocks.any { block -> line.trim() == block }) {
                 insideTargetBlock = true
@@ -30,11 +33,11 @@ class SortBuildDependenciesFile {
                 dependencyLines.sortWith(comparator)
                 val groupedLines = dependencyLines.groupBy {
                     when {
-                        platformMatcher in it -> 0
-                        kspMatcher in it -> 100
-                        projectMatcher in it -> 300
-                        projectsMatcher in it -> 300
-                        testMatcher in it -> 400
+                        platformMatcher.containsMatchIn(it) -> 0
+                        kspMatcher.containsMatchIn(it) -> 100
+                        projectMatcher.containsMatchIn(it) -> 300
+                        projectsMatcher.containsMatchIn(it) -> 300
+                        testMatcher.containsMatchIn(it) -> 400
                         else -> 200
                     }
                 }.toSortedMap()
@@ -49,9 +52,23 @@ class SortBuildDependenciesFile {
                 insideTargetBlock = false
                 dependencyLines.clear() // Clear the list for the next target block
             } else if (insideTargetBlock) {
-                // Collect all lines inside the target block. Filter blank lines and dup
+                // Collect all lines inside the target block. Filter blank and duplicated lines
                 if (line.isNotBlank() && !dependencyLines.contains(line)) {
-                    dependencyLines.add(line)
+                    val builder: StringBuilder = StringBuilder(line)
+
+                    // Handle custom block
+                    if (line.endsWith("{")) {
+                        var nextLine = lineIterator.next()
+                        while (!nextLine.endsWith("}")) {
+                            builder.appendLine()
+                            builder.append(nextLine)
+                            nextLine = lineIterator.next()
+                        }
+                        builder.appendLine()
+                        builder.append(nextLine)
+                    }
+
+                    dependencyLines.add(builder.toString())
                 }
             } else {
                 // Add all other lines outside the target blocks

@@ -1,19 +1,44 @@
 package studio.lunabee.plugins
 
+// TODO add VERBOSE env option around println
+private const val Verbose: Boolean = true
+
 /**
  * Compare two line of dependencies
- *   • Use the dependency part first (i.e between "..")
+ *   • Use the dependency part first
  */
-class DependencyComparator : Comparator<String> {
+class DependencyComparator(
+    private val catalogName: String = "libs",
+) : Comparator<String> {
+
+    private val nonAlphaNumRegex = Regex("[^A-Za-z0-9]")
+    private val configMatchers = listOf(
+        Regex("\\w*implementation", RegexOption.IGNORE_CASE),
+        Regex("\\w*api", RegexOption.IGNORE_CASE),
+        Regex("\\w*ksp", RegexOption.IGNORE_CASE),
+    )
+
     override fun compare(p0: String?, p1: String?): Int {
+        if (Verbose) {
+            println("Compare [$p0] and [$p1]")
+        }
+
         checkNotNull(p0)
         checkNotNull(p1)
 
-        val config0 = p0.substringBefore('"')
-        val config1 = p1.substringBefore('"')
+        val config0 = extractConfig(p0)
+        val config1 = extractConfig(p1)
 
-        val dep0 = p0.substringAfter('"').substringBefore('"')
-        val dep1 = p1.substringAfter('"').substringBefore('"')
+        if (Verbose) {
+            println("Extract config [$config0] and [$config1]")
+        }
+
+        val dep0 = extractDependency(p0, config0)
+        val dep1 = extractDependency(p1, config1)
+
+        if (Verbose) {
+            println("Extract dep [$dep0] and [$dep1]")
+        }
 
         val depRes = dep0.compareTo(dep1)
         return if (depRes == 0) {
@@ -23,4 +48,18 @@ class DependencyComparator : Comparator<String> {
             depRes
         }
     }
+
+    private fun extractConfig(line: String): String {
+        val config = configMatchers.firstNotNullOf { regex -> regex.find(line) }.value
+        return config
+    }
+
+    private fun extractDependency(line: String, config: String): String {
+        val sub = line
+            .substringAfter("$config(")
+            .substringBefore(')')
+            .replace("$catalogName.", "")
+        return nonAlphaNumRegex.replace(sub, "")
+    }
+
 }
