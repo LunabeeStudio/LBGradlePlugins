@@ -56,7 +56,9 @@ class DependencyComparator(
 
     private fun extractDependency(line: String, config: String): String {
         val sub = line
-            .substringAfter("$config(")
+            .substringAfter(config)
+            .substringBefore('\n')
+            .substringAfterLast('(')
             .substringBefore(')')
             .replace("$catalogName.", "")
         return nonAlphaNumRegex.replace(sub, "")
