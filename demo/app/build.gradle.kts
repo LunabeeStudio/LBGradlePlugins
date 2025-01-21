@@ -25,14 +25,3 @@ dependencies {
     implementation(projects.appDemoMultiplatform)
     implementation(projects.appDemoShared)
 }
-
-android {
-    lint {
-        lintConfig = file("lint.xml")
-        baseline = file("lint-baseline.xml")
-        disable.add("ObsoleteLintCustomCheck")
-        htmlOutput = file("${rootProject.projectDir}/build/reports/lint/lint-report.html")
-        xmlOutput = file("${rootProject.projectDir}/build/reports/lint/lint-report.xml")
-        textOutput = file("${rootProject.projectDir}/build/reports/lint/lint-report.txt")
-    }
-}

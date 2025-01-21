@@ -122,15 +122,12 @@ open class LBAndroidApplicationExtension @Inject constructor(private val project
             }
 
             // Configure lint option.
-            propertiesReceiver.lintConfigPath?.let { lintConfigPath ->
-                lint {
-                    lintConfig = project.rootProject.file(lintConfigPath)
-                    baseline = project.rootProject.file("lint-baseline.xml")
-                    disable.add("ObsoleteLintCustomCheck")
-                    htmlOutput = project.rootProject.file("${project.rootProject.projectDir}/build/reports/lint/lint-report.html")
-                    xmlOutput = project.rootProject.file("${project.rootProject.projectDir}/build/reports/lint/lint-report.xml")
-                    textOutput = project.rootProject.file("${project.rootProject.projectDir}/build/reports/lint/lint-report.txt")
-                }
+            lint {
+                propertiesReceiver.lintConfigPath?.let { lintConfigPath -> lintConfig = project.rootProject.file(lintConfigPath) }
+                disable.add("ObsoleteLintCustomCheck")
+                htmlOutput = project.rootProject.file("${project.rootProject.projectDir}/build/reports/lint/lint-report.html")
+                xmlOutput = project.rootProject.file("${project.rootProject.projectDir}/build/reports/lint/lint-report.xml")
+                textOutput = project.rootProject.file("${project.rootProject.projectDir}/build/reports/lint/lint-report.txt")
             }
 
             // Configuration from release and debug.
