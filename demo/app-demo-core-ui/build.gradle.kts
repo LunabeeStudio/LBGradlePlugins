@@ -4,7 +4,7 @@ plugins {
 
 lbAndroidLibrary {
     android {
-        namespace = "my.application.namespace"
+        namespace = "studio.lunabee.plugin.demo.coreui"
         withCompose = true
     }
 }

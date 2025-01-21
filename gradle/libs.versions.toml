@@ -39,10 +39,10 @@ androidxComposeBom = { group = "androidx.compose", name = "compose-bom", version
 androidxComposeFoundation = { group = "androidx.compose.foundation", name = "foundation" }
 androidxComposeMaterial3 = { group = "androidx.compose.material3", name = "material3" }
 detekt = { group = "io.gitlab.arturbosch.detekt", name = "detekt-gradle-plugin", version.ref = "detekt" }
-kotlinTest = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
 # Do not remove. Use in LBDetektPlugin.
 detektFormatting = { group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version.ref = "detekt" }
 gradleAndroid = { group = "com.android.tools.build", name = "gradle", version.ref = "gradle" }
 kotlinAndroid = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlinCompose = { group = "org.jetbrains.kotlin", name = "compose-compiler-gradle-plugin", version.ref = "kotlin" }
 kotlinMultiplatform = { group = "org.jetbrains.kotlin.multiplatform", name = "org.jetbrains.kotlin.multiplatform.gradle.plugin", version.ref = "kotlin" }
+kotlinTest = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }

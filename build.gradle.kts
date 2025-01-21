@@ -8,7 +8,6 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform).apply(false)
     alias(libs.plugins.gradleAndroidApplication).apply(false)
     alias(libs.plugins.gradleAndroidLibrary).apply(false)
-    alias(libs.plugins.detekt).apply(false)
     alias(libs.plugins.lbDetekt)
     alias(libs.plugins.lbResources)
 }

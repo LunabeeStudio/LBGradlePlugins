@@ -10,6 +10,7 @@ class SortBuildDependenciesFile {
 
     private val comparator = DependencyComparator()
 
+    @Suppress("NestedBlockDepth")
     fun sortLines(lines: List<String>): List<String> {
         val sortedLines = mutableListOf<String>()
         var insideTargetBlock = false

@@ -40,6 +40,6 @@ publishing {
         }
     }
     repositories {
-        // mavenLocal()
+        mavenLocal()
     }
 }

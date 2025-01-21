@@ -8,7 +8,7 @@ plugins {
 
 lbAndroidLibrary {
     android {
-        namespace = "my.application.namespace"
+        namespace = "studio.lunabee.plugin.demo.shared"
         withCompose = false
         applyKotlinAndroid = false
     }
