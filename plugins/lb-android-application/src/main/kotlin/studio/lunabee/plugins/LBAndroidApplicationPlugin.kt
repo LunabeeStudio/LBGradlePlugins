@@ -85,6 +85,7 @@ open class LBAndroidApplicationExtension @Inject constructor(private val project
             buildFeatures.buildConfig = true
             buildFeatures.compose = true
 
+            // TODO enforcing flavors is too restrictive
             // Configure flavors for the app: dev, prod and client, internal. By default, devInternal will be used.
             flavorDimensions += "environment"
             flavorDimensions += "app"
