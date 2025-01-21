@@ -8,8 +8,8 @@ plugins {
 
 dependencies {
     implementation(libs.gradleAndroid)
-    implementation(libs.kotlinCompose)
     implementation(libs.kotlinAndroid)
+    implementation(libs.kotlinCompose)
 
     implementation(projects.lbPluginCore)
 }
