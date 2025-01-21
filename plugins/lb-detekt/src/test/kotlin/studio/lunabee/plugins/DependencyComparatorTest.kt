@@ -47,7 +47,6 @@ class DependencyComparatorTest {
             }
         """.trimIndent()
 
-
         assertEquals(expected, actual, actual)
     }
 }

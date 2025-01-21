@@ -64,5 +64,4 @@ class DependencyComparator(
             .replace("$catalogName.", "")
         return nonAlphaNumRegex.replace(sub, "")
     }
-
 }
