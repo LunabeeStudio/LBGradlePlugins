@@ -33,6 +33,7 @@ open class LBDetektExtension @Inject constructor(private val project: Project) {
             sortBuildDependenciesTask,
             sortLibsVersionsTomlTask,
         ),
+        var verbose: Boolean = false,
     )
 
     /**
@@ -90,6 +91,10 @@ open class LBDetektExtension @Inject constructor(private val project: Project) {
                     File("${project.layout.buildDirectory.asFile.get().absolutePath}/reports/detekt/detekt-report.html"),
                 )
             }
+        }
+
+        project.project.tasks.withType<SortBuildDependenciesTask>().configureEach {
+            verboseProp.set(propertiesReceiver.verbose)
         }
     }
 

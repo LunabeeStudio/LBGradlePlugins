@@ -1,6 +1,8 @@
 package studio.lunabee.plugins
 
-class SortBuildDependenciesFile {
+class SortBuildDependenciesFile(
+    verbose: Boolean,
+) {
 
     private val platformMatcher = Regex("platform\\(")
     private val projectMatcher = Regex("project\\(")
@@ -8,7 +10,7 @@ class SortBuildDependenciesFile {
     private val kspMatcher = Regex("ksp\\(")
     private val testMatcher = Regex("test.*\\(")
 
-    private val comparator = DependencyComparator()
+    private val comparator = DependencyComparator(verbose = verbose)
 
     @Suppress("NestedBlockDepth")
     fun sortLines(lines: List<String>): List<String> {

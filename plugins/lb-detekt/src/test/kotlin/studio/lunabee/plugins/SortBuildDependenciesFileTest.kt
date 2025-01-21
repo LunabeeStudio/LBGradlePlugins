@@ -5,7 +5,7 @@ import kotlin.test.assertContentEquals
 
 class SortBuildDependenciesFileTest {
 
-    private val sortBuildDependenciesFile = SortBuildDependenciesFile()
+    private val sortBuildDependenciesFile = SortBuildDependenciesFile(true)
 
     @Test
     fun matcher_blocks_test() {

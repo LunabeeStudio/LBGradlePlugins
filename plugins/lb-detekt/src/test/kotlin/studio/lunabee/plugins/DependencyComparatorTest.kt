@@ -6,7 +6,7 @@ import kotlin.test.assertEquals
 
 class DependencyComparatorTest {
 
-    private val comparator = DependencyComparator()
+    private val comparator = DependencyComparator(verbose = true)
 
     @Test
     fun configuration_test() {

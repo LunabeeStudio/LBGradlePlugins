@@ -1,8 +1,5 @@
 package studio.lunabee.plugins
 
-// TODO add VERBOSE env option around println
-private const val Verbose: Boolean = false
-
 /**
  * Compare two line of dependencies
  *   • Use the dependency part first
@@ -10,6 +7,7 @@ private const val Verbose: Boolean = false
  */
 class DependencyComparator(
     private val catalogName: String = "libs",
+    private val verbose: Boolean = false,
 ) : Comparator<String> {
 
     private val nonAlphaNumRegex = Regex("[^A-Za-z0-9]")
@@ -20,7 +18,7 @@ class DependencyComparator(
     )
 
     override fun compare(p0: String?, p1: String?): Int {
-        if (Verbose) {
+        if (verbose) {
             println("Compare [$p0] and [$p1]")
         }
 
@@ -30,14 +28,14 @@ class DependencyComparator(
         val config0 = extractConfig(p0)
         val config1 = extractConfig(p1)
 
-        if (Verbose) {
+        if (verbose) {
             println("Extract config [$config0] and [$config1]")
         }
 
         val dep0 = extractDependency(p0, config0)
         val dep1 = extractDependency(p1, config1)
 
-        if (Verbose) {
+        if (verbose) {
             println("Extract dep [$dep0] and [$dep1]")
         }
 
