@@ -27,7 +27,7 @@ open class LBAndroidApplicationExtension @Inject constructor(private val project
      * @param targetSdk The target SDK version the application is optimized for. Default is the same as [compileSdk].
      * @param versionCode The version code of the application, used for versioning on the Play Store.
      * @param versionName The version name of the application, displayed to the users.
-     * @param jdkVersion The version of the Java Development Kit (JDK) to be used. Default is [JavaVersion.VERSION_21].
+     * @param jdkVersion The version of the Java Development Kit (JDK) to be used. Default is [JavaVersion.VERSION_17].
      * @param configureJava A lambda for additional configuration of the Java plugin extension.
      * @param configureAndroidExtension A lambda for additional configuration of the Android application module extension.
      * @param lintConfigPath File path to lint config you might want to add.
@@ -41,7 +41,7 @@ open class LBAndroidApplicationExtension @Inject constructor(private val project
         var targetSdk: Int = compileSdk,
         var versionCode: Int = 1,
         var versionName: String = "1.0.0",
-        var jdkVersion: JavaVersion = JavaVersion.VERSION_21,
+        var jdkVersion: JavaVersion = JavaVersion.VERSION_17,
         var configureJava: JavaPluginExtension.() -> Unit = { },
         var configureAndroidExtension: BaseAppModuleExtension.() -> Unit = { },
         var lintConfigPath: String? = null,
