@@ -1,10 +1,9 @@
-@file:Suppress("UnstableApiUsage")
-
 plugins {
-    `java-gradle-plugin`
     `kotlin-dsl`
     `maven-publish`
 }
+
+version = "1.0.0"
 
 publishing {
     publications {
@@ -38,8 +37,5 @@ publishing {
                 }
             }
         }
-    }
-    repositories {
-        mavenLocal()
     }
 }
