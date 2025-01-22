@@ -20,7 +20,8 @@ Choose your plugin and refer to the corresponding `README.md` for more info abou
 The plugins can be published locally or on Artifactory. During development, you simply need to run:
 
 ```bash
-./gradlew mavenLocal
+cd plugins
+./gradlew publishToMavenLocal
 ```
 
 ## Demo app
