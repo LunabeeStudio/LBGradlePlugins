@@ -1,0 +1,66 @@
+package studio.lunabee.plugins
+
+import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.TaskAction
+
+open class SortLibsVersionsTomlTask : DefaultTask() {
+
+    @Suppress("CyclomaticComplexMethod", "NestedBlockDepth")
+    @TaskAction
+    fun run() {
+        val file = project.file("gradle/libs.versions.toml")
+        val lines = file.readLines()
+        val sortedLines = mutableListOf<String>()
+        var insideSection = false
+        val sectionLines = mutableListOf<Pair<String?, String>>() // Pair of (comment, line)
+        var currentComment: String? = null
+        lines.forEach { line ->
+            // Detect the start of a new section (e.g., [versions] or [libraries])
+            if (line.trim().startsWith("[") && line.trim().endsWith("]")) {
+                // Sort and add the previous section, if any
+                if (insideSection) {
+                    sectionLines.sortBy { it.second } // Sort by the actual dependency line
+                    sectionLines.forEach { (comment, content) ->
+                        if (comment != null) sortedLines.add(comment) // Add the comment line, if any
+                        sortedLines.add(content) // Add the actual dependency line
+                    }
+                    sectionLines.clear() // Clear the section lines for the next section
+                }
+                // Start of a new section
+                insideSection = true
+                // Ensure an empty line before each new section
+                sortedLines.add("") // Add an empty line before the section header
+                sortedLines.add(line) // Add the section header (e.g., [libraries])
+                sortedLines.add("") // Add an empty line after the section header
+            } else if (insideSection) {
+                if (line.trim().startsWith("#")) {
+                    // If we encounter a comment, store it temporarily
+                    currentComment = line
+                } else if (line.trim().isNotEmpty()) {
+                    // If it's a non-empty dependency line, pair it with the comment (if any) and add to sectionLines
+                    sectionLines.add(currentComment to line)
+                    currentComment = null // Reset the comment after it's paired
+                }
+            } else {
+                // Handle lines outside of sections, ensuring empty lines are preserved
+                if (line.isNotBlank() || (sortedLines.isNotEmpty() && sortedLines.last().isNotBlank())) {
+                    sortedLines.add(line) // Add non-section lines (like empty lines or other content)
+                }
+            }
+        }
+        // Sort and add the last section, if needed
+        if (insideSection) {
+            sectionLines.sortBy { it.second } // Sort by the actual dependency line
+            sectionLines.forEach { (comment, content) ->
+                if (comment != null) sortedLines.add(comment)
+                sortedLines.add(content)
+            }
+        }
+        // Ensure an empty line at the end of the file
+        if (sortedLines.isNotEmpty() && sortedLines.last().isNotBlank()) {
+            sortedLines.add("") // Add an empty line at the end if not already present
+        }
+        // Write the sorted content back to the file
+        file.writeText(sortedLines.joinToString("\n"))
+    }
+}
