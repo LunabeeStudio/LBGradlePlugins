@@ -18,13 +18,13 @@ import org.gradle.kotlin.dsl.register
  * }
  *
  * lbDetekt {
- *     settings()
+ *     // custom configuration
  * }
  * ```
  */
 class LBDetektPlugin : Plugin<Project> {
     override fun apply(target: Project) {
-        // Register sort dependencies scripts.
+        // Register sort dependencies tasks.
         registerSortDependencies(target)
         registerSortLibs(target)
 
@@ -38,14 +38,14 @@ class LBDetektPlugin : Plugin<Project> {
 
     private fun registerSortDependencies(project: Project): TaskProvider<SortBuildDependenciesTask> {
         return project.tasks.register<SortBuildDependenciesTask>("sortBuildDependencies") {
-            group = "formatting"
-            description = "Sorts dependencies and plugins alphabetically in all build.gradle.kts files throughout the project."
+            group = "Lunabee"
+            description = "Sorts dependencies and plugins alphabetically in all build.gradle.kts files throughout the project"
         }
     }
 
     private fun registerSortLibs(project: Project): TaskProvider<SortLibsVersionsTomlTask> {
         return project.tasks.register<SortLibsVersionsTomlTask>("sortLibsVersionsToml") {
-            group = "formatting"
+            group = "Lunabee"
             description = "Sorts the libraries and versions in libs.versions.toml alphabetically"
         }
     }
