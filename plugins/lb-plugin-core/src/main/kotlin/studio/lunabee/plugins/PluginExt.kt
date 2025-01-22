@@ -14,7 +14,7 @@ fun Project.getPluginId(name: String): String {
 }
 
 fun Project.applyPlugin(name: String) {
-    plugins.apply(getPluginId(name))
+    pluginManager.apply(getPluginId(name))
 }
 
 fun Project.buildDependency(name: String): String {
