@@ -31,10 +31,9 @@ lbMultiplatformLibrary {
 kotlin {
     sourceSets {
         androidMain.dependencies {
-            commonMain.dependencies {
-                // Android dependencies goes here.
-            }
-
+            // Android dependencies goes here.
+        }
+        commonMain.dependencies {
             implementation(projects.appDemoMultiplatform)
         }
         iosMain.dependencies {
