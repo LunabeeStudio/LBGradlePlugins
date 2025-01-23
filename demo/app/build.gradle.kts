@@ -4,12 +4,13 @@ plugins {
 
 lbAndroidApplication {
     android {
-        applicationId = "studio.lunabee.lbplugin"
         namespace = "studio.lunabee.lbplugin"
         compileSdk = 35
-        minSdk = 26
-        versionCode = 1
-        versionName = "1.0.0"
+        defaultConfig {
+            minSdk = 26
+            versionCode = 1
+            versionName = "1.0.0"
+        }
     }
 }
 
