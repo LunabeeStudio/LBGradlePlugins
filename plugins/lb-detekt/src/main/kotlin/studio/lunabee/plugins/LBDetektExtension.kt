@@ -49,11 +49,6 @@ open class LBDetektExtension @Inject constructor(
         source.setFrom("${project.rootProject.rootDir}")
 
         project.project.tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
-            outputs.upToDateWhen { false } // always re-run
-
-            exclude("**/buildSrc")
-            exclude("**/build/**")
-
             if (enableDependencySorting) {
                 dependsOn(project.tasks.withType<SortBuildDependenciesTask>())
             }

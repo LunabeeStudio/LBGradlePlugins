@@ -7,6 +7,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.kotlin.dsl.register
+import org.gradle.kotlin.dsl.withType
 
 /**
  * This plugin initializes and configures the Detekt plugin. Generally, we recommend applying this plugin directly in the
@@ -37,6 +38,13 @@ class LBDetektPlugin : Plugin<Project> {
             "detektPlugins",
             "io.gitlab.arturbosch.detekt:detekt-formatting:${extension.toolVersion}",
         )
+
+        target.project.tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
+            outputs.upToDateWhen { false } // always re-run
+
+            exclude("**/buildSrc")
+            exclude("**/build/**")
+        }
     }
 
     private fun registerSortDependencies(project: Project): TaskProvider<SortBuildDependenciesTask> {
