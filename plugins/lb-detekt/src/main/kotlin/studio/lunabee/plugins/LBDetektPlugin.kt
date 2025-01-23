@@ -28,12 +28,15 @@ class LBDetektPlugin : Plugin<Project> {
         registerSortDependencies(target)
         registerSortLibs(target)
 
-        target.extensions.findByType(LBDetektExtension::class.java) ?: target.extensions.create(
+        val extension = target.extensions.findByType(LBDetektExtension::class.java) ?: target.extensions.create(
             "lbDetekt",
             LBDetektExtension::class.java,
         )
         target.pluginManager.apply(DetektPlugin::class.java)
-        target.dependencies.add("detektPlugins", target.buildDependency("detektFormatting"))
+        target.dependencies.add(
+            "detektPlugins",
+            "io.gitlab.arturbosch.detekt:detekt-formatting:${extension.toolVersion}",
+        )
     }
 
     private fun registerSortDependencies(project: Project): TaskProvider<SortBuildDependenciesTask> {

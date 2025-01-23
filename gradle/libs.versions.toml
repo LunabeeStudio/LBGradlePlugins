@@ -3,7 +3,6 @@
 
 [plugins]
 
-detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 gradleAndroidApplication = { id = "com.android.application", version.ref = "gradle" }
 gradleAndroidLibrary = { id = "com.android.library", version.ref = "gradle" }
 gradlePublish = { id = "com.gradle.plugin-publish", version.ref = "gradlePublish" }
@@ -39,8 +38,6 @@ androidxComposeBom = { group = "androidx.compose", name = "compose-bom", version
 androidxComposeFoundation = { group = "androidx.compose.foundation", name = "foundation" }
 androidxComposeMaterial3 = { group = "androidx.compose.material3", name = "material3" }
 detekt = { group = "io.gitlab.arturbosch.detekt", name = "detekt-gradle-plugin", version.ref = "detekt" }
-# Do not remove. Use in LBDetektPlugin.
-detektFormatting = { group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version.ref = "detekt" }
 gradleAndroid = { group = "com.android.tools.build", name = "gradle", version.ref = "gradle" }
 kotlinAndroid = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlinCompose = { group = "org.jetbrains.kotlin", name = "compose-compiler-gradle-plugin", version.ref = "kotlin" }
