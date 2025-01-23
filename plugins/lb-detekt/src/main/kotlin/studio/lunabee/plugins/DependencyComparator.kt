@@ -15,6 +15,7 @@ class DependencyComparator(
         Regex("\\w*implementation", RegexOption.IGNORE_CASE),
         Regex("\\w*api", RegexOption.IGNORE_CASE),
         Regex("\\w*ksp", RegexOption.IGNORE_CASE),
+        Regex("dokka", RegexOption.IGNORE_CASE),
     )
 
     override fun compare(p0: String?, p1: String?): Int {
