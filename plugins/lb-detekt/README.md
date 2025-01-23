@@ -4,7 +4,7 @@
 
 This plugin applies Detekt to analyze the code and ensure its quality. Usage:
 
-In root `build.gradle.kts`:
+In root [`build.gradle.kts`](https://github.com/LunabeeStudio/LBGradlePlugins/blob/master/build.gradle.kts):
 ```
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
@@ -12,7 +12,7 @@ plugins {
 }
 
 lbDetekt {
-    configure()
+    // custom configuration
 }
 ```
 

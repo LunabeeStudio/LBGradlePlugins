@@ -18,9 +18,7 @@ tasks.wrapper {
 }
 
 lbDetekt {
-    configure {
-        verbose = true
-    }
+    verbose = false
 }
 
 lbResources {
