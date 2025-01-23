@@ -121,4 +121,23 @@ class SortBuildDependenciesFileTest {
 
         assertContentEquals(expected, actual, actual.joinToString("\n"))
     }
+
+    @Test
+    fun last_line_comment_test() {
+        val expected = """
+            commonMain.dependencies {
+                // Common dependencies goes here.
+            }
+            iosMain.dependencies {
+                // iOS dependencies goes here.
+            }
+            jvmMain.dependencies {
+                // jvm dependencies goes here.
+            }
+        """.trimIndent().split("\n")
+
+        val actual = sortBuildDependenciesFile.sortLines(expected).flatMap { it.split("\n") }
+
+        assertContentEquals(expected, actual, actual.joinToString("\n"))
+    }
 }

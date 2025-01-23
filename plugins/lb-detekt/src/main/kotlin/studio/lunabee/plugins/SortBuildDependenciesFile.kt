@@ -22,19 +22,16 @@ class SortBuildDependenciesFile(
         val sortedLines = mutableListOf<String>()
         var insideTargetBlock = false
         val targetBlocks = listOf(
-            "commonMain.dependencies {",
-            "androidMain.dependencies {",
-            "iosTest.dependencies {",
-            "iosMain.dependencies {",
-            "dependencies {",
+            Regex(".*.dependencies \\{"),
+            Regex("dependencies \\{"),
         )
         val dependencyLines = mutableListOf<String>()
 
-        val lineIterator = lines.iterator()
+        val lineIterator = lines.listIterator()
         while (lineIterator.hasNext()) {
             val line = lineIterator.next()
             // Check if the line matches one of the target blocks
-            if (targetBlocks.any { block -> line.trim() == block }) {
+            if (targetBlocks.any { block -> block.matches(line.trim()) }) {
                 insideTargetBlock = true
                 sortedLines.add(line) // Add the target block line (e.g., 'dependencies {')
             } else if (insideTargetBlock && line.trim() == "}") {
@@ -80,13 +77,19 @@ class SortBuildDependenciesFile(
                         builder.append(nextLine)
                     } else if (line.trimStart().startsWith("//")) { // Handle comments
                         var nextLine = lineIterator.next()
-                        while (nextLine.trimStart().startsWith("//") && lineIterator.hasNext()) {
+                        while (nextLine.trimStart().startsWith("//") && lineIterator.hasNext() && !nextLine.endsWith('}')) {
                             builder.appendLine()
                             builder.append(nextLine)
                             nextLine = lineIterator.next()
                         }
-                        builder.appendLine()
-                        builder.append(nextLine)
+                        if (nextLine.endsWith('}')) {
+                            // Comment is the last line of the target block
+                            lineIterator.previous()
+                        } else {
+                            // Wrap line with comment
+                            builder.appendLine()
+                            builder.append(nextLine)
+                        }
                     }
 
                     if (verbose) {
