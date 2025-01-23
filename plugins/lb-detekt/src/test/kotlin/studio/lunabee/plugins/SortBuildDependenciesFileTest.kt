@@ -140,4 +140,26 @@ class SortBuildDependenciesFileTest {
 
         assertContentEquals(expected, actual, actual.joinToString("\n"))
     }
+
+    @Test
+    fun custom_block_and_comment_test() {
+        val expected = """
+            dependencies {
+                coreLibraryDesugaring(libs.desugar.jdk.libs)
+
+                implementation(libs.conscrypt.openjdk.uber)
+                implementation(libs.hilt.android.testing)
+                api(libs.robolectric)
+
+                // https://github.com/google/conscrypt/issues/649
+                api(projects.commonTestAndroid) {
+                    exclude(group = "org.conscrypt", module = "conscrypt-android")
+                }
+            }
+        """.trimIndent().split("\n")
+
+        val actual = sortBuildDependenciesFile.sortLines(expected).flatMap { it.split("\n") }
+
+        assertContentEquals(expected, actual, actual.joinToString("\n"))
+    }
 }
