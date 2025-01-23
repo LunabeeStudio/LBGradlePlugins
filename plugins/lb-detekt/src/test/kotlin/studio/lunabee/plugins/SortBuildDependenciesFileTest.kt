@@ -92,4 +92,33 @@ class SortBuildDependenciesFileTest {
 
         assertContentEquals(expected, actual, actual.joinToString("\n"))
     }
+
+    @Test
+    fun keep_comments_test() {
+        val input = """
+            dependencies {
+                implementation(project(aaa))
+                implementation(platform(aaa))
+                // b My multiline KSP related comment #1
+                // a My multiline KSP related comment #2
+                ksp(aaa)
+            }
+        """.trimIndent().split("\n")
+
+        val expected = """
+            dependencies {
+                implementation(platform(aaa))
+
+                // b My multiline KSP related comment #1
+                // a My multiline KSP related comment #2
+                ksp(aaa)
+
+                implementation(project(aaa))
+            }
+        """.trimIndent().split("\n")
+
+        val actual = sortBuildDependenciesFile.sortLines(input).flatMap { it.split("\n") }
+
+        assertContentEquals(expected, actual, actual.joinToString("\n"))
+    }
 }

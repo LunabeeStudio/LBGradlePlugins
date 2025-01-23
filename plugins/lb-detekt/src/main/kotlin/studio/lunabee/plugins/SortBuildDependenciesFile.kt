@@ -1,15 +1,19 @@
 package studio.lunabee.plugins
 
 class SortBuildDependenciesFile(
-    verbose: Boolean,
+    private val verbose: Boolean,
 ) {
 
     private val platformMatcher = Regex("platform\\(")
     private val projectMatcher = Regex("project\\(")
     private val projectsMatcher = Regex("\\(projects.")
     private val kspMatcher = Regex("ksp\\(")
-    private val testMatcher = Regex("test.*\\(")
-    private val androidTestMatcher = Regex("androidTest.*\\(")
+    private val testMatcher = Regex(".*test.*\\(", RegexOption.IGNORE_CASE)
+    private val androidTestMatcher = Regex(".*androidTest.*\\(", RegexOption.IGNORE_CASE)
+    private val desugaringMatcher = Regex("coreLibraryDesugaring.*\\(")
+    private val devConfigMatcher = Regex("dev(Api|Implementation)\\(")
+    private val debugConfigMatcher = Regex("debug(Api|Implementation)\\(")
+    private val internalConfigMatcher = Regex("internal(Api|Implementation)\\(")
 
     private val comparator = DependencyComparator(verbose = verbose)
 
@@ -37,13 +41,17 @@ class SortBuildDependenciesFile(
                 dependencyLines.sortWith(comparator)
                 val groupedLines = dependencyLines.groupBy {
                     when {
-                        platformMatcher.containsMatchIn(it) -> 0
-                        kspMatcher.containsMatchIn(it) -> 100
-                        projectMatcher.containsMatchIn(it) -> 300
-                        projectsMatcher.containsMatchIn(it) -> 300
-                        androidTestMatcher.containsMatchIn(it) -> 400
-                        testMatcher.containsMatchIn(it) -> 500
-                        else -> 200
+                        desugaringMatcher.containsMatchIn(it) -> 300
+                        platformMatcher.containsMatchIn(it) -> 400
+                        kspMatcher.containsMatchIn(it) -> 500
+                        androidTestMatcher.containsMatchIn(it) -> 900
+                        testMatcher.containsMatchIn(it) -> 1000
+                        devConfigMatcher.containsMatchIn(it) -> 800
+                        debugConfigMatcher.containsMatchIn(it) -> 810
+                        internalConfigMatcher.containsMatchIn(it) -> 820
+                        projectMatcher.containsMatchIn(it) -> 700
+                        projectsMatcher.containsMatchIn(it) -> 700
+                        else -> 600
                     }
                 }.toSortedMap()
 
@@ -61,10 +69,18 @@ class SortBuildDependenciesFile(
                 if (line.isNotBlank() && !dependencyLines.contains(line)) {
                     val builder: StringBuilder = StringBuilder(line)
 
-                    // Handle custom block
-                    if (line.endsWith("{")) {
+                    if (line.endsWith("{")) { // Handle custom block
                         var nextLine = lineIterator.next()
-                        while (!nextLine.endsWith("}")) {
+                        while (!nextLine.endsWith("}") && lineIterator.hasNext()) {
+                            builder.appendLine()
+                            builder.append(nextLine)
+                            nextLine = lineIterator.next()
+                        }
+                        builder.appendLine()
+                        builder.append(nextLine)
+                    } else if (line.trimStart().startsWith("//")) { // Handle comments
+                        var nextLine = lineIterator.next()
+                        while (nextLine.trimStart().startsWith("//") && lineIterator.hasNext()) {
                             builder.appendLine()
                             builder.append(nextLine)
                             nextLine = lineIterator.next()
@@ -73,6 +89,9 @@ class SortBuildDependenciesFile(
                         builder.append(nextLine)
                     }
 
+                    if (verbose) {
+                        println("Add dependency line: $builder")
+                    }
                     dependencyLines.add(builder.toString())
                 }
             } else {
