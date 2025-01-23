@@ -16,6 +16,7 @@ class SortBuildDependenciesFileTest {
                 ksp(aaa)
                 testImplementation(aaa)
                 implementation(libs.aaa)
+                androidTestImplementation(aaa)
                 implementation(projects.aaa)
             }
         """.trimIndent().split("\n")
@@ -31,6 +32,8 @@ class SortBuildDependenciesFileTest {
 
                 implementation(project(aaa))
                 implementation(projects.aaa)
+
+                androidTestImplementation(aaa)
 
                 testImplementation(aaa)
             }

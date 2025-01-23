@@ -9,6 +9,7 @@ class SortBuildDependenciesFile(
     private val projectsMatcher = Regex("\\(projects.")
     private val kspMatcher = Regex("ksp\\(")
     private val testMatcher = Regex("test.*\\(")
+    private val androidTestMatcher = Regex("androidTest.*\\(")
 
     private val comparator = DependencyComparator(verbose = verbose)
 
@@ -40,7 +41,8 @@ class SortBuildDependenciesFile(
                         kspMatcher.containsMatchIn(it) -> 100
                         projectMatcher.containsMatchIn(it) -> 300
                         projectsMatcher.containsMatchIn(it) -> 300
-                        testMatcher.containsMatchIn(it) -> 400
+                        androidTestMatcher.containsMatchIn(it) -> 400
+                        testMatcher.containsMatchIn(it) -> 500
                         else -> 200
                     }
                 }.toSortedMap()
