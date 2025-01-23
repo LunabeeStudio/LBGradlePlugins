@@ -77,12 +77,12 @@ class SortBuildDependenciesFile(
                         builder.append(nextLine)
                     } else if (line.trimStart().startsWith("//")) { // Handle comments
                         var nextLine = lineIterator.next()
-                        while (nextLine.trimStart().startsWith("//") && lineIterator.hasNext() && !nextLine.endsWith('}')) {
+                        while (nextLine.trimStart().startsWith("//") && lineIterator.hasNext() && nextLine.trim() != "}") {
                             builder.appendLine()
                             builder.append(nextLine)
                             nextLine = lineIterator.next()
                         }
-                        if (nextLine.endsWith('}')) {
+                        if (nextLine.trim() == "}") {
                             // Comment is the last line of the target block
                             lineIterator.previous()
                         } else {
