@@ -16,6 +16,7 @@ class DependencyComparator(
         Regex("\\w*api", RegexOption.IGNORE_CASE),
         Regex("\\w*ksp", RegexOption.IGNORE_CASE),
         Regex("dokka", RegexOption.IGNORE_CASE),
+        Regex("coreLibraryDesugaring", RegexOption.IGNORE_CASE),
     )
 
     override fun compare(p0: String?, p1: String?): Int {
@@ -50,7 +51,7 @@ class DependencyComparator(
     }
 
     private fun extractConfig(line: String): String {
-        val config = configMatchers.firstNotNullOf { regex -> regex.find(line) }.value
+        val config = configMatchers.firstNotNullOfOrNull { regex -> regex.find(line) }?.value ?: line.substringBefore('(')
         return config
     }
 
