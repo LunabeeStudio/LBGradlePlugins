@@ -1,5 +1,8 @@
+import studio.lunabee.plugins.StringsProvider
+
 plugins {
     alias(libs.plugins.lbAndroidApplication)
+    alias(libs.plugins.lbResources)
 }
 
 lbAndroidApplication {
@@ -12,6 +15,10 @@ lbAndroidApplication {
             versionName = "1.0.0"
         }
     }
+}
+
+lbResources {
+    provider = StringsProvider.Loco("maZteRAXR20kWa9XBlOfZ7Pgnwy8uor3")
 }
 
 dependencies {
