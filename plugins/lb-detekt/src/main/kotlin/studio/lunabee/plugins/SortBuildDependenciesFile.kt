@@ -76,9 +76,7 @@ class SortBuildDependenciesFile(
                         builder.appendLine()
                         builder.append(nextLine)
 
-                        if (verbose) {
-                            println("Add dependency line: $builder")
-                        }
+                        log("Add dependency line: $builder")
                         dependencyLines.add(builder.toString())
                     } else if (line.trimStart().startsWith("//")) {
                         // Handle comments by aggregating them in one line entry and let the algorithm continue
@@ -105,17 +103,17 @@ class SortBuildDependenciesFile(
                                 lineIterator.previous() // Back to aggregated comments + block start line
                             } else if (nextLine.trim() == "}") {
                                 // End of deps block, add the the current aggregation as it and continue to handle the end of deps block
+                                log("Add dependency line: $aggregatedLine")
                                 dependencyLines.add(aggregatedLine)
                                 lineIterator.previous() // Back to last '}'
                             } else {
                                 aggregate()
+                                log("Add dependency line: $aggregatedLine")
                                 dependencyLines.add(aggregatedLine)
                             }
                         }
                     } else {
-                        if (verbose) {
-                            println("Add dependency line: $builder")
-                        }
+                        log("Add dependency line: $builder")
                         dependencyLines.add(builder.toString())
                     }
                 }
@@ -125,5 +123,9 @@ class SortBuildDependenciesFile(
             }
         }
         return sortedLines
+    }
+
+    private fun log(text: String) {
+        if (verbose) println(text.replace("\n", "\\n"))
     }
 }

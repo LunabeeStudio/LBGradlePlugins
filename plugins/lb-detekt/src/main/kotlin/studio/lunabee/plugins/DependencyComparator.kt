@@ -20,9 +20,7 @@ class DependencyComparator(
     )
 
     override fun compare(p0: String?, p1: String?): Int {
-        if (verbose) {
-            println("Compare [$p0] and [$p1]")
-        }
+        log("Compare [$p0] and [$p1]")
 
         checkNotNull(p0)
         checkNotNull(p1)
@@ -30,16 +28,12 @@ class DependencyComparator(
         val config0 = extractConfig(p0)
         val config1 = extractConfig(p1)
 
-        if (verbose) {
-            println("Extract config [$config0] and [$config1]")
-        }
+        log("Extract config [$config0] and [$config1]")
 
         val dep0 = extractDependency(p0, config0)
         val dep1 = extractDependency(p1, config1)
 
-        if (verbose) {
-            println("Extract dep [$dep0] and [$dep1]")
-        }
+        log("Extract dep [$dep0] and [$dep1]")
 
         val depRes = dep0.compareTo(dep1)
         return if (depRes == 0) {
@@ -63,5 +57,9 @@ class DependencyComparator(
             .substringBefore(')')
             .replace("$catalogName.", "")
         return nonAlphaNumRegex.replace(sub, "")
+    }
+
+    private fun log(text: String) {
+        if (verbose) println(text.replace("\n", "\\n"))
     }
 }
