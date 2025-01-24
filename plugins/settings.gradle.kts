@@ -32,6 +32,7 @@ dependencyResolutionManagement {
 rootProject.name = "LBGradlePlugins"
 include(":lb-android-application")
 include(":lb-android-library")
+include(":lb-android-flavors")
 include(":lb-detekt")
 include(":lb-multiplatform-library")
 include(":lb-resources")

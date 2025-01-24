@@ -2,6 +2,7 @@ import studio.lunabee.plugins.StringsProvider
 
 plugins {
     alias(libs.plugins.lbAndroidApplication)
+    alias(libs.plugins.lbAndroidFlavors)
     alias(libs.plugins.lbResources)
 }
 
@@ -32,4 +33,6 @@ dependencies {
     implementation(projects.appDemoCoreUi)
     implementation(projects.appDemoMultiplatform)
     implementation(projects.appDemoShared)
+
+    devImplementation(projects.appDemoShared)
 }
