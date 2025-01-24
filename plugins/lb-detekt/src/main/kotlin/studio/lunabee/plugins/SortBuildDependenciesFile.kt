@@ -35,7 +35,6 @@ class SortBuildDependenciesFile(
                 insideTargetBlock = true
                 sortedLines.add(line) // Add the target block line (e.g., 'dependencies {')
             } else if (insideTargetBlock && line.trim() == "}") {
-                dependencyLines.sortWith(comparator)
                 val groupedLines = dependencyLines.groupBy {
                     when {
                         desugaringMatcher.containsMatchIn(it) -> 300
@@ -53,7 +52,8 @@ class SortBuildDependenciesFile(
                 }.toSortedMap()
 
                 groupedLines.values.forEach {
-                    sortedLines.addAll(it)
+                    val sorted = it.sortedWith(comparator)
+                    sortedLines.addAll(sorted)
                     sortedLines.add("")
                 }
 
