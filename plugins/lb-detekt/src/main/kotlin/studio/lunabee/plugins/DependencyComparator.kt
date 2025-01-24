@@ -20,7 +20,7 @@ class DependencyComparator(
     )
 
     override fun compare(p0: String?, p1: String?): Int {
-        log("Compare [$p0] and [$p1]")
+        log("Compare [${p0?.trim()}] and [${p1?.trim()}]")
 
         checkNotNull(p0)
         checkNotNull(p1)
