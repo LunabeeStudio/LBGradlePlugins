@@ -15,6 +15,7 @@ lbAndroidLibrary = { id = "studio.lunabee.plugins.android.library", version.ref 
 lbDetekt = { id = "studio.lunabee.plugins.detekt", version.ref = "lbDetekt" }
 lbMultiplatformLibrary = { id = "studio.lunabee.plugins.multiplatform.library", version.ref = "lbMultiplatformLibrary" }
 lbResources = { id = "studio.lunabee.plugins.resources", version.ref = "lbResources" }
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 
 [versions]
 
@@ -31,6 +32,7 @@ lbAndroidLibrary = "1.0.0"
 lbDetekt = "1.0.0"
 lbMultiplatformLibrary = "1.0.0"
 lbResources = "1.0.0"
+dokka="2.0.0"
 
 [libraries]
 
@@ -45,3 +47,4 @@ kotlinAndroid = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin",
 kotlinCompose = { group = "org.jetbrains.kotlin", name = "compose-compiler-gradle-plugin", version.ref = "kotlin" }
 kotlinMultiplatform = { group = "org.jetbrains.kotlin.multiplatform", name = "org.jetbrains.kotlin.multiplatform.gradle.plugin", version.ref = "kotlin" }
 kotlinTest = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
+dokkaGradlePlugin = { group = "org.jetbrains.dokka", name = "org.jetbrains.dokka.gradle.plugin", version.ref = "dokka" }
