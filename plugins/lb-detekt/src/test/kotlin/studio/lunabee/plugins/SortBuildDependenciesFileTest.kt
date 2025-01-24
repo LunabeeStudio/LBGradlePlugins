@@ -98,6 +98,7 @@ class SortBuildDependenciesFileTest {
         val input = """
             dependencies {
                 implementation(project(aaa))
+                // Use aaa BoM
                 implementation(platform(aaa))
                 // b My multiline KSP related comment #1
                 // a My multiline KSP related comment #2
@@ -107,6 +108,7 @@ class SortBuildDependenciesFileTest {
 
         val expected = """
             dependencies {
+                // Use aaa BoM
                 implementation(platform(aaa))
 
                 // b My multiline KSP related comment #1
@@ -142,17 +144,32 @@ class SortBuildDependenciesFileTest {
     }
 
     @Test
+    fun custom_comment_and_block_test() {
+        val expected = """
+            dependencies {
+                api(libs.robolectric)
+
+                // Check issue for informations
+                // https://github.com/google/conscrypt/issues/649
+                api(projects.commonTestAndroid) {
+                    exclude(group = "org.conscrypt", module = "conscrypt-android")
+                }
+            }
+        """.trimIndent().split("\n")
+
+        val actual = sortBuildDependenciesFile.sortLines(expected).flatMap { it.split("\n") }
+
+        assertContentEquals(expected, actual, actual.joinToString("\n"))
+    }
+
+    @Test
     fun custom_block_and_comment_test() {
         val expected = """
             dependencies {
-                coreLibraryDesugaring(libs.desugar.jdk.libs)
-
-                implementation(libs.conscrypt.openjdk.uber)
-                implementation(libs.hilt.android.testing)
                 api(libs.robolectric)
 
-                // https://github.com/google/conscrypt/issues/649
                 api(projects.commonTestAndroid) {
+                    // https://github.com/google/conscrypt/issues/649
                     exclude(group = "org.conscrypt", module = "conscrypt-android")
                 }
             }

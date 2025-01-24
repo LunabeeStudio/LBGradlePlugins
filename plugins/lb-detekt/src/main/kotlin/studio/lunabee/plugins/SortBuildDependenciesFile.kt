@@ -27,7 +27,7 @@ class SortBuildDependenciesFile(
         )
         val dependencyLines = mutableListOf<String>()
 
-        val lineIterator = lines.listIterator()
+        val lineIterator = lines.toMutableList().listIterator()
         while (lineIterator.hasNext()) {
             val line = lineIterator.next()
             // Check if the line matches one of the target blocks
@@ -75,27 +75,49 @@ class SortBuildDependenciesFile(
                         }
                         builder.appendLine()
                         builder.append(nextLine)
-                    } else if (line.trimStart().startsWith("//")) { // Handle comments
-                        var nextLine = lineIterator.next()
-                        while (nextLine.trimStart().startsWith("//") && lineIterator.hasNext() && nextLine.trim() != "}") {
-                            builder.appendLine()
-                            builder.append(nextLine)
-                            nextLine = lineIterator.next()
-                        }
-                        if (nextLine.trim() == "}") {
-                            // Comment is the last line of the target block
-                            lineIterator.previous()
-                        } else {
-                            // Wrap line with comment
-                            builder.appendLine()
-                            builder.append(nextLine)
-                        }
-                    }
 
-                    if (verbose) {
-                        println("Add dependency line: $builder")
+                        if (verbose) {
+                            println("Add dependency line: $builder")
+                        }
+                        dependencyLines.add(builder.toString())
+                    } else if (line.trimStart().startsWith("//")) {
+                        // Handle comments by aggregating them on one line entry and let the algorithm continue
+                        if (lineIterator.hasNext()) {
+                            var aggregatedLine = line
+                            var nextLine = lineIterator.next()
+
+                            val aggregate = {
+                                lineIterator.remove()
+                                lineIterator.previous()
+                                aggregatedLine += "\n$nextLine"
+                                lineIterator.set(aggregatedLine)
+                            }
+
+                            while (nextLine.trimStart().startsWith("//") && lineIterator.hasNext() && nextLine.trim() != "}") {
+                                aggregate()
+                                lineIterator.next()
+                                nextLine = lineIterator.next()
+                            }
+
+                            if (nextLine.endsWith("{")) {
+                                // Entering block, aggregate comment and bloc start line and continue to handle it as a block
+                                aggregate()
+                                lineIterator.previous() // Back to aggregated comments + block start line
+                            } else if (nextLine.trim() == "}") {
+                                // End of deps block, add the the current aggregation as it and continue to handle the end of deps block
+                                dependencyLines.add(aggregatedLine)
+                                lineIterator.previous() // Back to last '}'
+                            } else {
+                                aggregate()
+                                dependencyLines.add(aggregatedLine)
+                            }
+                        }
+                    } else {
+                        if (verbose) {
+                            println("Add dependency line: $builder")
+                        }
+                        dependencyLines.add(builder.toString())
                     }
-                    dependencyLines.add(builder.toString())
                 }
             } else {
                 // Add all other lines outside the target blocks
