@@ -81,7 +81,7 @@ class SortBuildDependenciesFile(
                         }
                         dependencyLines.add(builder.toString())
                     } else if (line.trimStart().startsWith("//")) {
-                        // Handle comments by aggregating them on one line entry and let the algorithm continue
+                        // Handle comments by aggregating them in one line entry and let the algorithm continue
                         if (lineIterator.hasNext()) {
                             var aggregatedLine = line
                             var nextLine = lineIterator.next()
