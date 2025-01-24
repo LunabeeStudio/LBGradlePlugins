@@ -1,5 +1,7 @@
 package studio.lunabee.plugins
 
+import java.util.SortedMap
+
 class SortBuildDependenciesFile(
     private val verbose: Boolean,
 ) {
@@ -17,7 +19,7 @@ class SortBuildDependenciesFile(
 
     private val comparator = DependencyComparator(verbose = verbose)
 
-    @Suppress("NestedBlockDepth")
+    @Suppress("NestedBlockDepth", "LongMethod", "CyclomaticComplexMethod")
     fun sortLines(lines: List<String>): List<String> {
         val sortedLines = mutableListOf<String>()
         var insideTargetBlock = false
@@ -35,21 +37,7 @@ class SortBuildDependenciesFile(
                 insideTargetBlock = true
                 sortedLines.add(line) // Add the target block line (e.g., 'dependencies {')
             } else if (insideTargetBlock && line.trim() == "}") {
-                val groupedLines = dependencyLines.groupBy {
-                    when {
-                        desugaringMatcher.containsMatchIn(it) -> 300
-                        platformMatcher.containsMatchIn(it) -> 400
-                        kspMatcher.containsMatchIn(it) -> 500
-                        androidTestMatcher.containsMatchIn(it) -> 900
-                        testMatcher.containsMatchIn(it) -> 1000
-                        devConfigMatcher.containsMatchIn(it) -> 800
-                        debugConfigMatcher.containsMatchIn(it) -> 810
-                        internalConfigMatcher.containsMatchIn(it) -> 820
-                        projectMatcher.containsMatchIn(it) -> 700
-                        projectsMatcher.containsMatchIn(it) -> 700
-                        else -> 600
-                    }
-                }.toSortedMap()
+                val groupedLines = groupByMatcher(dependencyLines)
 
                 groupedLines.values.forEach {
                     val sorted = it.sortedWith(comparator)
@@ -91,7 +79,11 @@ class SortBuildDependenciesFile(
                                 lineIterator.set(aggregatedLine)
                             }
 
-                            while (nextLine.trimStart().startsWith("//") && lineIterator.hasNext() && nextLine.trim() != "}") {
+                            while (
+                                nextLine.trimStart().startsWith("//") &&
+                                lineIterator.hasNext() &&
+                                nextLine.trim() != "}"
+                            ) {
                                 aggregate()
                                 lineIterator.next()
                                 nextLine = lineIterator.next()
@@ -123,6 +115,24 @@ class SortBuildDependenciesFile(
             }
         }
         return sortedLines
+    }
+
+    private fun groupByMatcher(dependencyLines: MutableList<String>): SortedMap<Int, List<String>> {
+        return dependencyLines.groupBy {
+            when {
+                desugaringMatcher.containsMatchIn(it) -> 300
+                platformMatcher.containsMatchIn(it) -> 400
+                kspMatcher.containsMatchIn(it) -> 500
+                androidTestMatcher.containsMatchIn(it) -> 900
+                testMatcher.containsMatchIn(it) -> 1000
+                devConfigMatcher.containsMatchIn(it) -> 800
+                debugConfigMatcher.containsMatchIn(it) -> 810
+                internalConfigMatcher.containsMatchIn(it) -> 820
+                projectMatcher.containsMatchIn(it) -> 700
+                projectsMatcher.containsMatchIn(it) -> 700
+                else -> 600
+            }
+        }.toSortedMap()
     }
 
     private fun log(text: String) {

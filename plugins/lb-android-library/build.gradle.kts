@@ -10,8 +10,6 @@ dependencies {
     implementation(libs.gradleAndroid)
     implementation(libs.kotlinAndroid)
     implementation(libs.kotlinCompose)
-
-    implementation(projects.lbPluginCore)
 }
 
 gradlePlugin {

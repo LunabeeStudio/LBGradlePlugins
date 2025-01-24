@@ -27,9 +27,9 @@ import org.gradle.api.Project
  */
 class LBAndroidApplicationPlugin : Plugin<Project> {
     override fun apply(target: Project) {
-        target.applyPlugin("gradleAndroidApplication")
-        target.applyPlugin("kotlinAndroid")
-        target.applyPlugin("kotlinCompose")
+        target.pluginManager.apply("com.android.application")
+        target.pluginManager.apply("org.jetbrains.kotlin.android")
+        target.pluginManager.apply("org.jetbrains.kotlin.plugin.compose")
         target.extensions.create("lbAndroidApplication", LBAndroidApplicationExtension::class.java)
     }
 }

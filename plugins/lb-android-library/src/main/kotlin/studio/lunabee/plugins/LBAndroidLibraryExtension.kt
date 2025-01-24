@@ -48,9 +48,13 @@ open class LBAndroidLibraryExtension @Inject constructor(private val project: Pr
 
     private fun init() {
         // Apply compose plugin if applicable.
-        if (propertiesReceiver.withCompose) project.applyPlugin("kotlinCompose")
+        if (propertiesReceiver.withCompose) {
+            project.pluginManager.apply("org.jetbrains.kotlin.plugin.compose")
+        }
         // Apply Kotlin Android plugin if applicable.
-        if (propertiesReceiver.applyKotlinAndroid) project.applyPlugin("kotlinAndroid")
+        if (propertiesReceiver.applyKotlinAndroid) {
+            project.pluginManager.apply("org.jetbrains.kotlin.android")
+        }
 
         // Configure Java Toolchain.
         project.extensions.configure<JavaPluginExtension>("java") {
