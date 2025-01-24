@@ -7,7 +7,7 @@ plugins {
 }
 
 gradlePlugin {
-    website = "https://studio.lunabee"
+    website = "https://lunabee.studio"
     vcsUrl = "https://github.com/LunabeeStudio/LBGradlePlugins"
 
     plugins {
@@ -19,11 +19,5 @@ gradlePlugin {
             description = "This plugin allows you to configure a task to download resources from any provider."
             tags = listOf("android", "lunabee", "resources")
         }
-    }
-}
-
-publishing {
-    repositories {
-        mavenLocal()
     }
 }

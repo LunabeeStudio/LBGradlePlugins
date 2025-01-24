@@ -3,7 +3,7 @@
 plugins {
     `java-gradle-plugin`
     `kotlin-dsl`
-    id("com.gradle.plugin-publish")
+    alias(libs.plugins.gradlePublish)
 }
 
 dependencies {
@@ -15,7 +15,7 @@ dependencies {
 }
 
 gradlePlugin {
-    website = "https://studio.lunabee"
+    website = "https://lunabee.studio"
     vcsUrl = "https://github.com/LunabeeStudio/LBGradlePlugins"
 
     plugins {
@@ -27,11 +27,5 @@ gradlePlugin {
             description = "This plugin allows you to configure Detekt to ensure consistent code style across all projects."
             tags = listOf("detekt", "android", "lunabee", "code", "style")
         }
-    }
-}
-
-publishing {
-    repositories {
-        mavenLocal()
     }
 }

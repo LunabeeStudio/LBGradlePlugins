@@ -16,6 +16,7 @@ class SortBuildDependenciesFileTest {
                 ksp(aaa)
                 testImplementation(aaa)
                 implementation(libs.aaa)
+                androidTestImplementation(aaa)
                 implementation(projects.aaa)
             }
         """.trimIndent().split("\n")
@@ -31,6 +32,8 @@ class SortBuildDependenciesFileTest {
 
                 implementation(project(aaa))
                 implementation(projects.aaa)
+
+                androidTestImplementation(aaa)
 
                 testImplementation(aaa)
             }
@@ -86,6 +89,109 @@ class SortBuildDependenciesFileTest {
             }
         """.trimIndent().split("\n")
         val actual = sortBuildDependenciesFile.sortLines(input).flatMap { it.split("\n") }
+
+        assertContentEquals(expected, actual, actual.joinToString("\n"))
+    }
+
+    @Test
+    fun keep_comments_test() {
+        val input = """
+            dependencies {
+                implementation(project(aaa))
+                // Use aaa BoM
+                implementation(platform(aaa))
+                // b My multiline KSP related comment #1
+                // a My multiline KSP related comment #2
+                ksp(aaa)
+            }
+        """.trimIndent().split("\n")
+
+        val expected = """
+            dependencies {
+                // Use aaa BoM
+                implementation(platform(aaa))
+
+                // b My multiline KSP related comment #1
+                // a My multiline KSP related comment #2
+                ksp(aaa)
+
+                implementation(project(aaa))
+            }
+        """.trimIndent().split("\n")
+
+        val actual = sortBuildDependenciesFile.sortLines(input).flatMap { it.split("\n") }
+
+        assertContentEquals(expected, actual, actual.joinToString("\n"))
+    }
+
+    @Test
+    fun last_line_comment_test() {
+        val expected = """
+            commonMain.dependencies {
+                // Common dependencies goes here.
+            }
+            iosMain.dependencies {
+                // iOS dependencies goes here.
+            }
+            jvmMain.dependencies {
+                // jvm dependencies goes here.
+            }
+        """.trimIndent().split("\n")
+
+        val actual = sortBuildDependenciesFile.sortLines(expected).flatMap { it.split("\n") }
+
+        assertContentEquals(expected, actual, actual.joinToString("\n"))
+    }
+
+    @Test
+    fun custom_comment_and_block_test() {
+        val expected = """
+            dependencies {
+                api(libs.robolectric)
+
+                // Check issue for informations
+                // https://github.com/google/conscrypt/issues/649
+                api(projects.commonTestAndroid) {
+                    exclude(group = "org.conscrypt", module = "conscrypt-android")
+                }
+            }
+        """.trimIndent().split("\n")
+
+        val actual = sortBuildDependenciesFile.sortLines(expected).flatMap { it.split("\n") }
+
+        assertContentEquals(expected, actual, actual.joinToString("\n"))
+    }
+
+    @Test
+    fun custom_block_and_comment_test() {
+        val expected = """
+            dependencies {
+                api(libs.robolectric)
+
+                api(projects.commonTestAndroid) {
+                    // https://github.com/google/conscrypt/issues/649
+                    exclude(group = "org.conscrypt", module = "conscrypt-android")
+                }
+            }
+        """.trimIndent().split("\n")
+
+        val actual = sortBuildDependenciesFile.sortLines(expected).flatMap { it.split("\n") }
+
+        assertContentEquals(expected, actual, actual.joinToString("\n"))
+    }
+
+    @Test
+    fun custom_one_line_block_and_comment_test() {
+        val expected = """
+            dependencies {
+                api(libs.robolectric)
+
+                // https://github.com/google/conscrypt/issues/649
+                api(projects.commonTestAndroid) { exclude(group = "org.conscrypt", module = "conscrypt-android") }
+            }
+        """.trimIndent().split("\n")
+
+        val actual = sortBuildDependenciesFile.sortLines(expected).flatMap { it.split("\n") }
 
         assertContentEquals(expected, actual, actual.joinToString("\n"))
     }

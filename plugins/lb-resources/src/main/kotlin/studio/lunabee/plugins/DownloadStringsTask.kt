@@ -13,7 +13,7 @@ abstract class DownloadStringsTask : DefaultTask() {
     abstract val providerApiKey: Property<String>
 
     @get:Input
-    abstract val projectDir: Property<String>
+    abstract val projectDir: Property<File>
 
     @get:Inject
     abstract val eo: ExecOperations
@@ -22,15 +22,16 @@ abstract class DownloadStringsTask : DefaultTask() {
     fun downloadStrings() {
         val projectDir = projectDir.get()
         val locoApiKey = providerApiKey.get()
-        val configFile = this::class.java.classLoader.getResource("downloadStrings.sh")!!.readText()
+        val scriptName = "downloadStrings.sh"
+        val configFile = this::class.java.classLoader.getResource(scriptName)!!.readText()
         val destFolder = File("${project.rootProject.layout.buildDirectory.asFile.get().absolutePath}/lbApplication")
         if (!destFolder.exists()) destFolder.mkdirs()
-        val destFile = File(destFolder, "downloadStrings.sh")
+        val destFile = File(destFolder, scriptName)
         if (destFile.exists()) destFile.delete()
         destFile.createNewFile()
         destFile.setExecutable(true)
         destFile.writeText(configFile)
-        val stringsPath = File("$projectDir/src/main/")
+        val stringsPath = File(projectDir, "/src/main/")
         val stringsFilename = "strings"
         eo.exec { commandLine(destFile.absolutePath, locoApiKey, stringsPath, stringsFilename) }
     }

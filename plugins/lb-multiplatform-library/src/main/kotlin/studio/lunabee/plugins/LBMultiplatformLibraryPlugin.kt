@@ -16,11 +16,11 @@ open class LBMultiplatformLibraryExtension @Inject constructor(private val proje
     private val propertiesReceiver = PropertiesReceiver()
 
     /**
-     * @param jvmTarget The target JVM version to use. Default is [JvmTarget.JVM_21].
+     * @param jvmTarget The target JVM version to use. Default is [JvmTarget.JVM_17].
      * @param targets List of targets you want to enable for your Multiplatform module.
      */
     data class PropertiesReceiver(
-        var jvmTarget: JvmTarget = JvmTarget.JVM_21,
+        var jvmTarget: JvmTarget = JvmTarget.JVM_17,
         var targets: List<TargetPlatform> = emptyList(),
     )
 
@@ -88,7 +88,7 @@ open class LBMultiplatformLibraryExtension @Inject constructor(private val proje
  *
  * lbMultiplatformLibrary {
  *     multiplatform {
- *         jvmTarget = JvmTarget.JVM_21
+ *         jvmTarget = JvmTarget.JVM_17
  *         targets = listOf(
  *             TargetPlatform.Android(),
  *             TargetPlatform.Jvm(),

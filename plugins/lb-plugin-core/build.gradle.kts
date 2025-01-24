@@ -1,26 +1,28 @@
-@file:Suppress("UnstableApiUsage")
-
 plugins {
-    `java-gradle-plugin`
     `kotlin-dsl`
+    `java-library`
     `maven-publish`
 }
+
+group = "studio.lunabee.plugins"
+version = "1.0.0"
+description = "A set of extensions and method that can be used accross all others plugins."
 
 publishing {
     publications {
         create<MavenPublication>("lb-plugin-core") {
-            groupId = "studio.lunabee.plugins"
+            groupId = project.group.toString()
             artifactId = "core"
-            version = "1.0.0"
+            version = project.version.toString()
 
             pom {
                 name.set("LBPluginCore")
-                description.set("A set of extensions and method that can be used accross all others plugins.")
-                url.set("https://www.lunabee.studio")
+                description.set(project.description)
+                url.set("https://lunabee.studio")
 
                 organization {
                     name.set("Lunabee Studio")
-                    url.set("https://www.lunabee.studio")
+                    url.set("https://lunabee.studio")
                 }
 
                 scm {
@@ -38,8 +40,5 @@ publishing {
                 }
             }
         }
-    }
-    repositories {
-        mavenLocal()
     }
 }

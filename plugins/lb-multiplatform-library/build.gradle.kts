@@ -15,7 +15,7 @@ dependencies {
 }
 
 gradlePlugin {
-    website = "https://studio.lunabee"
+    website = "https://lunabee.studio"
     vcsUrl = "https://github.com/LunabeeStudio/LBGradlePlugins"
 
     plugins {
@@ -27,11 +27,5 @@ gradlePlugin {
             description = "This plugin allows you to configure a multiplatform library in a simple and fast way."
             tags = listOf("android", "ios", "jvm", "multiplatform", "library", "lunabee")
         }
-    }
-}
-
-publishing {
-    repositories {
-        mavenLocal()
     }
 }

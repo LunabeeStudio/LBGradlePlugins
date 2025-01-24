@@ -7,7 +7,7 @@ plugins {
 
 lbMultiplatformLibrary {
     multiplatform {
-        jvmTarget = JvmTarget.JVM_21
+        jvmTarget = JvmTarget.JVM_17
         targets = listOf(
             TargetPlatform.Jvm(),
             TargetPlatform.Ios(),
