@@ -31,8 +31,6 @@ lbAndroidApplication {
 ```
 
 After this configuration, you should be able to:
-- launch your Android application on any devices.
-- change build variants (devInternal, prodInternal...).
 - use lint (depending on the configuration you provide).
 - use Compose.
 - access BuildConfig fields.

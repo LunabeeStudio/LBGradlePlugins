@@ -48,10 +48,12 @@ open class LBMultiplatformLibraryExtension @Inject constructor(private val proje
                         }
                     }
                 }
+
                 is TargetPlatform.Android -> androidTarget {
                     compilerOptions.jvmTarget.set(propertiesReceiver.jvmTarget)
                     targetPlatform.configure(this)
                 }
+
                 is TargetPlatform.Jvm -> jvm {
                     compilerOptions.jvmTarget.set(propertiesReceiver.jvmTarget)
                     targetPlatform.configure(this)
@@ -119,8 +121,11 @@ open class LBMultiplatformLibraryExtension @Inject constructor(private val proje
  */
 class LBMultiplatformLibraryPlugin : Plugin<Project> {
     override fun apply(target: Project) {
-        target.extensions.create("lbMultiplatformLibrary", LBMultiplatformLibraryExtension::class.java)
-        target.applyPlugin("kotlinMultiplatform")
+        target.extensions.create(
+            "lbMultiplatformLibrary",
+            LBMultiplatformLibraryExtension::class.java,
+        )
+        target.pluginManager.apply("org.jetbrains.kotlin.multiplatform")
     }
 }
 

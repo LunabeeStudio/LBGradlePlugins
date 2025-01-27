@@ -42,32 +42,6 @@ open class LBAndroidApplicationExtension @Inject constructor(private val project
             buildFeatures.buildConfig = true
             buildFeatures.compose = true
 
-            // Configure flavors for the app: dev, prod and client, internal. By default, devInternal will be used.
-            flavorDimensions += "environment"
-            flavorDimensions += "app"
-            productFlavors {
-                create("dev") {
-                    dimension = "environment"
-                    applicationIdSuffix = ".dev"
-                    versionNameSuffix = "#$versionCode dev"
-                    isDefault = true
-                    buildConfigField("Boolean", "IS_DEV", "true")
-                }
-                create("prod") {
-                    dimension = "environment"
-                    buildConfigField("Boolean", "IS_DEV", "false")
-                }
-                create("client") {
-                    dimension = "app"
-                    buildConfigField("Boolean", "IS_INTERNAL", "false")
-                }
-                create("internal") {
-                    dimension = "app"
-                    isDefault = true
-                    buildConfigField("Boolean", "IS_INTERNAL", "true")
-                }
-            }
-
             // Configure signing config for debug
             signingConfigs {
                 maybeCreate("debug").apply {

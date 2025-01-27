@@ -9,8 +9,6 @@ plugins {
 dependencies {
     implementation(libs.detekt)
 
-    implementation(projects.lbPluginCore)
-
     testImplementation(libs.kotlinTest)
 }
 

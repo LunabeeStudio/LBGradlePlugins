@@ -23,6 +23,6 @@ import org.gradle.api.Project
 class LBAndroidLibraryPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         target.extensions.create("lbAndroidLibrary", LBAndroidLibraryExtension::class.java)
-        target.applyPlugin("gradleAndroidLibrary")
+        target.pluginManager.apply("com.android.library")
     }
 }
