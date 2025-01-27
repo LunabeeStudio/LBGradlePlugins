@@ -18,19 +18,13 @@ lbMultiplatformLibrary {
 
 lbDokka {
     docProject = "docs"
-    enableHtmlDoc = false
+
+    dokka {
+        moduleName.set("Multiplatform demo documentation")
+    }
 }
 
-kotlin {
-    sourceSets {
-        commonMain.dependencies {
-            // Common dependencies goes here.
-        }
-        iosMain.dependencies {
-            // iOS dependencies goes here.
-        }
-        jvmMain.dependencies {
-            // jvm dependencies goes here.
-        }
-    }
+dependencies {
+    dokka(projects.appDemoMultiplatform)
+    //    dokka(projects.appDemoShared)
 }

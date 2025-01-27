@@ -4,19 +4,52 @@
 
 This plugin applies Dokka to analyze the code and ensure its quality. Usage:
 
-In root [`build.gradle.kts`](https://github.com/LunabeeStudio/LBGradlePlugins/blob/master/build.gradle.kts):
+In [`gradle.properties`](https://github.com/LunabeeStudio/LBGradlePlugins/blob/master/gradle.properties), enable Dokka v2:
+
 ```
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
+org.jetbrains.dokka.experimental.gradle.pluginMode=V2Enabled
+org.jetbrains.dokka.experimental.gradle.pluginMode.noWarn=true
+```
+
+In every documented module `build.gradle.kts`:
+
+```
 plugins {
     alias(libs.plugins.lbDokka)
 }
 
 lbDokka {
-    // custom configuration
+    // custom Lunabee Dokka configuration
+    
+    dokka {
+        // custom Dokka configuration
+    }
+}
+```
+
+In the documentations module `build.gradle.kts`:
+
+```
+plugins {
+    alias(libs.plugins.lbDokka)
+}
+
+lbDokka {
+    // custom Lunabee Dokka configuration
+    
+    dokka {
+        // custom Dokka configuration
+    }
+}
+
+dependencies {
+    dokka(projects.mySubProject)
+    // Add every modules participating to the doc
 }
 ```
 
 After this configuration, you should be able to run
+
 ```bash
-./gradlew dokka
+./gradlew docs:dokkaGenerate
 ```
