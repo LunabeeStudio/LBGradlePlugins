@@ -26,8 +26,8 @@ private const val DocsModule = "docs"
  *     alias(libs.plugins.lbDokka)
  * }
  *
- * lbDokka {
- *     // custom configuration
+ * dokka {
+ *     // Dokka configuration
  * }
  * ```
  */
@@ -37,31 +37,17 @@ class LBDokkaPlugin : Plugin<Project> {
         target.pluginManager.apply(DokkaPlugin::class.java)
         val dokkaExtension = target.extensions.findByType(DokkaExtension::class.java)!!
 
-        enableModuleReadme(dokkaExtension, target)
-        target.setupHtmlOutput(dokkaExtension)
-        target.configureDokkaTask(target)
-
-        // TODO check icon provided
-
+        enableModuleReadme(target, dokkaExtension)
+        setupHtmlOutput(target, dokkaExtension)
+        configureDokkaTask(target)
+        checkAppIcon(target)
         checkDokkaDeps(target)
-    }
-
-    private fun Project.loadResource(targetDir: String, resFile: String) {
-        val file = File(layout.buildDirectory.file(targetDir).get().asFile, resFile)
-        file.delete()
-        file.parentFile.mkdirs()
-        file.createNewFile()
-        file.outputStream().use { outputStream ->
-            this@LBDokkaPlugin::class.java.classLoader.getResource(resFile)!!.openStream().use { inputStream ->
-                inputStream.copyTo(outputStream)
-            }
-        }
     }
 
     /**
      * Includes module root README.md
      */
-    private fun enableModuleReadme(dokkaExtension: DokkaExtension, target: Project) {
+    private fun enableModuleReadme(target: Project, dokkaExtension: DokkaExtension) {
         dokkaExtension.dokkaSourceSets.configureEach {
             if (File(target.projectDir, "README.md").exists()) {
                 includes.from("README.md")
@@ -69,60 +55,46 @@ class LBDokkaPlugin : Plugin<Project> {
         }
     }
 
-    private fun Project.setupHtmlOutput(dokkaExtension: DokkaExtension) {
+    private fun setupHtmlOutput(target: Project, dokkaExtension: DokkaExtension) {
         dokkaExtension.pluginsConfiguration.named("html").configure {
             this as DokkaHtmlPluginParameters
 
-            val docsProject = rootProject.project(DocsModule)
+            val docsProject = target.rootProject.project(DocsModule)
 
             val styles = buildList {
-                File(docsProject.projectDir, "styles").listFiles()?.let { addAll(it) }
+                docsProject.file("styles").listFiles()?.let { addAll(it) }
                 docsProject.layout.buildDirectory.file(TmpStyleDir).get().asFile.listFiles()?.let { addAll(it) }
             }
             customStyleSheets.from(styles)
 
             val images = buildList {
-                File(docsProject.projectDir, "images").listFiles()?.let { addAll(it) }
+                docsProject.file("images").listFiles()?.let { addAll(it) }
             }
             customAssets.from(images)
 
             footerMessage.set("&copy; Lunabee Studio")
-            homepageLink.set("https://github.com/$HomepagePlaceholder") // cannot be modify after configuration, so use placeholder and replace
-        }
-    }
-
-    /**
-     * Ensure every subproject has the Dokka plugin applied
-     */
-    private fun checkDokkaDeps(target: Project) {
-        target.afterEvaluate {
-            val dokkaDeps = target.configurations.firstOrNull { it.name == DOKKA_CONFIGURATION_NAME }?.allDependencies.orEmpty()
-            dokkaDeps.forEach {
-                val project = target.rootProject.childProjects[it.name]!!
-                val hasPlugin = project.pluginManager.hasPlugin("org.jetbrains.dokka")
-                if (!hasPlugin) {
-                    error("Dokka plugin not found in :${project.name} but added as dokka dependency in :${target.name}")
-                }
-            }
+            homepageLink.set(
+                "https://github.com/$HomepagePlaceholder",
+            ) // cannot be modify after configuration, so use placeholder and replace
         }
     }
 
     /**
      * - Inject Git info to override [HomepagePlaceholder]
-     * - Override ui-kit folder assets
+     * - Override ui-kit folder assets manually
      */
-    private fun Project.configureDokkaTask(target: Project) {
+    private fun configureDokkaTask(target: Project) {
         val gitInfoTask = target.tasks.register<GetGitInfoTask>("getGitInfoTask")
         target.tasks.withType<DokkaGenerateTask> {
             dependsOn(gitInfoTask)
 
             doFirst {
-                loadResource(TmpStyleDir, "app-styles.css")
-                loadResource(TmpUiKitDir, "homepage.svg")
+                loadResource(target, TmpStyleDir, "app-styles.css")
+                loadResource(target, TmpUiKitDir, "homepage.svg")
             }
 
             doLast {
-                val docsProject = rootProject.project(DocsModule)
+                val docsProject = target.rootProject.project(DocsModule)
 
                 val gitInfoFileLines = gitInfoTask.get().outputs.files.singleFile.readLines()
                 val branch = gitInfoFileLines[0]
@@ -142,13 +114,49 @@ class LBDokkaPlugin : Plugin<Project> {
                     }
                 }
 
-                // https://github.com/Kotlin/dokka/issues/4007
+                // FIXME https://github.com/Kotlin/dokka/issues/4007
                 buildList {
-                    File(docsProject.projectDir, "ui-kit").listFiles()?.let { addAll(it) }
-                    docsProject.layout.buildDirectory.file(TmpUiKitDir).get().asFile.listFiles()?.let { addAll(it) }
+                    docsProject.file("ui-kit").listFiles()?.let { this.addAll(it) }
+                    docsProject.layout.buildDirectory.file(TmpUiKitDir).get().asFile.listFiles()?.let { this.addAll(it) }
                 }.forEach {
                     it.copyTo(outputDirectory.file("ui-kit/assets/${it.name}").get().asFile, overwrite = true)
                 }
+            }
+        }
+    }
+
+    private fun checkAppIcon(target: Project) {
+        val docsProject = target.rootProject.project(DocsModule)
+        val logoFile = docsProject.file("images/logo-icon.svg")
+        if (!logoFile.exists()) {
+            target.logger.warn("LBDokka - No icon found at $logoFile")
+        }
+    }
+
+    /**
+     * Ensure every subproject has the Dokka plugin applied
+     */
+    private fun checkDokkaDeps(target: Project) {
+        target.afterEvaluate {
+            val dokkaDeps = target.configurations.firstOrNull { it.name == DOKKA_CONFIGURATION_NAME }?.allDependencies.orEmpty()
+            dokkaDeps.forEach {
+                val project = target.rootProject.childProjects[it.name]!!
+                val hasPlugin = project.pluginManager.hasPlugin("org.jetbrains.dokka")
+                if (!hasPlugin) {
+                    error("Dokka plugin not found in :${project.name} but added as dokka dependency in :${target.name}")
+                }
+            }
+        }
+    }
+
+    private fun loadResource(target: Project, targetDir: String, resFile: String) {
+        val file = File(target.layout.buildDirectory.file(targetDir).get().asFile, resFile)
+        file.delete()
+        file.parentFile.mkdirs()
+        file.createNewFile()
+        file.outputStream().use { outputStream ->
+            this::class.java.classLoader.getResource(resFile)!!.openStream().use { inputStream ->
+                inputStream.copyTo(outputStream)
             }
         }
     }

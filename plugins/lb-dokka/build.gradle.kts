@@ -20,7 +20,7 @@ gradlePlugin {
             implementationClass = "studio.lunabee.plugins.LBDokkaPlugin"
             version = "1.0.0"
             displayName = "LBDokkaPlugin"
-            description = "This plugin allows you to configure Dokka to ensure consistent code style across all projects."
+            description = "This plugin allows you to configure Dokka to ensure consistent doc generation across all projects."
             tags = listOf("dokka", "android", "lunabee", "doc")
         }
     }

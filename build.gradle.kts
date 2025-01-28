@@ -7,7 +7,6 @@ plugins {
     alias(libs.plugins.gradleAndroidApplication).apply(false)
     alias(libs.plugins.gradleAndroidLibrary).apply(false)
     alias(libs.plugins.lbDetekt)
-    alias(libs.plugins.jetbrainsKotlinJvm) apply false
 }
 
 // Update gradle-wrapper by running `./gradlew wrapper --gradle-version latest`
