@@ -1,3 +1,4 @@
+
 [plugins]
 
 gradleAndroidApplication = { id = "com.android.application", version.ref = "agp" }
