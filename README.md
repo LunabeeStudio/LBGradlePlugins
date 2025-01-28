@@ -9,12 +9,13 @@ This repository contains a set of plugins useful for configuring our Android and
 Choose your plugin and refer to the corresponding `README.md` for more info about configuration:
 | Plugin (id)                                   | Version                                                                   | Documentation                                     |
 | -                                             | -                                                                         | -                                                 |
-| studio.lunabee.plugins.android.application    | ![LBAndroidApplication](https://img.shields.io/badge/latest-1.0.0-blue)   | [README.md](lb-android-application/README.md)     |
-| studio.lunabee.plugins.android.flavors        | ![LBAndroidFlavors](https://img.shields.io/badge/latest-1.0.0-blue)       | [README.md](lb-android-flavors/README.md)         |
-| studio.lunabee.plugins.android.library        | ![LBAndroidLibrary](https://img.shields.io/badge/latest-1.0.0-blue)       | [README.md](lb-android-library/README.md)         |
-| studio.lunabee.plugins.detekt                 | ![LBDetekt](https://img.shields.io/badge/latest-1.0.0-blue)               | [README.md](lb-detekt/README.md)                  |
-| studio.lunabee.plugins.resources              | ![LBResources](https://img.shields.io/badge/latest-1.0.0-blue)            | [README.md](lb-resources/README.md)               |
-| studio.lunabee.plugins.multiplatform.library  | ![LBMultiplatformLibrary](https://img.shields.io/badge/latest-1.0.0-blue) | [README.md](lb-multiplatform-library/README.md)   |
+| studio.lunabee.plugins.android.application    | ![LBAndroidApplication](https://img.shields.io/badge/latest-0.9.0-blue)   | [README.md](lb-android-application/README.md)     |
+| studio.lunabee.plugins.android.flavors        | ![LBAndroidFlavors](https://img.shields.io/badge/latest-0.9.0-blue)       | [README.md](lb-android-flavors/README.md)         |
+| studio.lunabee.plugins.android.library        | ![LBAndroidLibrary](https://img.shields.io/badge/latest-0.9.0-blue)       | [README.md](lb-android-library/README.md)         |
+| studio.lunabee.plugins.multiplatform.library  | ![LBMultiplatformLibrary](https://img.shields.io/badge/latest-0.9.0-blue) | [README.md](lb-multiplatform-library/README.md)   |
+| studio.lunabee.plugins.detekt                 | ![LBDetekt](https://img.shields.io/badge/latest-0.9.0-blue)               | [README.md](lb-detekt/README.md)                  |
+| studio.lunabee.plugins.dokka                  | ![LBDokka](https://img.shields.io/badge/latest-0.9.0-blue)                | [README.md](lb-dokka/README.md)                   |
+| studio.lunabee.plugins.resources              | ![LBResources](https://img.shields.io/badge/latest-0.9.0-blue)            | [README.md](lb-resources/README.md)               |
 
 ## Publication
 
