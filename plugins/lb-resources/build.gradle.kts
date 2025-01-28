@@ -14,8 +14,8 @@ gradlePlugin {
         create("studio.lunabee.plugins.resources") {
             id = "studio.lunabee.plugins.resources"
             implementationClass = "studio.lunabee.plugins.LBResourcesPlugin"
-            version = "1.0.0"
-            displayName = "LBResourcesPlugin"
+            version = properties["lunabee.LBResources.version"]!!
+            displayName = "LBResources"
             description = "This plugin allows you to configure a task to download resources from any provider."
             tags = listOf("android", "lunabee", "resources")
         }

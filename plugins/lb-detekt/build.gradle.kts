@@ -20,8 +20,8 @@ gradlePlugin {
         create("studio.lunabee.plugins.detekt") {
             id = "studio.lunabee.plugins.detekt"
             implementationClass = "studio.lunabee.plugins.LBDetektPlugin"
-            version = "1.0.0"
-            displayName = "LBDetektPlugin"
+            version = properties["lunabee.LBDetekt.version"]!!
+            displayName = "LBDetekt"
             description = "This plugin allows you to configure Detekt to ensure consistent code style across all projects."
             tags = listOf("detekt", "android", "lunabee", "code", "style")
         }
