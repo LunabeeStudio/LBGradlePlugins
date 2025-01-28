@@ -40,7 +40,9 @@ class LBDokkaPlugin : Plugin<Project> {
         enableModuleReadme(target, dokkaExtension)
         setupHtmlOutput(target, dokkaExtension)
         configureDokkaTask(target)
-        checkDokkaDeps(target)
+        if (target.name == DocsModule) {
+            checkDokkaDeps(target)
+        }
     }
 
     /**
@@ -139,11 +141,13 @@ class LBDokkaPlugin : Plugin<Project> {
     private fun checkDokkaDeps(target: Project) {
         target.afterEvaluate {
             val dokkaDeps = target.configurations.firstOrNull { it.name == DOKKA_CONFIGURATION_NAME }?.allDependencies.orEmpty()
-            dokkaDeps.forEach {
-                val project = target.rootProject.childProjects[it.name]!!
-                val hasPlugin = project.pluginManager.hasPlugin("org.jetbrains.dokka")
-                if (!hasPlugin) {
-                    error("Dokka plugin not found in :${project.name} but added as dokka dependency in :${target.name}")
+            dokkaDeps.forEach { deps ->
+                val project = target.rootProject.subprojects.first { project -> project.name == deps.name }
+                project.afterEvaluate {
+                    val hasPlugin = project.pluginManager.hasPlugin("org.jetbrains.dokka")
+                    if (!hasPlugin) {
+                        error("Dokka plugin not found in :${project.name} but added as dokka dependency in :${target.name}")
+                    }
                 }
             }
         }
