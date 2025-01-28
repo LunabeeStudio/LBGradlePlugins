@@ -16,11 +16,6 @@ lbMultiplatformLibrary {
     }
 }
 
-lbDokka {
-    docProject = "docs"
-    enableHtmlDoc = false
-}
-
 kotlin {
     sourceSets {
         commonMain.dependencies {

@@ -14,6 +14,9 @@ import org.jetbrains.dokka.gradle.tasks.DokkaGenerateTask
 import java.io.File
 
 private const val HomepagePlaceholder: String = "HOMEPAGE_PLACEHOLDER"
+private const val TmpUiKitDir = "tmp/lbDokkaUiKit"
+private const val TmpStyleDir = "tmp/lbDokkaStyles"
+private const val DocsModule = "docs"
 
 /**
  * This plugin initializes and configures the Dokka plugin.
@@ -33,22 +36,26 @@ class LBDokkaPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         target.pluginManager.apply(DokkaPlugin::class.java)
         val dokkaExtension = target.extensions.findByType(DokkaExtension::class.java)!!
-        //        val docProject = target.rootProject.findProject("docs")
-        val lbDokkaExtension = LBDokkaExtension(dokkaExtension)
-        target.extensions.add("lbDokka", lbDokkaExtension)
 
-        if (lbDokkaExtension.enableModuleReadme) {
-            enableModuleReadme(dokkaExtension, target)
-        }
-
-        if (lbDokkaExtension.enableHtmlDoc) {
-            target.setupHtmlOutput(dokkaExtension, lbDokkaExtension)
-            target.configureDokkaTask(target, lbDokkaExtension)
-        }
+        enableModuleReadme(dokkaExtension, target)
+        target.setupHtmlOutput(dokkaExtension)
+        target.configureDokkaTask(target)
 
         // TODO check icon provided
 
         checkDokkaDeps(target)
+    }
+
+    private fun Project.loadResource(targetDir: String, resFile: String) {
+        val file = File(layout.buildDirectory.file(targetDir).get().asFile, resFile)
+        file.delete()
+        file.parentFile.mkdirs()
+        file.createNewFile()
+        file.outputStream().use { outputStream ->
+            this@LBDokkaPlugin::class.java.classLoader.getResource(resFile)!!.openStream().use { inputStream ->
+                inputStream.copyTo(outputStream)
+            }
+        }
     }
 
     /**
@@ -62,21 +69,20 @@ class LBDokkaPlugin : Plugin<Project> {
         }
     }
 
-    private fun Project.setupHtmlOutput(dokkaExtension: DokkaExtension, lbDokkaExtension: LBDokkaExtension) {
+    private fun Project.setupHtmlOutput(dokkaExtension: DokkaExtension) {
         dokkaExtension.pluginsConfiguration.named("html").configure {
             this as DokkaHtmlPluginParameters
 
-            val docsProject = rootProject.project(lbDokkaExtension.docProject)
+            val docsProject = rootProject.project(DocsModule)
 
             val styles = buildList {
                 File(docsProject.projectDir, "styles").listFiles()?.let { addAll(it) }
-                docsProject.layout.buildDirectory.file("tmp/lbDokkaStyles").get().asFile.listFiles()?.let { addAll(it) }
+                docsProject.layout.buildDirectory.file(TmpStyleDir).get().asFile.listFiles()?.let { addAll(it) }
             }
             customStyleSheets.from(styles)
 
             val images = buildList {
                 File(docsProject.projectDir, "images").listFiles()?.let { addAll(it) }
-                docsProject.layout.buildDirectory.file("tmp/lbDokkaImages").get().asFile.listFiles()?.let { addAll(it) }
             }
             customAssets.from(images)
 
@@ -105,12 +111,18 @@ class LBDokkaPlugin : Plugin<Project> {
      * - Inject Git info to override [HomepagePlaceholder]
      * - Override ui-kit folder assets
      */
-    private fun Project.configureDokkaTask(target: Project, lbDokkaExtension: LBDokkaExtension) {
+    private fun Project.configureDokkaTask(target: Project) {
         val gitInfoTask = target.tasks.register<GetGitInfoTask>("getGitInfoTask")
         target.tasks.withType<DokkaGenerateTask> {
             dependsOn(gitInfoTask)
+
+            doFirst {
+                loadResource(TmpStyleDir, "app-styles.css")
+                loadResource(TmpUiKitDir, "homepage.svg")
+            }
+
             doLast {
-                val docsProject = rootProject.project(lbDokkaExtension.docProject)
+                val docsProject = rootProject.project(DocsModule)
 
                 val gitInfoFileLines = gitInfoTask.get().outputs.files.singleFile.readLines()
                 val branch = gitInfoFileLines[0]
@@ -133,7 +145,7 @@ class LBDokkaPlugin : Plugin<Project> {
                 // https://github.com/Kotlin/dokka/issues/4007
                 buildList {
                     File(docsProject.projectDir, "ui-kit").listFiles()?.let { addAll(it) }
-                    docsProject.layout.buildDirectory.file("tmp/lbDokkaUiKit").get().asFile.listFiles()?.let { addAll(it) }
+                    docsProject.layout.buildDirectory.file(TmpUiKitDir).get().asFile.listFiles()?.let { addAll(it) }
                 }.forEach {
                     it.copyTo(outputDirectory.file("ui-kit/assets/${it.name}").get().asFile, overwrite = true)
                 }

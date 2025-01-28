@@ -29,10 +29,6 @@ lbMultiplatformLibrary {
     }
 }
 
-lbDokka {
-    docProject = "docs"
-}
-
 kotlin {
     sourceSets {
         androidMain.dependencies {

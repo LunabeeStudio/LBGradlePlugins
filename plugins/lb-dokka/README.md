@@ -2,7 +2,7 @@
 
 # LBDokkaPlugin
 
-This plugin applies Dokka to analyze the code and ensure its quality. Usage:
+This plugin applies Dokka to generate html documentation. Usage:
 
 In [`gradle.properties`](https://github.com/LunabeeStudio/LBGradlePlugins/blob/master/gradle.properties), enable Dokka v2:
 
@@ -18,28 +18,20 @@ plugins {
     alias(libs.plugins.lbDokka)
 }
 
-lbDokka {
-    // custom Lunabee Dokka configuration
-    
-    dokka {
-        // custom Dokka configuration
-    }
+dokka {
+    // Dokka configuration
 }
 ```
 
-In the documentations module `build.gradle.kts`:
+Create a `docs` module at the root:
 
 ```
 plugins {
     alias(libs.plugins.lbDokka)
 }
 
-lbDokka {
-    // custom Lunabee Dokka configuration
-    
-    dokka {
-        // custom Dokka configuration
-    }
+dokka {
+    // Dokka configuration
 }
 
 dependencies {
@@ -47,6 +39,8 @@ dependencies {
     // Add every modules participating to the doc
 }
 ```
+
+Add the application icon in `docs/images/logo-icon.svg`
 
 After this configuration, you should be able to run
 

@@ -16,15 +16,11 @@ lbMultiplatformLibrary {
     }
 }
 
-lbDokka {
-    docProject = "docs"
-
-    dokka {
-        moduleName.set("Multiplatform demo documentation")
-    }
+dokka {
+    moduleName.set("Multiplatform demo documentation")
 }
 
 dependencies {
     dokka(projects.appDemoMultiplatform)
-    //    dokka(projects.appDemoShared)
+    dokka(projects.appDemoShared)
 }
