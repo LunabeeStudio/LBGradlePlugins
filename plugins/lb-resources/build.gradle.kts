@@ -3,14 +3,10 @@
 plugins {
     `java-gradle-plugin`
     `kotlin-dsl`
-    alias(libs.plugins.gradlePublish)
-    id("lunabee.plugin-publish-conventions")
+    id("lunabee.plugin-conventions")
 }
 
 gradlePlugin {
-    website = "https://lunabee.studio"
-    vcsUrl = "https://github.com/LunabeeStudio/LBGradlePlugins"
-
     plugins {
         create("studio.lunabee.plugins.resources") {
             id = "studio.lunabee.plugins.resources"

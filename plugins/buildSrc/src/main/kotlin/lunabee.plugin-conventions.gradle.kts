@@ -18,13 +18,18 @@ import java.net.URI
 import java.util.Locale
 
 plugins {
-    `maven-publish`
+    id("com.gradle.plugin-publish")
+}
+
+project.extensions.configure(GradlePluginDevelopmentExtension::class.java) {
+    website = "https://lunabee.studio"
+    vcsUrl = "https://github.com/LunabeeStudio/LBGradlePlugins"
 }
 
 project.extensions.configure<PublishingExtension>("publishing") {
     setupMavenRepository()
     publications {
-        create<MavenPublication>(project.name) {
+        create<MavenPublication>("pluginMaven") {
             setPom()
         }
     }
@@ -46,18 +51,6 @@ fun PublishingExtension.setupMavenRepository() {
             url = URI.create("https://artifactory.lunabee.studio/artifactory/lunabee-gradle-plugin")
         }
     }
-}
-
-/**
- * Set project details:
- * - groupId will be [ProjectConfig.GROUP_ID]
- * - artifactId will take the name of the current [project]
- * - version will be set in each submodule gradle file
- */
-fun MavenPublication.setProjectDetails() {
-    groupId = "studio.lunabee.plugins"
-    artifactId = project.name
-    version = project.version.toString()
 }
 
 /**
