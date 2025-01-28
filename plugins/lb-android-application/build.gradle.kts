@@ -4,6 +4,7 @@ plugins {
     `java-gradle-plugin`
     `kotlin-dsl`
     alias(libs.plugins.gradlePublish)
+    id("lunabee.plugin-publish-conventions")
 }
 
 dependencies {
