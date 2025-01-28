@@ -40,7 +40,6 @@ class LBDokkaPlugin : Plugin<Project> {
         enableModuleReadme(target, dokkaExtension)
         setupHtmlOutput(target, dokkaExtension)
         configureDokkaTask(target)
-        checkAppIcon(target)
         checkDokkaDeps(target)
     }
 
@@ -91,6 +90,7 @@ class LBDokkaPlugin : Plugin<Project> {
             doFirst {
                 loadResource(target, TmpStyleDir, "app-styles.css")
                 loadResource(target, TmpUiKitDir, "homepage.svg")
+                checkAppIcon(target)
             }
 
             doLast {
