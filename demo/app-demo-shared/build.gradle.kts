@@ -10,7 +10,6 @@ plugins {
 lbAndroidLibrary {
     android {
         namespace = "studio.lunabee.plugin.demo.shared"
-        withCompose = false
     }
 }
 

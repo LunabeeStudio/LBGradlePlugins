@@ -11,20 +11,12 @@ import javax.inject.Inject
 open class LBAndroidLibraryExtension @Inject constructor(private val project: Project) {
 
     fun android(block: LibraryExtension.() -> Unit) {
-        project.extensions.configure<LibraryExtension>(block)
-    }
-
-    /**
-     * Enables Compose feature
-     */
-    var withCompose: Boolean = false
-        set(value) {
-            field = value
-            if (value) {
+        project.extensions.configure<LibraryExtension> {
+            block()
+            if (buildFeatures.compose == true) {
+                println("Apply compose compiler")
                 project.pluginManager.apply("org.jetbrains.kotlin.plugin.compose")
-                project.extensions.configure<LibraryExtension>("android") {
-                    buildFeatures.compose = true
-                }
             }
         }
+    }
 }
