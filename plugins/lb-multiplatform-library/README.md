@@ -26,7 +26,6 @@ lbAndroidLibrary {
     android {
         namespace = "my.application.namespace"
         withCompose = false
-        applyKotlinAndroid = false // mandatory to be false (apply by KotlinMultiplatform)
     }
 }
 
