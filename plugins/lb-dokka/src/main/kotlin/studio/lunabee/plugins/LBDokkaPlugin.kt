@@ -4,6 +4,7 @@ package studio.lunabee.plugins
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.provider.Provider
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.withType
 import org.jetbrains.dokka.gradle.DokkaBasePlugin.Companion.DOKKA_CONFIGURATION_NAME
@@ -34,6 +35,15 @@ private const val DocsModule = "docs"
 class LBDokkaPlugin : Plugin<Project> {
 
     override fun apply(target: Project) {
+        val pluginMode: Provider<String> = target.providers.gradleProperty("org.jetbrains.dokka.experimental.gradle.pluginMode")
+        if (pluginMode.orNull?.startsWith("V2Enabled") != true) {
+            error(
+                "LBDokka only works with V2 mode. Please add V2 flag to gradle.properties.\n" +
+                    "org.jetbrains.dokka.experimental.gradle.pluginMode=V2Enabled\n" +
+                    "org.jetbrains.dokka.experimental.gradle.pluginMode.noWarn=true",
+            )
+        }
+
         target.pluginManager.apply(DokkaPlugin::class.java)
         val dokkaExtension = target.extensions.findByType(DokkaExtension::class.java)!!
 
