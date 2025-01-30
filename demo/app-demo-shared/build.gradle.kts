@@ -4,6 +4,7 @@ import studio.lunabee.plugins.TargetPlatform
 plugins {
     alias(libs.plugins.lbMultiplatformLibrary)
     alias(libs.plugins.lbAndroidLibrary)
+    alias(libs.plugins.lbDokka)
 }
 
 lbAndroidLibrary {

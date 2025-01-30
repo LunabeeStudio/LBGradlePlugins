@@ -16,16 +16,11 @@ lbMultiplatformLibrary {
     }
 }
 
-kotlin {
-    sourceSets {
-        commonMain.dependencies {
-            // Common dependencies goes here.
-        }
-        iosMain.dependencies {
-            // iOS dependencies goes here.
-        }
-        jvmMain.dependencies {
-            // jvm dependencies goes here.
-        }
-    }
+dokka {
+    moduleName.set("Multiplatform demo documentation")
+}
+
+dependencies {
+    dokka(projects.appDemoMultiplatform)
+    dokka(projects.appDemoShared)
 }

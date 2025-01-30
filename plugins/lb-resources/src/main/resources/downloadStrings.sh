@@ -50,6 +50,7 @@ function import_language() {
   sedi "s~\\\'~‘~g" "$file"
 
   # Replace \" by “
+  # shellcheck disable=SC1111
   sedi "s~\\\\\"~“~g" "$file"
 
   # TODO for plurals form duplication, we should check if the form already exist before duplicating (switch to python)
