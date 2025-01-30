@@ -111,7 +111,9 @@ class LBDokkaPlugin : Plugin<Project> {
                 val gitInfoFileLines = gitInfoTask.get().outputs.files.singleFile.readLines()
                 val branch = gitInfoFileLines[0]
                 val repositoryName = gitInfoFileLines[1]
-                val githubPath = "$repositoryName/tree/$branch/${target.projectDir.relativeTo(target.rootDir).path}"
+                val rootDir = File(gitInfoFileLines[2])
+
+                val githubPath = "$repositoryName/tree/$branch/${target.projectDir.relativeTo(rootDir).path}"
 
                 outputDirectory.get().asFile.walkTopDown().forEach { file ->
                     if (file.isFile) {
