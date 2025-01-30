@@ -3,7 +3,7 @@
 plugins {
     `java-gradle-plugin`
     `kotlin-dsl`
-    alias(libs.plugins.gradlePublish)
+    id("lunabee.plugin-conventions")
 }
 
 dependencies {
@@ -12,14 +12,11 @@ dependencies {
 }
 
 gradlePlugin {
-    website = "https://lunabee.studio"
-    vcsUrl = "https://github.com/LunabeeStudio/LBGradlePlugins"
-
     plugins {
         create("studio.lunabee.plugins.android.flavors") {
             id = "studio.lunabee.plugins.android.flavors"
             implementationClass = "studio.lunabee.plugins.LBAndroidFlavorsPlugin"
-            version = "1.0.0"
+            version = "0.9.0"
             displayName = "LBAndroidFlavors"
             description = "This plugin allows you to configure usual Android flavors in a simple and fast way."
             tags = listOf("android", "flavors", "lunabee")

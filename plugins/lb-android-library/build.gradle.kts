@@ -3,7 +3,7 @@
 plugins {
     `java-gradle-plugin`
     `kotlin-dsl`
-    alias(libs.plugins.gradlePublish)
+    id("lunabee.plugin-conventions")
 }
 
 dependencies {
@@ -13,15 +13,12 @@ dependencies {
 }
 
 gradlePlugin {
-    website = "https://lunabee.studio"
-    vcsUrl = "https://github.com/LunabeeStudio/LBGradlePlugins"
-
     plugins {
         create("studio.lunabee.plugins.android.library") {
             id = "studio.lunabee.plugins.android.library"
             implementationClass = "studio.lunabee.plugins.LBAndroidLibraryPlugin"
-            version = "1.0.0"
-            displayName = "LBAndroidLibraryPlugin"
+            version = "0.9.0"
+            displayName = "LBAndroidLibrary"
             description = "This plugin allows you to configure an Android library in a simple and fast way."
             tags = listOf("android", "library", "lunabee")
         }
