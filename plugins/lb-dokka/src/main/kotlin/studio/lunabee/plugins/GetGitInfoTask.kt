@@ -43,7 +43,18 @@ abstract class GetGitInfoTask @Inject constructor(
             commandLine("git", "remote", "get-url", "origin")
         }
 
-        infoFile.appendText(branchStdOut.toString(Charsets.UTF_8))
-        infoFile.appendText(urlStdOut.toString(Charsets.UTF_8).substringAfterLast(':').substringBefore('.'))
+        val rootDir = ByteArrayOutputStream()
+        execOperations.exec {
+            standardOutput = rootDir
+            commandLine("git", "rev-parse", "--show-toplevel")
+        }
+
+        infoFile.appendText(branchStdOut.toString(Charsets.UTF_8).lines().first())
+        infoFile.appendText("\n")
+        val repoUrl = urlStdOut.toString(Charsets.UTF_8)
+        val startRepositoryNameIndex = repoUrl.indexOfAny(charArrayOf(':', '/')) + 1
+        infoFile.appendText(repoUrl.substring(startRepositoryNameIndex).substringBefore('.'))
+        infoFile.appendText("\n")
+        infoFile.appendText(rootDir.toString(Charsets.UTF_8).lines().first())
     }
 }
