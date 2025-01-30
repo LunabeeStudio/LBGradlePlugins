@@ -19,7 +19,6 @@ open class LBAndroidLibraryExtension @Inject constructor(private val project: Pr
      * @param namespace The namespace for your library. Error will be thrown is not set.
      * @param compileSdk The SDK version used to compile the library. Default is 35.
      * @param withCompose Whether to apply the Compose plugin. Default is false.
-     * @param applyKotlinAndroid Whether to apply the Kotlin Android plugin. Default is true.
      * @param enableBuildConfig Whether to enable access to build config field. Default is false.
      * @param compileSdk The SDK version used to compile the application. Default is 35.
      * @param buildToolsVersion The version of the Android Build Tools to be used. Default is "35.0.0".
@@ -32,7 +31,6 @@ open class LBAndroidLibraryExtension @Inject constructor(private val project: Pr
         var namespace: String = "",
         var compileSdk: Int = 35,
         var withCompose: Boolean = false,
-        var applyKotlinAndroid: Boolean = true,
         var enableBuildConfig: Boolean = false,
         var buildToolsVersion: String = "35.0.0",
         var minSdk: Int = 23,
@@ -52,7 +50,7 @@ open class LBAndroidLibraryExtension @Inject constructor(private val project: Pr
             project.pluginManager.apply("org.jetbrains.kotlin.plugin.compose")
         }
         // Apply Kotlin Android plugin if applicable.
-        if (propertiesReceiver.applyKotlinAndroid) {
+        if (!project.pluginManager.hasPlugin("org.jetbrains.kotlin.multiplatform")) {
             project.pluginManager.apply("org.jetbrains.kotlin.android")
         }
 
