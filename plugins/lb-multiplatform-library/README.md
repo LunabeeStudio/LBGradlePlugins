@@ -1,6 +1,8 @@
-![Kotlin](https://img.shields.io/badge/kotlin-%237F52FF.svg?style=for-the-badge&logo=kotlin&logoColor=white)
+# Module lb-multiplatform-library
 
-# LBMultiplatformLibraryPlugin
+### `studio.lunabee.plugins.multiplatform.library`
+
+![Kotlin](https://img.shields.io/badge/kotlin-%237F52FF.svg?style=for-the-badge&logo=kotlin&logoColor=white)
 
 This plugin simplifies the configuration of an Android library. Usage:
 

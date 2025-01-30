@@ -1,6 +1,8 @@
-![Android](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white)
+# Module lb-android-application
 
-# LBAndroidApplicationPlugin
+### `studio.lunabee.plugins.android.application`
+
+![Android](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white)
 
 This plugin simplifies the configuration of an Android application. Usage:
 
