@@ -17,7 +17,7 @@ gradlePlugin {
         create("studio.lunabee.plugins.android.library") {
             id = "studio.lunabee.plugins.android.library"
             implementationClass = "studio.lunabee.plugins.LBAndroidLibraryPlugin"
-            version = "0.9.0"
+            version = "0.9.1"
             displayName = "LBAndroidLibrary"
             description = "This plugin allows you to configure an Android library in a simple and fast way."
             tags = listOf("android", "library", "lunabee")
