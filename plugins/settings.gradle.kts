@@ -7,6 +7,16 @@ pluginManagement {
         google()
         mavenCentral()
         gradlePluginPortal()
+        maven {
+            url = uri("https://artifactory.lunabee.studio/artifactory/lunabee-gradle-plugin/")
+            credentials {
+                username = "library-consumer-public"
+                password = "AKCp8k8PbuxYXoLgvNpc5Aro1ytENk3rSyXCwQ71BA4byg3h7iuMyQ6Sd4ZmJtSJcr7XjwMej"
+            }
+            mavenContent {
+                releasesOnly()
+            }
+        }
     }
 }
 
@@ -25,6 +35,7 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "LBGradlePlugins"
+include(":docs")
 include(":lb-android-application")
 include(":lb-android-library")
 include(":lb-android-flavors")

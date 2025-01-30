@@ -1,6 +1,8 @@
-![Android](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white)
+# Module lb-resources
 
-# LBResourcesPlugin
+### `studio.lunabee.plugins.resources`
+
+![Android](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white)
 
 This plugin allows you to download any resources for any provider configured. Usage:
 

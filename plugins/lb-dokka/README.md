@@ -1,6 +1,8 @@
-![Kotlin](https://img.shields.io/badge/kotlin-%237F52FF.svg?style=for-the-badge&logo=kotlin&logoColor=white)
+# Module lb-dokka
 
-# LBDokkaPlugin
+### `studio.lunabee.plugins.dokka`
+
+![Kotlin](https://img.shields.io/badge/kotlin-%237F52FF.svg?style=for-the-badge&logo=kotlin&logoColor=white)
 
 This plugin applies Dokka to generate html documentation. Usage:
 

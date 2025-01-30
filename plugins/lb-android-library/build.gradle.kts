@@ -8,8 +8,8 @@ plugins {
 
 dependencies {
     implementation(libs.gradleAndroid)
-    implementation(libs.kotlinAndroid)
     implementation(libs.kotlinCompose)
+    implementation(libs.kotlinGradlePlugin)
 }
 
 gradlePlugin {
