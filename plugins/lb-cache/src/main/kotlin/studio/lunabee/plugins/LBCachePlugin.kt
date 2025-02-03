@@ -17,7 +17,6 @@ import java.net.URI
  */
 class LBCachePlugin : Plugin<Settings> {
     override fun apply(target: Settings) {
-
         val cacheEnableLocal: Provider<String> = target.providers.gradleProperty("studio.lunabee.cacheEnableLocal")
         val cacheEnableRemote: Provider<String> = target.providers.gradleProperty("studio.lunabee.cacheEnableRemote")
         val cacheIsPush: Provider<String> = target.providers.gradleProperty("studio.lunabee.cacheIsPush")
