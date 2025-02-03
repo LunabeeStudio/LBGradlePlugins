@@ -6,6 +6,7 @@ dependencies {
     dokka(projects.lbDokka)
     dokka(projects.lbMultiplatformLibrary)
     dokka(projects.lbResources)
+    dokka(projects.lbCache)
 }
 
 dokka {

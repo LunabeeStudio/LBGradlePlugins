@@ -9,10 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- LBAndroidApplication v1.0.O
-- LBAndroidFlavors v1.0.O
-- LBAndroidLibrary v1.0.O
-- LBDetekt v1.0.O
-- LBDokka v1.0.O
-- LBMultiplatformLibrary v1.0.O
-- LBResources v1.0.O
+- LBAndroidApplication v0.9.X
+- LBAndroidFlavors v0.9.X
+- LBAndroidLibrary v0.9.X
+- LBDetekt v0.9.X
+- LBDokka v0.9.X
+- LBMultiplatformLibrary v0.9.X
+- LBResources v0.9.X
+- LBCache v0.9.X
