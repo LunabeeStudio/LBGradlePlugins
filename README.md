@@ -13,6 +13,7 @@ Choose your plugin and refer to the corresponding `README.md` for more info abou
 | studio.lunabee.plugins.android.flavors        | ![LBAndroidFlavors](https://img.shields.io/badge/latest-0.9.1-blue)       | [README.md](plugins/lb-android-flavors/README.md)         |
 | studio.lunabee.plugins.android.library        | ![LBAndroidLibrary](https://img.shields.io/badge/latest-0.9.1-blue)       | [README.md](plugins/lb-android-library/README.md)         |
 | studio.lunabee.plugins.multiplatform.library  | ![LBMultiplatformLibrary](https://img.shields.io/badge/latest-0.9.1-blue) | [README.md](plugins/lb-multiplatform-library/README.md)   |
+| studio.lunabee.plugins.cache                 | ![LBCache](https://img.shields.io/badge/latest-0.9.0-blue)               | [README.md](plugins/lb-cache/README.md)                  |
 | studio.lunabee.plugins.detekt                 | ![LBDetekt](https://img.shields.io/badge/latest-0.9.1-blue)               | [README.md](plugins/lb-detekt/README.md)                  |
 | studio.lunabee.plugins.dokka                  | ![LBDokka](https://img.shields.io/badge/latest-0.9.1-blue)                | [README.md](plugins/lb-dokka/README.md)                   |
 | studio.lunabee.plugins.resources              | ![LBResources](https://img.shields.io/badge/latest-0.9.1-blue)            | [README.md](plugins/lb-resources/README.md)               |
