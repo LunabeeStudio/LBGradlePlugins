@@ -7,7 +7,7 @@
 This plugin allows you to configure the Lunabee remote Gradle cache. Usage:
 
 In `settings.gradle.kts`:
-```
+```kotlin
 pluginManagement {
     val artifactory_consumer_username: String? by settings
     val artifactory_consumer_api_key: String? by settings
@@ -37,18 +37,18 @@ plugins {
 ```
 
 In `gradle.properties` (project or user global):
-```
+```properties
 # Mandatory to enable cache
 org.gradle.caching=true
 
-# Plugin optionnal properties
+# Plugin optional properties
 # Enable the local cache. Default true.
-studio.lunabee.cacheEnableLocal
+studio.lunabee.cacheEnableLocal=true
 # Enable the remote cache. Default true.
-studio.lunabee.cacheEnableRemote
+studio.lunabee.cacheEnableRemote=true
 # Push to cache server (for CI). Default false.
-studio.lunabee.cacheIsPush
+studio.lunabee.cacheIsPush=false
 # Credentials for remote cache. Default to read-only credentials.
-studio.lunabee.cacheUsername
-studio.lunabee.cachePassword 
+studio.lunabee.cacheUsername=lunabee
+studio.lunabee.cachePassword=xxx
 ```
