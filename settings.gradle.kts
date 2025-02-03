@@ -20,6 +20,10 @@ dependencyResolutionManagement {
     }
 }
 
+plugins {
+    id("studio.lunabee.plugins.cache") version "0.9.0"
+}
+
 rootProject.name = "LBGradlePluginsDemo"
 include(":app")
 project(":app").projectDir = File("./demo/app")

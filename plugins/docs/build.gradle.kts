@@ -2,6 +2,7 @@ dependencies {
     dokka(projects.lbAndroidApplication)
     dokka(projects.lbAndroidFlavors)
     dokka(projects.lbAndroidLibrary)
+    dokka(projects.lbCache)
     dokka(projects.lbDetekt)
     dokka(projects.lbDokka)
     dokka(projects.lbMultiplatformLibrary)
