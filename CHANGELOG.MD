@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 2025-02-21
 
+### LBDetekt 1.0.0
+
+- Fix sorting tasks not compatible with configuration cache
+
 ### LBResources 1.0.0
 
 - Fix task not compatible with configuration cache
