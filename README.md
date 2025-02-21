@@ -16,7 +16,7 @@ Choose your plugin and refer to the corresponding `README.md` for more info abou
 | studio.lunabee.plugins.cache                 | ![LBCache](https://img.shields.io/badge/latest-0.9.0-blue)               | [README.md](plugins/lb-cache/README.md)                  |
 | studio.lunabee.plugins.detekt                 | ![LBDetekt](https://img.shields.io/badge/latest-0.9.1-blue)               | [README.md](plugins/lb-detekt/README.md)                  |
 | studio.lunabee.plugins.dokka                  | ![LBDokka](https://img.shields.io/badge/latest-0.9.1-blue)                | [README.md](plugins/lb-dokka/README.md)                   |
-| studio.lunabee.plugins.resources              | ![LBResources](https://img.shields.io/badge/latest-0.9.1-blue)            | [README.md](plugins/lb-resources/README.md)               |
+| studio.lunabee.plugins.resources              | ![LBResources](https://img.shields.io/badge/latest-1.0.0-blue)            | [README.md](plugins/lb-resources/README.md)               |
 
 ## Publication
 
