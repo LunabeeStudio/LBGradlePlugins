@@ -1,14 +1,19 @@
 package studio.lunabee.plugins
 
 import org.gradle.api.DefaultTask
+import org.gradle.api.file.ProjectLayout
 import org.gradle.api.tasks.TaskAction
+import javax.inject.Inject
 
-open class SortLibsVersionsTomlTask : DefaultTask() {
+abstract class SortLibsVersionsTomlTask : DefaultTask() {
+
+    @get:Inject
+    abstract val projectLayout: ProjectLayout
 
     @Suppress("CyclomaticComplexMethod", "NestedBlockDepth")
     @TaskAction
     fun run() {
-        val file = project.file("gradle/libs.versions.toml")
+        val file = projectLayout.projectDirectory.file("gradle/libs.versions.toml").asFile
         val lines = file.readLines()
         val sortedLines = mutableListOf<String>()
         var insideSection = false
