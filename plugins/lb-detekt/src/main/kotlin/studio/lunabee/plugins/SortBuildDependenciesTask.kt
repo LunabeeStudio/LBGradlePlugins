@@ -1,9 +1,11 @@
 package studio.lunabee.plugins
 
 import org.gradle.api.DefaultTask
+import org.gradle.api.file.ProjectLayout
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
+import javax.inject.Inject
 import kotlin.system.measureTimeMillis
 
 abstract class SortBuildDependenciesTask : DefaultTask() {
@@ -11,14 +13,16 @@ abstract class SortBuildDependenciesTask : DefaultTask() {
     @get:Input
     abstract val verboseProp: Property<Boolean>
 
-    @Suppress("NestedBlockDepth")
+    @get:Inject
+    abstract val projectLayout: ProjectLayout
+
     @TaskAction
     fun run() {
         val verbose = verboseProp.get()
         val sortBuildDependenciesFile = SortBuildDependenciesFile(verbose)
 
-        // Use fileTree to recursively search for all build.gradle.kts files in the project
-        val fileTree = project.fileTree(project.rootDir) {
+        // Use fileTree to recursively search for; all build.gradle.kts files in the project
+        val fileTree = projectLayout.projectDirectory.asFileTree.matching {
             include("**/build.gradle.kts") // Include all build.gradle.kts files in all subdirectories
             exclude("buildSrc/**")
         }

@@ -7,7 +7,8 @@
 ## 📝 Checklist
 
 * [ ] 📖 I reviewed the submitted code
-* [ ] 🛀 I launched `./gradlew detekt`
+* [ ] 🛀 I launched `./gradlew detekt` on demo app
+* [ ] 📜 I updated the changelog
 * [ ] 🏭 I implemented Unit Tests (if it makes sense)
 
 ## 🔮 Next steps
