@@ -42,7 +42,7 @@ class LBDetektPlugin : Plugin<Project> {
         target.project.tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
             outputs.upToDateWhen { false } // always re-run
 
-            exclude("**/buildSrc")
+            exclude("**/.idea")
             exclude("**/build/**")
         }
     }
