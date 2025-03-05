@@ -17,7 +17,7 @@ lbResources = { id = "studio.lunabee.plugins.resources", version.ref = "lbResour
 
 [versions]
 
-agp = "8.8.2"
+agp = "8.9.0"
 androidxActivityCompose = "1.10.1"
 androidxAppcompat = "1.7.0"
 androidxComposeBom = "2025.02.00"
@@ -28,7 +28,7 @@ kotlin = "2.1.10"
 lbAndroidApplication = "0.9.1"
 lbAndroidFlavors = "0.9.1"
 lbAndroidLibrary = "0.9.1"
-lbDetekt = "1.0.0"
+lbDetekt = "1.0.1"
 lbDokka = "0.9.2"
 lbMultiplatformLibrary = "0.9.1"
 lbResources = "1.0.0"
