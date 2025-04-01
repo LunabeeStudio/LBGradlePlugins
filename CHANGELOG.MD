@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### LBAndroidApplication 1.0.0 & LBAndroidLibrary 1.0.0
 
 - Remove buildToolsVersion
+- Bump Android SDK to 36
 
 ## 2025-03-04
 
