@@ -21,7 +21,6 @@ open class LBAndroidLibraryExtension @Inject constructor(private val project: Pr
      * @param withCompose Whether to apply the Compose plugin. Default is false.
      * @param enableBuildConfig Whether to enable access to build config field. Default is false.
      * @param compileSdk The SDK version used to compile the application. Default is 35.
-     * @param buildToolsVersion The version of the Android Build Tools to be used. Default is "35.0.0".
      * @param minSdk The minimum SDK version required to run the application. Default is 23.
      * @param jdkVersion The version of the Java Development Kit (JDK) to be used. Default is [JavaVersion.VERSION_17].
      * @param configureJava A lambda for additional configuration of the Java plugin extension.
@@ -29,10 +28,9 @@ open class LBAndroidLibraryExtension @Inject constructor(private val project: Pr
      */
     data class PropertiesReceiver(
         var namespace: String = "",
-        var compileSdk: Int = 35,
+        var compileSdk: Int = 36,
         var withCompose: Boolean = false,
         var enableBuildConfig: Boolean = false,
-        var buildToolsVersion: String = "35.0.0",
         var minSdk: Int = 23,
         var jdkVersion: JavaVersion = JavaVersion.VERSION_17,
         var configureJava: JavaPluginExtension.() -> Unit = { },
@@ -64,7 +62,6 @@ open class LBAndroidLibraryExtension @Inject constructor(private val project: Pr
             // Set Android parameters from [propertiesReceiver] object.
             namespace = propertiesReceiver.namespace
             compileSdk = propertiesReceiver.compileSdk
-            buildToolsVersion = propertiesReceiver.buildToolsVersion
 
             // Set default configuration parameters from [propertiesReceiver] object.
             defaultConfig.minSdk = propertiesReceiver.minSdk

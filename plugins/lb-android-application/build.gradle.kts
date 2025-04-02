@@ -17,7 +17,7 @@ gradlePlugin {
         create("studio.lunabee.plugins.android.application") {
             id = "studio.lunabee.plugins.android.application"
             implementationClass = "studio.lunabee.plugins.LBAndroidApplicationPlugin"
-            version = "0.9.1"
+            version = "1.0.0"
             displayName = "LBAndroidApplication"
             description = "This plugin allows you to configure an Android application in a simple and fast way."
             tags = listOf("android", "application", "lunabee")
