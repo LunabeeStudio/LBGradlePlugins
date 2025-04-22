@@ -16,6 +16,8 @@ complexity:
     ignoreSingleWhenExpression: true
     ignoreSimpleWhenEntries: true
     ignoreFunction: [ 'equals' ]
+  LongMethod:
+    threshold: 100
 
 empty-blocks:
   EmptyFunctionBlock:
