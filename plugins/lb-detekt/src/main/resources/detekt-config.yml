@@ -7,7 +7,7 @@ console-reports:
 complexity:
   LongParameterList:
     ignoreDefaultParameters: true
-    ignoreAnnotated: [ 'Composable', 'Inject', 'AssistedInject' ]
+    ignoreAnnotated: [ 'Composable', 'Inject', 'AssistedInject', 'Entity' ]
   TooManyFunctions:
     active: false
   LargeClass:
