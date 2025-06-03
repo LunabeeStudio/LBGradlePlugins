@@ -16,6 +16,7 @@ class SortBuildDependenciesFile(
     private val devConfigMatcher = Regex("dev(Api|Implementation)\\(")
     private val debugConfigMatcher = Regex("debug(Api|Implementation)\\(")
     private val internalConfigMatcher = Regex("internal(Api|Implementation)\\(")
+    private val variableDeclarationMatcher = Regex("(val|var) ")
 
     private val comparator = DependencyComparator(verbose = verbose)
 
@@ -120,6 +121,7 @@ class SortBuildDependenciesFile(
     private fun groupByMatcher(dependencyLines: MutableList<String>): SortedMap<Int, List<String>> {
         return dependencyLines.groupBy {
             when {
+                variableDeclarationMatcher.containsMatchIn(it) -> 200
                 desugaringMatcher.containsMatchIn(it) -> 300
                 platformMatcher.containsMatchIn(it) -> 400
                 kspMatcher.containsMatchIn(it) -> 500
