@@ -33,7 +33,6 @@ class LBAndroidFlavorsPlugin : Plugin<Project> {
                 create("dev") {
                     dimension = "environment"
                     applicationIdSuffix = ".dev"
-                    versionNameSuffix = "#$versionCode dev"
                     isDefault = true
                     buildConfigField("Boolean", "IS_DEV", "true")
                 }

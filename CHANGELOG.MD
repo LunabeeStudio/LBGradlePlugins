@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 2025-06-03
 
+### LBAndroidFlavors 1.0.0
+
+- Fix (remove) version suffix for dev flavor (was not working)
+
 ### LBDetekt 1.0.4
 
 - Handle `val` or `var` declaration in dependencies block by moving them to the top of the block
@@ -28,7 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### LBDetekt 1.0.1
 
-- Exclude `.idea` dir from detekt and re-add `buildSrc` dir 
+- Exclude `.idea` dir from detekt and re-add `buildSrc` dir
 
 ## 2025-02-21
 
