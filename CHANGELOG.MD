@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2025-06-03
+
+### LBDetekt 1.0.4
+
+- Handle `val` or `var` declaration in dependencies block by moving them to the top of the block
+
 ## 2025-05-26
 
 ### LBDetekt 1.0.3

@@ -195,4 +195,25 @@ class SortBuildDependenciesFileTest {
 
         assertContentEquals(expected, actual, actual.joinToString("\n"))
     }
+
+    @Test
+    fun variable_test() {
+        val expected = """
+            dependencies {
+                val condition: Boolean = System.getProperty("MyFeature").toBoolean()
+
+                implementation(libs.aaa)
+                if (condition) {
+                    implementation(libs.ddd)
+                } else {
+                    implementation(libs.ccc)
+                }
+                implementation(libs.ooo)
+            }
+        """.trimIndent().split("\n")
+
+        val actual = sortBuildDependenciesFile.sortLines(expected).flatMap { it.split("\n") }
+
+        assertContentEquals(expected, actual, actual.joinToString("\n"))
+    }
 }
