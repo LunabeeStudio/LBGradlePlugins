@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 2025-06-03
 
+### LBDetekt 1.0.5
+
+- Ignore `LongParameterList` for `KoinViewModel` annotated classes
+
+## 2025-06-03
+
 ### LBAndroidFlavors 1.0.0
 
 - Fix (remove) version suffix for dev flavor (was not working)
