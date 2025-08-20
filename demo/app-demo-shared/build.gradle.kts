@@ -16,7 +16,7 @@ lbAndroidLibrary {
 
 lbMultiplatformLibrary {
     multiplatform {
-        jvmTarget = JvmTarget.JVM_17
+        jvmTarget = JvmTarget.JVM_21
         targets = listOf(
             TargetPlatform.Android(),
             TargetPlatform.Jvm(),

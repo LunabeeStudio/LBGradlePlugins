@@ -11,7 +11,7 @@ gradlePlugin {
         create("studio.lunabee.plugins.cache") {
             id = "studio.lunabee.plugins.cache"
             implementationClass = "studio.lunabee.plugins.LBCachePlugin"
-            version = "0.9.0"
+            version = "1.0.0"
             displayName = "LBCache"
             description = "This plugin allows you to configure the Lunabee remote Gradle cache"
             tags = listOf("gradle", "lunabee", "cache")
