@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2025-08-20
+
+### All
+
+```
+lb-android-application v1.1.0
+lb-android-flavors v1.1.0
+lb-android-library v1.1.0
+lb-cache v1.0.0
+lb-detekt v1.1.0
+lb-dokka v1.0.0
+lb-multiplatform-library v1.0.0
+lb-resources v1.1.0
+```
+
+- **break**: Use JDK 21 by default
+
 ## 2025-06-03
 
 ### LBDetekt 1.0.5

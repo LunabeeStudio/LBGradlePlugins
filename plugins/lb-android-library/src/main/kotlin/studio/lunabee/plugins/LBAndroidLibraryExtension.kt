@@ -17,12 +17,11 @@ open class LBAndroidLibraryExtension @Inject constructor(private val project: Pr
 
     /**
      * @param namespace The namespace for your library. Error will be thrown is not set.
-     * @param compileSdk The SDK version used to compile the library. Default is 35.
+     * @param compileSdk The SDK version used to compile the library. Default is 36.
      * @param withCompose Whether to apply the Compose plugin. Default is false.
      * @param enableBuildConfig Whether to enable access to build config field. Default is false.
-     * @param compileSdk The SDK version used to compile the application. Default is 35.
      * @param minSdk The minimum SDK version required to run the application. Default is 23.
-     * @param jdkVersion The version of the Java Development Kit (JDK) to be used. Default is [JavaVersion.VERSION_17].
+     * @param jdkVersion The version of the Java Development Kit (JDK) to be used. Default is [JavaVersion.VERSION_21].
      * @param configureJava A lambda for additional configuration of the Java plugin extension.
      * @param configureAndroidExtension A lambda for additional configuration of the Android application module extension.
      */
@@ -32,7 +31,7 @@ open class LBAndroidLibraryExtension @Inject constructor(private val project: Pr
         var withCompose: Boolean = false,
         var enableBuildConfig: Boolean = false,
         var minSdk: Int = 23,
-        var jdkVersion: JavaVersion = JavaVersion.VERSION_17,
+        var jdkVersion: JavaVersion = JavaVersion.VERSION_21,
         var configureJava: JavaPluginExtension.() -> Unit = { },
         var configureAndroidExtension: LibraryExtension.() -> Unit = { },
     )
