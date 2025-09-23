@@ -14,6 +14,7 @@ abstract class SortLibsVersionsTomlTask : DefaultTask() {
     @TaskAction
     fun run() {
         val file = projectLayout.projectDirectory.file("gradle/libs.versions.toml").asFile
+        if (!file.exists()) return
         val lines = file.readLines()
         val sortedLines = mutableListOf<String>()
         var insideSection = false

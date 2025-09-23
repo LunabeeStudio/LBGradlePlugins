@@ -8,16 +8,18 @@ complexity:
   LongParameterList:
     ignoreDefaultParameters: true
     ignoreAnnotated: [ 'Composable', 'Inject', 'AssistedInject', 'Entity', 'KoinViewModel' ]
+    allowedFunctionParameters: 10
+    allowedConstructorParameters: 10
   TooManyFunctions:
     active: false
   LargeClass:
-    threshold: 1000
+    allowedLines: 1000
   CyclomaticComplexMethod:
     ignoreSingleWhenExpression: true
     ignoreSimpleWhenEntries: true
     ignoreFunction: [ 'equals' ]
   LongMethod:
-    threshold: 100
+    allowedLines: 100
 
 empty-blocks:
   EmptyFunctionBlock:
@@ -44,12 +46,10 @@ exceptions:
   TooGenericExceptionCaught:
     active: false
 
-formatting:
+ktlint:
   active: true
-  android: true
   autoCorrect: true
-  AnnotationOnSeparateLine:
-    active: true
+  code_style: 'ktlint_official'
   ChainWrapping:
     active: false
     autoCorrect: true
@@ -154,6 +154,25 @@ formatting:
     maxLineLength: 140
   ParameterWrapping:
     maxLineLength: 140
+  BinaryExpressionWrapping:
+    maxLineLength: 140
+  MultilineExpressionWrapping:
+    active: false
+  NoEmptyFirstLineInClassBody:
+    active: false
+  FunctionSignature:
+    active: false
+  ClassSignature:
+    active: false
+  PropertyName:
+    constantNamingStyle: pascal_case
+  AnnotationOnSeparateLine:
+    autoCorrect: false
+    ignoreAnnotated: [ 'Inject' ]
+  FunctionLiteral:
+    maxLineLength: 140
+  ChainMethodContinuation:
+    excludes: [ '**/build.gradle.kts' ]
 
 naming:
   FunctionNaming:

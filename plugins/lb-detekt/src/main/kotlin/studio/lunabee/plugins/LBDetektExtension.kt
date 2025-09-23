@@ -1,8 +1,7 @@
 package studio.lunabee.plugins
 
-import io.gitlab.arturbosch.detekt.extensions.DetektExtension
+import dev.detekt.gradle.extensions.DetektExtension
 import org.gradle.api.Project
-import org.gradle.api.model.ObjectFactory
 import org.gradle.kotlin.dsl.withType
 import java.io.File
 import javax.inject.Inject
@@ -15,20 +14,20 @@ import javax.inject.Inject
  * @property enableDependencySorting Run [SortBuildDependenciesTask] before detekt. Default true
  * @property enableTomlSorting Run [SortLibsVersionsTomlTask] before detekt. Default true
  */
-open class LBDetektExtension @Inject constructor(
-    objects: ObjectFactory,
+abstract class LBDetektExtension @Inject constructor(
     project: Project,
-) : DetektExtension(objects) {
+) : DetektExtension {
     var verbose: Boolean = false
     val lunabeeConfig = File(project.rootProject.layout.buildDirectory.asFile.get(), "lbDetekt/detekt-config.yml")
     var enableDependencySorting: Boolean = true
     var enableTomlSorting: Boolean = true
 
     init {
-        parallel = true
-        buildUponDefaultConfig = true
-        autoCorrect = true
-        ignoreFailures = true
+        toolVersion.set("2.0.0-alpha.0")
+        parallel.set(true)
+        buildUponDefaultConfig.set(true)
+        autoCorrect.set(true)
+        ignoreFailures.set(true)
 
         // Since Detekt only accepts a path to a configuration file as a parameter, we need to copy the detekt-config.yml
         // file from the plugin’s resources to the project using it. The Detekt plugin will then be able to access it.
@@ -48,7 +47,7 @@ open class LBDetektExtension @Inject constructor(
         config.setFrom(lunabeeConfig)
         source.setFrom("${project.rootProject.rootDir}")
 
-        project.project.tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
+        project.project.tasks.withType<dev.detekt.gradle.Detekt>().configureEach {
             if (enableDependencySorting) {
                 dependsOn(project.tasks.withType<SortBuildDependenciesTask>())
             }
@@ -58,9 +57,10 @@ open class LBDetektExtension @Inject constructor(
 
             reports {
                 xml.required.set(true)
-                xml.outputLocation.set(File(project.layout.buildDirectory.asFile.get(), "/reports/detekt/detekt-report.xml"))
+                xml.outputLocation.set(project.layout.buildDirectory.file("/reports/detekt/detekt-report.xml"))
+
                 html.required.set(true)
-                html.outputLocation.set(File(project.layout.buildDirectory.asFile.get(), "/reports/detekt/detekt-report.html"))
+                html.outputLocation.set(project.layout.buildDirectory.file("/reports/detekt/detekt-report.html"))
             }
         }
 

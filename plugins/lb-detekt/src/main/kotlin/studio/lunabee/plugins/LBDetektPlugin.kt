@@ -2,7 +2,7 @@
 
 package studio.lunabee.plugins
 
-import io.gitlab.arturbosch.detekt.DetektPlugin
+import dev.detekt.gradle.plugin.DetektPlugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.tasks.TaskProvider
@@ -34,12 +34,13 @@ class LBDetektPlugin : Plugin<Project> {
             LBDetektExtension::class.java,
         )
         target.pluginManager.apply(DetektPlugin::class.java)
+
         target.dependencies.add(
             "detektPlugins",
-            "io.gitlab.arturbosch.detekt:detekt-formatting:${extension.toolVersion}",
+            "dev.detekt:detekt-rules-ktlint-wrapper:${extension.toolVersion.get()}",
         )
 
-        target.project.tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
+        target.project.tasks.withType<dev.detekt.gradle.Detekt> {
             outputs.upToDateWhen { false } // always re-run
 
             exclude("**/.idea")
