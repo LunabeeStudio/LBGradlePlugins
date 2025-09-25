@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### LBDetekt 2.0.0
 
 - Update detekt to `2.0.0-alpha.0`
+- **break**: config use Gradle properties instead of Kotlin primitives 
 
 ## 2025-08-20
 
