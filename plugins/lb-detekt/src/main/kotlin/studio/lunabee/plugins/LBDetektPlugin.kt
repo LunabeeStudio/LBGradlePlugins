@@ -34,9 +34,9 @@ class LBDetektPlugin : Plugin<Project> {
         project.pluginManager.apply(DetektPlugin::class.java)
 
         // Build custom Lunabee extension by implementing the DetektExtension interface with delegation to original Detekt extension
-        val extension = project.extensions.findByType(DetektExtension::class.java)?.let {
+        val extension = project.extensions.findByType(DetektExtension::class.java)?.let { detektExtension ->
             project.extensions.findByType(LBDetektExtension::class.java)
-                ?: project.extensions.create("lbDetekt", LBDetektExtension::class.java, it)
+                ?: project.extensions.create("lbDetekt", LBDetektExtension::class.java, detektExtension)
         } ?: error("Cannot find detekt extension")
 
         // Apply default and custom values to the extension
