@@ -195,7 +195,7 @@ style:
     excludeGuardClauses: true
   NewLineAtEndOfFile:
     active: false # https://detekt.dev/formatting.html#finalnewline
-  UnusedPrivateMember:
+  UnusedPrivateFunction:
     ignoreAnnotated: [ 'Preview' ]
   FunctionOnlyReturningConstant:
     ignoreAnnotated: [ 'Provides' ]

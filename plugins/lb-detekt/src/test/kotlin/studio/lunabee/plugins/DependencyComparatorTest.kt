@@ -34,7 +34,8 @@ class DependencyComparatorTest {
         )
         val actual = input.shuffled().sortedWith(comparator).joinToString("\n")
 
-        val expected = """
+        val expected =
+            """
             implementation(libs.aaa)
             implementation(libs.ccc) {
                 exclude(libs.mmm)
@@ -45,7 +46,7 @@ class DependencyComparatorTest {
             } else {
                 api(libs.bbb)
             }
-        """.trimIndent()
+            """.trimIndent()
 
         assertEquals(expected, actual, actual)
     }

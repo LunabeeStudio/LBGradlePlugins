@@ -9,7 +9,8 @@ class SortBuildDependenciesFileTest {
 
     @Test
     fun matcher_blocks_test() {
-        val input = """
+        val input =
+            """
             dependencies {
                 implementation(project(aaa))
                 implementation(platform(aaa))
@@ -19,10 +20,11 @@ class SortBuildDependenciesFileTest {
                 androidTestImplementation(aaa)
                 implementation(projects.aaa)
             }
-        """.trimIndent().split("\n")
+            """.trimIndent().split("\n")
         val actual = sortBuildDependenciesFile.sortLines(input)
 
-        val expected = """
+        val expected =
+            """
             dependencies {
                 implementation(platform(aaa))
 
@@ -37,14 +39,15 @@ class SortBuildDependenciesFileTest {
 
                 testImplementation(aaa)
             }
-        """.trimIndent().split("\n")
+            """.trimIndent().split("\n")
 
         assertContentEquals(expected, actual, actual.joinToString("\n"))
     }
 
     @Test
     fun keep_custom_blocks_test() {
-        val expected = """
+        val expected =
+            """
             dependencies {
                 if(condition) {
                     implementation(libs.ddd)
@@ -52,7 +55,7 @@ class SortBuildDependenciesFileTest {
                     implementation(libs.ccc)
                 }
             }
-        """.trimIndent().split("\n")
+            """.trimIndent().split("\n")
         val actual = sortBuildDependenciesFile.sortLines(expected).flatMap { it.split("\n") }
 
         assertContentEquals(expected, actual, actual.joinToString("\n"))
@@ -60,7 +63,8 @@ class SortBuildDependenciesFileTest {
 
     @Test
     fun sort_custom_blocks_test() {
-        val input = """
+        val input =
+            """
             dependencies {
                 implementation(libs.ooo)
                 if(condition) {
@@ -73,8 +77,9 @@ class SortBuildDependenciesFileTest {
                 }
                 implementation(libs.aaa)
             }
-        """.trimIndent().split("\n")
-        val expected = """
+            """.trimIndent().split("\n")
+        val expected =
+            """
             dependencies {
                 implementation(libs.aaa)
                 if(condition) {
@@ -87,7 +92,7 @@ class SortBuildDependenciesFileTest {
                     exclude(libs.aaa)
                 }
             }
-        """.trimIndent().split("\n")
+            """.trimIndent().split("\n")
         val actual = sortBuildDependenciesFile.sortLines(input).flatMap { it.split("\n") }
 
         assertContentEquals(expected, actual, actual.joinToString("\n"))
@@ -95,7 +100,8 @@ class SortBuildDependenciesFileTest {
 
     @Test
     fun keep_comments_test() {
-        val input = """
+        val input =
+            """
             dependencies {
                 implementation(project(aaa))
                 // Use aaa BoM
@@ -104,9 +110,10 @@ class SortBuildDependenciesFileTest {
                 // a My multiline KSP related comment #2
                 ksp(aaa)
             }
-        """.trimIndent().split("\n")
+            """.trimIndent().split("\n")
 
-        val expected = """
+        val expected =
+            """
             dependencies {
                 // Use aaa BoM
                 implementation(platform(aaa))
@@ -117,7 +124,7 @@ class SortBuildDependenciesFileTest {
 
                 implementation(project(aaa))
             }
-        """.trimIndent().split("\n")
+            """.trimIndent().split("\n")
 
         val actual = sortBuildDependenciesFile.sortLines(input).flatMap { it.split("\n") }
 
@@ -126,7 +133,8 @@ class SortBuildDependenciesFileTest {
 
     @Test
     fun last_line_comment_test() {
-        val expected = """
+        val expected =
+            """
             commonMain.dependencies {
                 // Common dependencies goes here.
             }
@@ -136,7 +144,7 @@ class SortBuildDependenciesFileTest {
             jvmMain.dependencies {
                 // jvm dependencies goes here.
             }
-        """.trimIndent().split("\n")
+            """.trimIndent().split("\n")
 
         val actual = sortBuildDependenciesFile.sortLines(expected).flatMap { it.split("\n") }
 
@@ -145,7 +153,8 @@ class SortBuildDependenciesFileTest {
 
     @Test
     fun custom_comment_and_block_test() {
-        val expected = """
+        val expected =
+            """
             dependencies {
                 api(libs.robolectric)
 
@@ -155,7 +164,7 @@ class SortBuildDependenciesFileTest {
                     exclude(group = "org.conscrypt", module = "conscrypt-android")
                 }
             }
-        """.trimIndent().split("\n")
+            """.trimIndent().split("\n")
 
         val actual = sortBuildDependenciesFile.sortLines(expected).flatMap { it.split("\n") }
 
@@ -164,7 +173,8 @@ class SortBuildDependenciesFileTest {
 
     @Test
     fun custom_block_and_comment_test() {
-        val expected = """
+        val expected =
+            """
             dependencies {
                 api(libs.robolectric)
 
@@ -173,7 +183,7 @@ class SortBuildDependenciesFileTest {
                     exclude(group = "org.conscrypt", module = "conscrypt-android")
                 }
             }
-        """.trimIndent().split("\n")
+            """.trimIndent().split("\n")
 
         val actual = sortBuildDependenciesFile.sortLines(expected).flatMap { it.split("\n") }
 
@@ -182,14 +192,15 @@ class SortBuildDependenciesFileTest {
 
     @Test
     fun custom_one_line_block_and_comment_test() {
-        val expected = """
+        val expected =
+            """
             dependencies {
                 api(libs.robolectric)
 
                 // https://github.com/google/conscrypt/issues/649
                 api(projects.commonTestAndroid) { exclude(group = "org.conscrypt", module = "conscrypt-android") }
             }
-        """.trimIndent().split("\n")
+            """.trimIndent().split("\n")
 
         val actual = sortBuildDependenciesFile.sortLines(expected).flatMap { it.split("\n") }
 
@@ -198,7 +209,8 @@ class SortBuildDependenciesFileTest {
 
     @Test
     fun variable_test() {
-        val expected = """
+        val expected =
+            """
             dependencies {
                 val condition: Boolean = System.getProperty("MyFeature").toBoolean()
 
@@ -210,7 +222,7 @@ class SortBuildDependenciesFileTest {
                 }
                 implementation(libs.ooo)
             }
-        """.trimIndent().split("\n")
+            """.trimIndent().split("\n")
 
         val actual = sortBuildDependenciesFile.sortLines(expected).flatMap { it.split("\n") }
 

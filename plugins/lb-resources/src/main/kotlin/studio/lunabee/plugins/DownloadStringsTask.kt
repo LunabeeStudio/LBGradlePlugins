@@ -27,7 +27,9 @@ abstract class DownloadStringsTask : DefaultTask() {
         val projectDir = projectDir.get()
         val locoApiKey = providerApiKey.get()
         val scriptName = "downloadStrings.sh"
-        val configFile = this::class.java.classLoader.getResource(scriptName)!!.readText()
+        val configFile = this::class.java.classLoader
+            .getResource(scriptName)!!
+            .readText()
         val destFolder = File("${projectLayout.buildDirectory.asFile.get().absolutePath}/lbResources")
         if (!destFolder.exists()) destFolder.mkdirs()
         val destFile = File(destFolder, scriptName)

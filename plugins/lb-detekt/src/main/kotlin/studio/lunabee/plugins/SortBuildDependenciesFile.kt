@@ -118,8 +118,8 @@ class SortBuildDependenciesFile(
         return sortedLines
     }
 
-    private fun groupByMatcher(dependencyLines: MutableList<String>): SortedMap<Int, List<String>> {
-        return dependencyLines.groupBy {
+    private fun groupByMatcher(dependencyLines: MutableList<String>): SortedMap<Int, List<String>> = dependencyLines
+        .groupBy {
             when {
                 variableDeclarationMatcher.containsMatchIn(it) -> 200
                 desugaringMatcher.containsMatchIn(it) -> 300
@@ -135,7 +135,6 @@ class SortBuildDependenciesFile(
                 else -> 600
             }
         }.toSortedMap()
-    }
 
     private fun log(text: String) {
         if (verbose) println(text.replace("\n", "\\n"))
