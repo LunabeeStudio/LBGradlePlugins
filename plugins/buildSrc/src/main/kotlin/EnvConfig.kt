@@ -1,4 +1,4 @@
 object EnvConfig {
-    const val ENV_ARTIFACTORY_USER: String = "ARTIFACTORY_USER"
-    const val ENV_ARTIFACTORY_API_KEY: String = "ARTIFACTORY_API_KEY"
+    const val EnvArtifactoryUser: String = "ARTIFACTORY_USER"
+    const val EnvArtifactoryApiKey: String = "ARTIFACTORY_API_KEY"
 }

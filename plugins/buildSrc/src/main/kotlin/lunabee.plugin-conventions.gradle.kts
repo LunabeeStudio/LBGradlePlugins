@@ -43,9 +43,9 @@ fun PublishingExtension.setupMavenRepository() {
     repositories {
         maven {
             authentication {
-                credentials.username = System.getenv(EnvConfig.ENV_ARTIFACTORY_USER)
+                credentials.username = System.getenv(EnvConfig.EnvArtifactoryUser)
                     ?: project.properties["artifactory_deployer_release_username"] as? String
-                credentials.password = System.getenv(EnvConfig.ENV_ARTIFACTORY_API_KEY)
+                credentials.password = System.getenv(EnvConfig.EnvArtifactoryApiKey)
                     ?: project.properties["artifactory_deployer_release_api_key"] as? String
             }
             url = URI.create("https://artifactory.lunabee.studio/artifactory/lunabee-gradle-plugin")

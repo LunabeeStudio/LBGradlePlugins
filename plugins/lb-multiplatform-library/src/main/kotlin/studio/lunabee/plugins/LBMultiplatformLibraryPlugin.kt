@@ -30,7 +30,8 @@ open class LBMultiplatformLibraryExtension @Inject constructor(private val proje
     }
 
     private fun init() {
-        project.kotlinExtension.compilerOptions.freeCompilerArgs.add("-Xexpect-actual-classes")
+        project.kotlinExtension.compilerOptions.freeCompilerArgs
+            .add("-Xexpect-actual-classes")
         project.kotlinExtension.setTargets()
     }
 

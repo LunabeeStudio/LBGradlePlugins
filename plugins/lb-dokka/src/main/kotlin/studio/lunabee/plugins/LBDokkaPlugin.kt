@@ -35,7 +35,8 @@ private const val DocsModule = "docs"
 class LBDokkaPlugin : Plugin<Project> {
 
     override fun apply(target: Project) {
-        val pluginMode: Provider<String> = target.providers.gradleProperty("org.jetbrains.dokka.experimental.gradle.pluginMode")
+        val pluginMode: Provider<String> = target.providers
+            .gradleProperty("org.jetbrains.dokka.experimental.gradle.pluginMode")
         if (pluginMode.orNull?.startsWith("V2Enabled") != true) {
             error(
                 "LBDokka only works with V2 mode. Please add V2 flag to gradle.properties.\n" +
@@ -71,7 +72,12 @@ class LBDokkaPlugin : Plugin<Project> {
 
             val styles = buildList {
                 docsProject.file("styles").listFiles()?.let { addAll(it) }
-                docsProject.layout.buildDirectory.file(TmpStyleDir).get().asFile.listFiles()?.let { addAll(it) }
+                docsProject.layout.buildDirectory
+                    .file(TmpStyleDir)
+                    .get()
+                    .asFile
+                    .listFiles()
+                    ?.let { addAll(it) }
             }
             customStyleSheets.from(styles)
 
@@ -108,7 +114,10 @@ class LBDokkaPlugin : Plugin<Project> {
             doLast {
                 val docsProject = target.rootProject.project(DocsModule)
 
-                val gitInfoFileLines = gitInfoTask.get().outputs.files.singleFile.readLines()
+                val gitInfoFileLines = gitInfoTask
+                    .get()
+                    .outputs.files.singleFile
+                    .readLines()
                 val branch = gitInfoFileLines[0]
                 val repositoryName = gitInfoFileLines[1]
                 val rootDir = File(gitInfoFileLines[2])
@@ -131,7 +140,12 @@ class LBDokkaPlugin : Plugin<Project> {
                 // FIXME https://github.com/Kotlin/dokka/issues/4007
                 buildList {
                     docsProject.file("ui-kit").listFiles()?.let { this.addAll(it) }
-                    docsProject.layout.buildDirectory.file(TmpUiKitDir).get().asFile.listFiles()?.let { this.addAll(it) }
+                    docsProject.layout.buildDirectory
+                        .file(TmpUiKitDir)
+                        .get()
+                        .asFile
+                        .listFiles()
+                        ?.let { this.addAll(it) }
                 }.forEach {
                     it.copyTo(outputDirectory.file("ui-kit/assets/${it.name}").get().asFile, overwrite = true)
                 }
@@ -151,7 +165,10 @@ class LBDokkaPlugin : Plugin<Project> {
      * Ensure every subproject has the Dokka plugin applied
      */
     private fun checkDokkaDeps(doc: Project) {
-        val dokkaDeps = doc.configurations.firstOrNull { it.name == DOKKA_CONFIGURATION_NAME }?.allDependencies.orEmpty()
+        val dokkaDeps = doc.configurations
+            .firstOrNull { it.name == DOKKA_CONFIGURATION_NAME }
+            ?.allDependencies
+            .orEmpty()
         dokkaDeps.forEach { deps ->
             val project = doc.rootProject.subprojects.first { project -> project.name == deps.name }
             val hasPlugin = project.pluginManager.hasPlugin("org.jetbrains.dokka")
@@ -162,7 +179,13 @@ class LBDokkaPlugin : Plugin<Project> {
     }
 
     private fun loadResource(target: Project, targetDir: String, resFile: String) {
-        val file = File(target.layout.buildDirectory.file(targetDir).get().asFile, resFile)
+        val file = File(
+            target.layout.buildDirectory
+                .file(targetDir)
+                .get()
+                .asFile,
+            resFile,
+        )
         file.delete()
         file.parentFile.mkdirs()
         file.createNewFile()

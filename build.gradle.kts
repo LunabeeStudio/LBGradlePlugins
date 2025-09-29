@@ -15,5 +15,5 @@ tasks.wrapper {
 }
 
 lbDetekt {
-    verbose = false
+    verbose.set(false)
 }
