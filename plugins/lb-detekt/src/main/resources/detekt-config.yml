@@ -168,7 +168,7 @@ ktlint:
     constantNamingStyle: pascal_case
   AnnotationOnSeparateLine:
     autoCorrect: false
-    ignoreAnnotated: [ 'Inject' ]
+    ignoreAnnotated: [ 'AssistedInject', 'Inject', 'Assisted', 'JvmOverloads' ]
   FunctionLiteral:
     maxLineLength: 140
   ChainMethodContinuation:
@@ -182,7 +182,7 @@ naming:
 
 performance:
   SpreadOperator:
-    ignoreAnnotated: [ 'Preview' ]
+    ignoreAnnotated: [ 'Preview', 'CorePreview' ]
 
 style:
   MaxLineLength:
@@ -196,7 +196,7 @@ style:
   NewLineAtEndOfFile:
     active: false # https://detekt.dev/formatting.html#finalnewline
   UnusedPrivateFunction:
-    ignoreAnnotated: [ 'Preview' ]
+    ignoreAnnotated: [ 'Preview', 'CorePreview' ]
   FunctionOnlyReturningConstant:
     ignoreAnnotated: [ 'Provides' ]
   ForbiddenComment:
