@@ -125,8 +125,8 @@ class LBDetektPlugin : Plugin<Project> {
                 }
 
                 reports {
-                    xml.required.set(true)
-                    xml.outputLocation.set(project.layout.buildDirectory.file("reports/detekt/detekt-report.xml"))
+                    checkstyle.required.set(true)
+                    checkstyle.outputLocation.set(project.layout.buildDirectory.file("reports/detekt/detekt-report.xml"))
 
                     html.required.set(true)
                     html.outputLocation.set(project.layout.buildDirectory.file("reports/detekt/detekt-report.html"))
