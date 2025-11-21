@@ -89,7 +89,7 @@ function import_language() {
 pushd ./
 
 # Download and unzip the strings archive.
-curl "${LOCO_API_ARCHIVE_URL}?key=${LOCO_API_TOKEN}&index=id&format=android&status=translated&order=id" >"${DOWNLOAD_ZIP_DESTINATION}"
+curl "${LOCO_API_ARCHIVE_URL}?key=${LOCO_API_TOKEN}&index=id&format=android&status=translated,provisional&order=id" >"${DOWNLOAD_ZIP_DESTINATION}"
 mkdir -p "${EXTRACT_DIRECTORY_NAME}"
 unzip "${DOWNLOAD_ZIP_DESTINATION}" -d "${EXTRACT_DIRECTORY_NAME}"
 MAIN_SUBDIRECTORY=$(ls -1rt "${EXTRACT_DIRECTORY_NAME}" | tail -1)
