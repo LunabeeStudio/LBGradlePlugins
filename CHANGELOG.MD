@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add provisional status to download strings script
 
+## 2025-11-19
+
+### LBDetekt 2.0.2
+
+- Disable `FunctionExpressionBody` and `FunctionExpressionBody`
+
 ## 2025-10-22
 
 ### LBDetekt 2.0.1
