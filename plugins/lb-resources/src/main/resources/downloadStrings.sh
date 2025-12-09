@@ -3,6 +3,8 @@
 LOCO_API_TOKEN=$1
 PROJECT_LOCALIZABLE_FILES_ROOT_DIRECTORY=$2
 STRING_FILENAME_WITHOUT_EXT=$3
+REPLACE_APOSTROPHES=$4
+REPLACE_QUOTES=$5
 
 EXTRACT_DIRECTORY_NAME="tmpextract"
 LOCO_API_ARCHIVE_URL="https://localise.biz:443/api/export/archive/xml.zip"
@@ -43,15 +45,19 @@ function import_language() {
   # Replace x-x by x–x (where is x is a digit), except for url (string containing "http")
   sedi "\~http~!s~([0-9])-([0-9])~\1–\2~g" "$file"
 
-  # Replace x\'x by x’x
-  sedi "s~([^[:blank:]>])\\\'([^<[:blank:]])~\1’\2~g" "$file"
+  if [[ "$REPLACE_APOSTROPHES" == "true" ]]; then
+    # Replace x\'x by x’x
+    sedi "s~([^[:blank:]>])\\\'([^<[:blank:]])~\1’\2~g" "$file"
 
-  # Replace others \' by ‘
-  sedi "s~\\\'~‘~g" "$file"
+    # Replace others \' by ‘
+    sedi "s~\\\'~‘~g" "$file"
+  fi
 
-  # Replace \" by “
-  # shellcheck disable=SC1111
-  sedi "s~\\\\\"~“~g" "$file"
+  if [[ "$REPLACE_QUOTES" == "true" ]]; then
+    # Replace \" by “
+    # shellcheck disable=SC1111
+    sedi "s~\\\\\"~“~g" "$file"
+  fi
 
   # TODO for plurals form duplication, we should check if the form already exist before duplicating (switch to python)
 
