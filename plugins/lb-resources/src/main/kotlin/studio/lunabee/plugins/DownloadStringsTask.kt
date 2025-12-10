@@ -14,6 +14,12 @@ abstract class DownloadStringsTask : DefaultTask() {
     abstract val providerApiKey: Property<String>
 
     @get:Input
+    abstract val replaceQuotes: Property<Boolean>
+
+    @get:Input
+    abstract val replaceApostrophes: Property<Boolean>
+
+    @get:Input
     abstract val projectDir: Property<File>
 
     @get:Inject
@@ -39,6 +45,6 @@ abstract class DownloadStringsTask : DefaultTask() {
         destFile.writeText(configFile)
         val stringsPath = File(projectDir, "/src/main/")
         val stringsFilename = "strings"
-        eo.exec { commandLine(destFile.absolutePath, locoApiKey, stringsPath, stringsFilename) }
+        eo.exec { commandLine(destFile.absolutePath, locoApiKey, stringsPath, stringsFilename, replaceApostrophes, replaceQuotes) }
     }
 }

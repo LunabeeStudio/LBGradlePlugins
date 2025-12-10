@@ -18,6 +18,8 @@ class LBResourcesPlugin : Plugin<Project> {
                 null -> throw IllegalArgumentException("provider must be set")
             }
             projectDir.set(extension.targetDirectory)
+            replaceQuotes.set(extension.replaceQuotes)
+            replaceApostrophes.set(extension.replaceApostrophes)
         }
     }
 }
