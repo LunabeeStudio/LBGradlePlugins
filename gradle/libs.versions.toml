@@ -31,7 +31,7 @@ lbAndroidLibrary = "1.1.0"
 lbDetekt = "2.0.2"
 lbDokka = "1.0.0"
 lbMultiplatformLibrary = "1.0.0"
-lbResources = "1.1.0"
+lbResources = "1.2.0"
 
 [libraries]
 
