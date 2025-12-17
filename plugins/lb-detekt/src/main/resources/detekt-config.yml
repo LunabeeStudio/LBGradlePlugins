@@ -20,6 +20,7 @@ complexity:
     ignoreFunction: [ 'equals' ]
   LongMethod:
     allowedLines: 100
+    ignoreAnnotated: [ 'Preview', 'CorePreview' ]
 
 empty-blocks:
   EmptyFunctionBlock:
