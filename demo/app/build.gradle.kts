@@ -38,7 +38,7 @@ lbAndroidApplication {
 }
 
 lbResources {
-    provider = StringsProvider.Loco("maZteRAXR20kWa9XBlOfZ7Pgnwy8uor3")
+    provider = StringsProvider.Loco("")
 }
 
 dependencies {

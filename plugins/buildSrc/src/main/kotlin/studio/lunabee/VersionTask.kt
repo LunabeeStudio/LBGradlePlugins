@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2026 Lunabee Studio
+ * Copyright © 2022 Lunabee Studio
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,21 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Created by Lunabee Studio / Date - 1/12/2026
- * Last modified 1/12/26, 9:42 AM
+ * VersionTask.kt
+ * Lunabee Compose
+ *
+ * Created by Lunabee Studio / Date - 5/9/2022 - for the Lunabee Compose library.
  */
 
-plugins {
-    `kotlin-dsl`
-}
+package studio.lunabee
 
-repositories {
-    mavenCentral()
-    gradlePluginPortal()
-}
+import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.TaskAction
 
-dependencies {
-    implementation(libs.gradlePublishPlugin)
-    implementation(libs.jreleaserGradlePlugin)
-    implementation(libs.kotlinGradlePlugin)
+abstract class VersionTask : DefaultTask() {
+    @TaskAction
+    fun getVersion() {
+        println(project.version)
+    }
 }

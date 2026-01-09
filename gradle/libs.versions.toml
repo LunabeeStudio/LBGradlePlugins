@@ -24,6 +24,7 @@ androidxComposeBom = "2025.12.01"
 detekt = "2.0.0-alpha.1"
 dokka = "2.1.0"
 gradlePublish = "2.0.0"
+jreleaser = "1.22.0"
 kotlin = "2.3.0"
 lbAndroidApplication = "1.1.0"
 lbAndroidFlavors = "1.1.0"
@@ -44,6 +45,7 @@ detekt = { group = "dev.detekt", name = "detekt-gradle-plugin", version.ref = "d
 dokkaGradlePlugin = { group = "org.jetbrains.dokka", name = "org.jetbrains.dokka.gradle.plugin", version.ref = "dokka" }
 gradleAndroid = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
 gradlePublishPlugin = { group = "com.gradle.plugin-publish", name = "com.gradle.plugin-publish.gradle.plugin", version.ref = "gradlePublish" }
+jreleaserGradlePlugin = { group = "org.jreleaser", name = "org.jreleaser.gradle.plugin", version.ref = "jreleaser" }
 kotlinCompose = { group = "org.jetbrains.kotlin", name = "compose-compiler-gradle-plugin", version.ref = "kotlin" }
 kotlinGradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlinMultiplatform = { group = "org.jetbrains.kotlin.multiplatform", name = "org.jetbrains.kotlin.multiplatform.gradle.plugin", version.ref = "kotlin" }
