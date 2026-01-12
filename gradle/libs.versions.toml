@@ -10,10 +10,8 @@ kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref =
 lbAndroidApplication = { id = "studio.lunabee.plugin.android.application", version.ref = "lbAndroidApplication" }
 lbAndroidFlavors = { id = "studio.lunabee.plugin.android.flavors", version.ref = "lbAndroidFlavors" }
 lbAndroidLibrary = { id = "studio.lunabee.plugin.android.library", version.ref = "lbAndroidLibrary" }
-#lbDetekt = { id = "studio.lunabee.plugin.detekt", version.ref = "lbDetekt" }
-#lbDokka = { id = "studio.lunabee.plugin.dokka", version.ref = "lbDokka" }
-lbDetekt = { id = "studio.lunabee.plugins.detekt", version.ref = "lbDetekt" }
-lbDokka = { id = "studio.lunabee.plugins.dokka", version.ref = "lbDokka" }
+lbDetekt = { id = "studio.lunabee.plugin.detekt", version.ref = "lbDetekt" }
+lbDokka = { id = "studio.lunabee.plugin.dokka", version.ref = "lbDokka" }
 lbMultiplatformLibrary = { id = "studio.lunabee.plugin.multiplatform.library", version.ref = "lbMultiplatformLibrary" }
 lbResources = { id = "studio.lunabee.plugin.resources", version.ref = "lbResources" }
 

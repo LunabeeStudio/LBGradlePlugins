@@ -35,7 +35,7 @@ description = "This plugin allows you to configure an Android application in a s
 
 gradlePlugin {
     plugins {
-        create("studio.lunabee.plugins.android.application") {
+        create("studio.lunabee.plugin.android.application") {
             id = "studio.lunabee.plugin.android.application"
             implementationClass = "studio.lunabee.plugins.LBAndroidApplicationPlugin"
             version = "1.1.0"

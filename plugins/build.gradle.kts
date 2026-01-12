@@ -18,6 +18,7 @@
  */
 
 plugins {
+    // TODO publish and rollback to use maven central version
     id("studio.lunabee.plugins.dokka") version "1.0.0" apply false
     id("studio.lunabee.plugins.detekt") version "2.0.4"
 }

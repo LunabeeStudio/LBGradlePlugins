@@ -33,7 +33,7 @@ description = "This plugin allows you to configure Dokka to ensure consistent do
 
 gradlePlugin {
     plugins {
-        create("studio.lunabee.plugins.dokka") {
+        create("studio.lunabee.plugin.dokka") {
             id = "studio.lunabee.plugin.dokka"
             implementationClass = "studio.lunabee.plugins.LBDokkaPlugin"
             version = "1.0.0"

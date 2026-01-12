@@ -35,7 +35,7 @@ description = "This plugin allows you to configure Detekt to ensure consistent c
 
 gradlePlugin {
     plugins {
-        create("studio.lunabee.plugins.detekt") {
+        create("studio.lunabee.plugin.detekt") {
             id = "studio.lunabee.plugin.detekt"
             implementationClass = "studio.lunabee.plugins.LBDetektPlugin"
             version = "2.0.4"

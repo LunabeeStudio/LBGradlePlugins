@@ -29,7 +29,7 @@ description = "This plugin allows you to configure the Lunabee remote Gradle cac
 
 gradlePlugin {
     plugins {
-        create("studio.lunabee.plugins.cache") {
+        create("studio.lunabee.plugin.cache") {
             id = "studio.lunabee.plugin.cache"
             implementationClass = "studio.lunabee.plugins.LBCachePlugin"
             version = "1.0.0"

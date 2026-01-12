@@ -29,7 +29,7 @@ description = "This plugin allows you to configure a task to download resources 
 
 gradlePlugin {
     plugins {
-        create("studio.lunabee.plugins.resources") {
+        create("studio.lunabee.plugin.resources") {
             id = "studio.lunabee.plugin.resources"
             implementationClass = "studio.lunabee.plugins.LBResourcesPlugin"
             version = "1.2.0"

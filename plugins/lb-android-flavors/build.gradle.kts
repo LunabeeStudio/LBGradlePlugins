@@ -34,7 +34,7 @@ description = "This plugin allows you to configure usual Android flavors in a si
 
 gradlePlugin {
     plugins {
-        create("studio.lunabee.plugins.android.flavors") {
+        create("studio.lunabee.plugin.android.flavors") {
             id = "studio.lunabee.plugin.android.flavors"
             implementationClass = "studio.lunabee.plugins.LBAndroidFlavorsPlugin"
             version = "1.1.0"
