@@ -18,8 +18,8 @@
  */
 
 plugins {
-    alias(libs.plugins.lbDokka) apply false
-    alias(libs.plugins.lbDetekt)
+    id("studio.lunabee.plugins.dokka") version "1.0.0" apply false
+    id("studio.lunabee.plugins.detekt") version "2.0.4"
 }
 
 // Update gradle-wrapper by running `./gradlew wrapper --gradle-version latest`

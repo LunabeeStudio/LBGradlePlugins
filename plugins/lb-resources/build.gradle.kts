@@ -25,14 +25,16 @@ plugins {
     id("lunabee.plugin-conventions")
 }
 
+description = "This plugin allows you to configure a task to download resources from any provider."
+
 gradlePlugin {
     plugins {
         create("studio.lunabee.plugins.resources") {
-            id = "studio.lunabee.plugins.resources"
+            id = "studio.lunabee.plugin.resources"
             implementationClass = "studio.lunabee.plugins.LBResourcesPlugin"
             version = "1.2.0"
             displayName = "LBResources"
-            description = "This plugin allows you to configure a task to download resources from any provider."
+            description = project.description
             tags = listOf("android", "lunabee", "resources")
         }
     }

@@ -25,14 +25,16 @@ plugins {
     id("lunabee.plugin-conventions")
 }
 
+description = "This plugin allows you to configure the Lunabee remote Gradle cache"
+
 gradlePlugin {
     plugins {
         create("studio.lunabee.plugins.cache") {
-            id = "studio.lunabee.plugins.cache"
+            id = "studio.lunabee.plugin.cache"
             implementationClass = "studio.lunabee.plugins.LBCachePlugin"
             version = "1.0.0"
             displayName = "LBCache"
-            description = "This plugin allows you to configure the Lunabee remote Gradle cache"
+            description = project.description
             tags = listOf("gradle", "lunabee", "cache")
         }
     }

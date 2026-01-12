@@ -7,13 +7,15 @@ gradlePublish = { id = "com.gradle.plugin-publish", version.ref = "gradlePublish
 kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlinCompose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
-lbAndroidApplication = { id = "studio.lunabee.plugins.android.application", version.ref = "lbAndroidApplication" }
-lbAndroidFlavors = { id = "studio.lunabee.plugins.android.flavors", version.ref = "lbAndroidFlavors" }
-lbAndroidLibrary = { id = "studio.lunabee.plugins.android.library", version.ref = "lbAndroidLibrary" }
+lbAndroidApplication = { id = "studio.lunabee.plugin.android.application", version.ref = "lbAndroidApplication" }
+lbAndroidFlavors = { id = "studio.lunabee.plugin.android.flavors", version.ref = "lbAndroidFlavors" }
+lbAndroidLibrary = { id = "studio.lunabee.plugin.android.library", version.ref = "lbAndroidLibrary" }
+#lbDetekt = { id = "studio.lunabee.plugin.detekt", version.ref = "lbDetekt" }
+#lbDokka = { id = "studio.lunabee.plugin.dokka", version.ref = "lbDokka" }
 lbDetekt = { id = "studio.lunabee.plugins.detekt", version.ref = "lbDetekt" }
 lbDokka = { id = "studio.lunabee.plugins.dokka", version.ref = "lbDokka" }
-lbMultiplatformLibrary = { id = "studio.lunabee.plugins.multiplatform.library", version.ref = "lbMultiplatformLibrary" }
-lbResources = { id = "studio.lunabee.plugins.resources", version.ref = "lbResources" }
+lbMultiplatformLibrary = { id = "studio.lunabee.plugin.multiplatform.library", version.ref = "lbMultiplatformLibrary" }
+lbResources = { id = "studio.lunabee.plugin.resources", version.ref = "lbResources" }
 
 [versions]
 
