@@ -18,9 +18,8 @@
  */
 
 plugins {
-    // TODO publish and rollback to use maven central version
-    id("studio.lunabee.plugins.dokka") version "1.0.0" apply false
-    id("studio.lunabee.plugins.detekt") version "2.0.4"
+    alias(libs.plugins.lbDokka) apply false
+    alias(libs.plugins.lbDetekt)
 }
 
 // Update gradle-wrapper by running `./gradlew wrapper --gradle-version latest`
@@ -33,6 +32,6 @@ lbDetekt {
 }
 
 subprojects {
-    apply(plugin = "studio.lunabee.plugins.dokka")
+    apply(plugin = "studio.lunabee.plugin.dokka")
     group = "studio.lunabee.plugin"
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2022 Lunabee Studio
+ * Copyright (c) 2026 Lunabee Studio
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * VersionTask.kt
- * Lunabee Compose
- *
- * Created by Lunabee Studio / Date - 5/9/2022 - for the Lunabee Compose library.
+ * Created by Lunabee Studio / Date - 1/12/2026
+ * Last modified 1/12/26, 10:04 AM
  */
 
 package studio.lunabee
