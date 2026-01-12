@@ -17,7 +17,6 @@
  * Last modified 9/25/25, 10:11 AM
  */
 
-import java.net.URI
 import java.util.Locale
 
 plugins {
@@ -30,28 +29,9 @@ project.extensions.configure(GradlePluginDevelopmentExtension::class.java) {
 }
 
 project.extensions.configure<PublishingExtension>("publishing") {
-    setupMavenRepository()
     publications {
         create<MavenPublication>("pluginMaven") {
             setPom()
-        }
-    }
-}
-
-/**
- * Set repository destination depending on [project] and version name.
- * Credentials should be stored in your root gradle.properties, in a non source controlled file.
- */
-fun PublishingExtension.setupMavenRepository() {
-    repositories {
-        maven {
-            authentication {
-                credentials.username = System.getenv(EnvConfig.EnvArtifactoryUser)
-                    ?: project.properties["artifactory_deployer_release_username"] as? String
-                credentials.password = System.getenv(EnvConfig.EnvArtifactoryApiKey)
-                    ?: project.properties["artifactory_deployer_release_api_key"] as? String
-            }
-            url = URI.create("https://artifactory.lunabee.studio/artifactory/lunabee-gradle-plugin")
         }
     }
 }
