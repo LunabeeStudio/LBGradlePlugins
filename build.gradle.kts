@@ -35,4 +35,5 @@ tasks.wrapper {
 
 lbDetekt {
     verbose.set(false)
+    config.setFrom(files(lunabeeConfig, "$projectDir/lunabee-detekt-config.yml"))
 }
