@@ -14,10 +14,17 @@
  * limitations under the License.
  *
  * Created by Lunabee Studio / Date - 1/12/2026
- * Last modified 9/25/25, 10:11 AM
+ * Last modified 1/12/26, 10:04 AM
  */
 
-object EnvConfig {
-    const val EnvArtifactoryUser: String = "ARTIFACTORY_USER"
-    const val EnvArtifactoryApiKey: String = "ARTIFACTORY_API_KEY"
+package studio.lunabee
+
+import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.TaskAction
+
+abstract class VersionTask : DefaultTask() {
+    @TaskAction
+    fun getVersion() {
+        println(project.version)
+    }
 }

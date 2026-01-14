@@ -30,14 +30,16 @@ dependencies {
     implementation(libs.kotlinGradlePlugin)
 }
 
+description = "This plugin allows you to configure usual Android flavors in a simple and fast way."
+
 gradlePlugin {
     plugins {
-        create("studio.lunabee.plugins.android.flavors") {
-            id = "studio.lunabee.plugins.android.flavors"
+        create("studio.lunabee.plugin.android.flavors") {
+            id = "studio.lunabee.plugin.android.flavors"
             implementationClass = "studio.lunabee.plugins.LBAndroidFlavorsPlugin"
             version = "1.1.0"
             displayName = "LBAndroidFlavors"
-            description = "This plugin allows you to configure usual Android flavors in a simple and fast way."
+            description = project.description
             tags = listOf("android", "flavors", "lunabee")
         }
     }

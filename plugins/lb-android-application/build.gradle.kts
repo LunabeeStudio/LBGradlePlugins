@@ -31,14 +31,16 @@ dependencies {
     implementation(libs.kotlinGradlePlugin)
 }
 
+description = "This plugin allows you to configure an Android application in a simple and fast way."
+
 gradlePlugin {
     plugins {
-        create("studio.lunabee.plugins.android.application") {
-            id = "studio.lunabee.plugins.android.application"
+        create("studio.lunabee.plugin.android.application") {
+            id = "studio.lunabee.plugin.android.application"
             implementationClass = "studio.lunabee.plugins.LBAndroidApplicationPlugin"
             version = "1.1.0"
             displayName = "LBAndroidApplication"
-            description = "This plugin allows you to configure an Android application in a simple and fast way."
+            description = project.description
             tags = listOf("android", "application", "lunabee")
         }
     }

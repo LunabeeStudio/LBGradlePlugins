@@ -32,5 +32,6 @@ lbDetekt {
 }
 
 subprojects {
-    apply(plugin = "studio.lunabee.plugins.dokka")
+    apply(plugin = "studio.lunabee.plugin.dokka")
+    group = "studio.lunabee.plugin"
 }

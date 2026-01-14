@@ -29,14 +29,16 @@ dependencies {
     implementation(libs.dokkaGradlePlugin)
 }
 
+description = "This plugin allows you to configure Dokka to ensure consistent doc generation across all projects."
+
 gradlePlugin {
     plugins {
-        create("studio.lunabee.plugins.dokka") {
-            id = "studio.lunabee.plugins.dokka"
+        create("studio.lunabee.plugin.dokka") {
+            id = "studio.lunabee.plugin.dokka"
             implementationClass = "studio.lunabee.plugins.LBDokkaPlugin"
             version = "1.0.0"
             displayName = "LBDokka"
-            description = "This plugin allows you to configure Dokka to ensure consistent doc generation across all projects."
+            description = project.description
             tags = listOf("dokka", "android", "lunabee", "doc")
         }
     }

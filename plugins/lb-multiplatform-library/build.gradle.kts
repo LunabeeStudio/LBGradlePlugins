@@ -31,14 +31,16 @@ dependencies {
     implementation(libs.kotlinMultiplatform)
 }
 
+description = "This plugin allows you to configure a multiplatform library in a simple and fast way."
+
 gradlePlugin {
     plugins {
-        create("studio.lunabee.plugins.multiplatform.library") {
-            id = "studio.lunabee.plugins.multiplatform.library"
+        create("studio.lunabee.plugin.multiplatform.library") {
+            id = "studio.lunabee.plugin.multiplatform.library"
             implementationClass = "studio.lunabee.plugins.LBMultiplatformLibraryPlugin"
             version = "1.0.0"
             displayName = "LBMultiplatformLibrary"
-            description = "This plugin allows you to configure a multiplatform library in a simple and fast way."
+            description = project.description
             tags = listOf("android", "ios", "jvm", "multiplatform", "library", "lunabee")
         }
     }

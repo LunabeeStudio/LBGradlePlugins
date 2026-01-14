@@ -31,14 +31,16 @@ dependencies {
     testImplementation(libs.kotlinTest)
 }
 
+description = "This plugin allows you to configure Detekt to ensure consistent code style across all projects."
+
 gradlePlugin {
     plugins {
-        create("studio.lunabee.plugins.detekt") {
-            id = "studio.lunabee.plugins.detekt"
+        create("studio.lunabee.plugin.detekt") {
+            id = "studio.lunabee.plugin.detekt"
             implementationClass = "studio.lunabee.plugins.LBDetektPlugin"
             version = "2.0.4"
             displayName = "LBDetekt"
-            description = "This plugin allows you to configure Detekt to ensure consistent code style across all projects."
+            description = project.description
             tags = listOf("detekt", "android", "lunabee", "code", "style")
         }
     }

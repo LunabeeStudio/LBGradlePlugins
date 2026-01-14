@@ -28,5 +28,6 @@ repositories {
 
 dependencies {
     implementation(libs.gradlePublishPlugin)
+    implementation(libs.jreleaserGradlePlugin)
     implementation(libs.kotlinGradlePlugin)
 }
