@@ -37,7 +37,7 @@ gradlePlugin {
         create("studio.lunabee.plugin.android.flavors") {
             id = "studio.lunabee.plugin.android.flavors"
             implementationClass = "studio.lunabee.plugins.LBAndroidFlavorsPlugin"
-            version = "1.1.0"
+            version = "1.1.1"
             displayName = "LBAndroidFlavors"
             description = project.description
             tags = listOf("android", "flavors", "lunabee")
