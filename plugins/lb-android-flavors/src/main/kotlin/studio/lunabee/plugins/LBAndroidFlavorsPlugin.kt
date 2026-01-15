@@ -46,25 +46,25 @@ class LBAndroidFlavorsPlugin : Plugin<Project> {
     private fun setupFlavors(target: Project) {
         target.extensions.configure<BaseAppModuleExtension>("android") {
             // Configure flavors for the app: dev, prod and client, internal. By default, devInternal will be used.
-            flavorDimensions += "environment"
-            flavorDimensions += "app"
+            flavorDimensions += LBFlavorDimension.Environment.Key
+            flavorDimensions += LBFlavorDimension.App.Key
             productFlavors {
-                create("dev") {
-                    dimension = "environment"
+                create(LBFlavorDimension.Environment.Dev) {
+                    dimension = LBFlavorDimension.Environment.Key
                     applicationIdSuffix = ".dev"
                     isDefault = true
                     buildConfigField("Boolean", "IS_DEV", "true")
                 }
-                create("prod") {
-                    dimension = "environment"
+                create(LBFlavorDimension.Environment.Prod) {
+                    dimension = LBFlavorDimension.Environment.Key
                     buildConfigField("Boolean", "IS_DEV", "false")
                 }
-                create("client") {
-                    dimension = "app"
+                create(LBFlavorDimension.App.Client) {
+                    dimension = LBFlavorDimension.App.Key
                     buildConfigField("Boolean", "IS_INTERNAL", "false")
                 }
-                create("internal") {
-                    dimension = "app"
+                create(LBFlavorDimension.App.Internal) {
+                    dimension = LBFlavorDimension.App.Key
                     isDefault = true
                     buildConfigField("Boolean", "IS_INTERNAL", "true")
                 }
