@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add `LBFlavorDimension` to expose build variants constant names
 
+### LBDetekt 2.0.5
+
+- Fix don't remove last line if dependency block is empty
+
 ## 2026-01-06
 
 ### LBDetekt 2.0.4
