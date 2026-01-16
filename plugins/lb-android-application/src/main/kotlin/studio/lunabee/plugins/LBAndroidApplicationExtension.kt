@@ -19,7 +19,7 @@
 
 package studio.lunabee.plugins
 
-import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
+import com.android.build.api.dsl.ApplicationExtension
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginExtension
@@ -44,7 +44,7 @@ open class LBAndroidApplicationExtension @Inject constructor(private val project
         }
 
         // Set default values
-        project.extensions.configure<BaseAppModuleExtension>("android") {
+        project.extensions.configure<ApplicationExtension>("android") {
             compileSdk = DefaultCompileSdk
 
             defaultConfig.versionCode = DefaultVersionCode
@@ -100,8 +100,8 @@ open class LBAndroidApplicationExtension @Inject constructor(private val project
         }
     }
 
-    fun android(block: BaseAppModuleExtension.() -> Unit) {
-        project.extensions.configure<BaseAppModuleExtension>("android") {
+    fun android(block: ApplicationExtension.() -> Unit) {
+        project.extensions.configure<ApplicationExtension>("android") {
             block()
         }
     }

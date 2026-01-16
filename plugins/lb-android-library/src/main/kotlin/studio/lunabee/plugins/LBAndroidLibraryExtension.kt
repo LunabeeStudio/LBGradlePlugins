@@ -19,7 +19,7 @@
 
 package studio.lunabee.plugins
 
-import com.android.build.gradle.LibraryExtension
+import com.android.build.api.dsl.LibraryExtension
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginExtension
@@ -64,10 +64,6 @@ open class LBAndroidLibraryExtension @Inject constructor(private val project: Pr
         // Apply compose plugin if applicable.
         if (propertiesReceiver.withCompose) {
             project.pluginManager.apply("org.jetbrains.kotlin.plugin.compose")
-        }
-        // Apply Kotlin Android plugin if applicable.
-        if (!project.pluginManager.hasPlugin("org.jetbrains.kotlin.multiplatform")) {
-            project.pluginManager.apply("org.jetbrains.kotlin.android")
         }
 
         // Configure Java Toolchain.

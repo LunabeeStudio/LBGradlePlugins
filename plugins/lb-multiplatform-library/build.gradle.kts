@@ -16,9 +16,6 @@
  * Created by Lunabee Studio / Date - 1/12/2026
  * Last modified 1/9/26, 5:10 PM
  */
-
-@file:Suppress("UnstableApiUsage")
-
 plugins {
     `java-gradle-plugin`
     `kotlin-dsl`
@@ -38,7 +35,7 @@ gradlePlugin {
         create("studio.lunabee.plugin.multiplatform.library") {
             id = "studio.lunabee.plugin.multiplatform.library"
             implementationClass = "studio.lunabee.plugins.LBMultiplatformLibraryPlugin"
-            version = "1.0.0"
+            version = "2.0.0"
             displayName = "LBMultiplatformLibrary"
             description = project.description
             tags = listOf("android", "ios", "jvm", "multiplatform", "library", "lunabee")

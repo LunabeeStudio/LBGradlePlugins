@@ -247,4 +247,24 @@ class SortBuildDependenciesFileTest {
 
         assertContentEquals(expected, actual, actual.joinToString("\n"))
     }
+
+    @Test
+    fun empty_block_test() {
+        val expected =
+            """
+            sourceSets {
+                commonMain.dependencies {
+                    api(libs.kotlinTest)
+                }
+                jvmTest.dependencies {
+                }
+                nativeMain {
+                }
+            }
+            """.trimIndent().split("\n")
+
+        val actual = sortBuildDependenciesFile.sortLines(expected).flatMap { it.split("\n") }
+
+        assertContentEquals(expected, actual, actual.joinToString("\n"))
+    }
 }

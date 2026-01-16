@@ -18,7 +18,6 @@
  */
 
 import studio.lunabee.plugins.StringsProvider
-
 plugins {
     alias(libs.plugins.lbAndroidApplication)
     alias(libs.plugins.lbAndroidFlavors)

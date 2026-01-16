@@ -17,8 +17,6 @@
  * Last modified 9/25/25, 10:11 AM
  */
 
-@file:Suppress("UnstableApiUsage")
-
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
@@ -26,16 +24,6 @@ pluginManagement {
         google()
         mavenCentral()
         gradlePluginPortal()
-        maven {
-            url = uri("https://artifactory.lunabee.studio/artifactory/lunabee-gradle-plugin/")
-            credentials {
-                username = "library-consumer-public"
-                password = "AKCp8k8PbuxYXoLgvNpc5Aro1ytENk3rSyXCwQ71BA4byg3h7iuMyQ6Sd4ZmJtSJcr7XjwMej"
-            }
-            mavenContent {
-                releasesOnly()
-            }
-        }
     }
 }
 
@@ -64,5 +52,6 @@ include(":lb-android-flavors")
 include(":lb-detekt")
 include(":lb-dokka")
 include(":lb-multiplatform-library")
+include(":lb-multiplatform-android-library")
 include(":lb-resources")
 include(":lb-cache")

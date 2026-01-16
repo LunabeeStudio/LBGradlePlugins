@@ -1,3 +1,6 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import studio.lunabee.plugins.TargetPlatform
+
 /*
  * Copyright (c) 2026 Lunabee Studio
  *
@@ -17,24 +20,16 @@
  * Last modified 1/9/26, 5:10 PM
  */
 
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import studio.lunabee.plugins.TargetPlatform
-
 plugins {
-    alias(libs.plugins.lbMultiplatformLibrary)
-    alias(libs.plugins.lbAndroidLibrary)
+    alias(libs.plugins.lbMultiplatformAndroidLibrary)
     alias(libs.plugins.lbDokka)
-}
-
-lbAndroidLibrary {
-    android {
-        namespace = "studio.lunabee.plugin.demo.shared"
-        withCompose = false
-    }
 }
 
 lbMultiplatformLibrary {
     multiplatform {
+        compileSdk = 36
+        namespace = "studio.lunabee.plugin.demo.shared"
+        withCompose = false
         jvmTarget = JvmTarget.JVM_21
         targets = listOf(
             TargetPlatform.Android(),

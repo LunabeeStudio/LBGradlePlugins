@@ -16,9 +16,6 @@
  * Created by Lunabee Studio / Date - 1/12/2026
  * Last modified 1/9/26, 5:10 PM
  */
-
-@file:Suppress("UnstableApiUsage")
-
 plugins {
     `java-gradle-plugin`
     `kotlin-dsl`
@@ -38,7 +35,7 @@ gradlePlugin {
         create("studio.lunabee.plugin.android.library") {
             id = "studio.lunabee.plugin.android.library"
             implementationClass = "studio.lunabee.plugins.LBAndroidLibraryPlugin"
-            version = "1.1.0"
+            version = "1.2.0"
             displayName = "LBAndroidLibrary"
             description = project.description
             tags = listOf("android", "library", "lunabee")

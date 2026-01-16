@@ -65,7 +65,9 @@ class SortBuildDependenciesFile(
                     sortedLines.add("")
                 }
 
-                sortedLines.removeLast() // Remove the last empty line
+                if (groupedLines.isNotEmpty()) {
+                    sortedLines.removeLast() // Remove the last empty line
+                }
                 sortedLines.add(line) // Add the closing '}' line
                 insideTargetBlock = false
                 dependencyLines.clear() // Clear the list for the next target block
