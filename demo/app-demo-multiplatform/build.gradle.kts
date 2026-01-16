@@ -19,7 +19,6 @@
 
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import studio.lunabee.plugins.TargetPlatform
-
 plugins {
     alias(libs.plugins.lbMultiplatformLibrary)
     alias(libs.plugins.lbDokka)

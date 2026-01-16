@@ -16,7 +16,6 @@
  * Created by Lunabee Studio / Date - 1/12/2026
  * Last modified 1/9/26, 5:10 PM
  */
-
 plugins {
     alias(libs.plugins.lbAndroidLibrary)
 }

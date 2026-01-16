@@ -16,7 +16,6 @@
  * Created by Lunabee Studio / Date - 1/12/2026
  * Last modified 1/12/26, 9:42 AM
  */
-
 plugins {
     `kotlin-dsl`
 }

@@ -68,12 +68,6 @@ open class LBMultiplatformLibraryExtension @Inject constructor(private val proje
                         }
                     }
                 }
-
-                is TargetPlatform.Android -> androidTarget {
-                    compilerOptions.jvmTarget.set(propertiesReceiver.jvmTarget)
-                    targetPlatform.configure(this)
-                }
-
                 is TargetPlatform.Jvm -> jvm {
                     compilerOptions.jvmTarget.set(propertiesReceiver.jvmTarget)
                     targetPlatform.configure(this)
@@ -97,7 +91,6 @@ open class LBMultiplatformLibraryExtension @Inject constructor(private val proje
  *
  * plugins {
  *     alias(libs.plugins.lbMultiplatformLibrary)
- *     alias(libs.plugins.lbAndroidLibrary) // mandatory if TargetPlatform.Android is added
  * }
  *
  * lbAndroidLibrary {
@@ -111,7 +104,6 @@ open class LBMultiplatformLibraryExtension @Inject constructor(private val proje
  *     multiplatform {
  *         jvmTarget = JvmTarget.JVM_21
  *         targets = listOf(
- *             TargetPlatform.Android(),
  *             TargetPlatform.Jvm(),
  *             TargetPlatform.Ios {
  *                 // Optional configuration for iOS (export...)
@@ -122,9 +114,6 @@ open class LBMultiplatformLibraryExtension @Inject constructor(private val proje
  *
  * kotlin {
  *     sourceSets {
- *         androidMain.dependencies {
- *             // Android dependencies goes here.
- *         }
  *         commonMain.dependencies {
  *             // Common dependencies goes here.
  *         }

@@ -12,12 +12,13 @@ lbAndroidFlavors = { id = "studio.lunabee.plugin.android.flavors", version.ref =
 lbAndroidLibrary = { id = "studio.lunabee.plugin.android.library", version.ref = "lbAndroidLibrary" }
 lbDetekt = { id = "studio.lunabee.plugin.detekt", version.ref = "lbDetekt" }
 lbDokka = { id = "studio.lunabee.plugin.dokka", version.ref = "lbDokka" }
+lbMultiplatformAndroidLibrary = { id = "studio.lunabee.plugin.multiplatform.android.library", version.ref = "lbMultiplatformAndroidLibrary" }
 lbMultiplatformLibrary = { id = "studio.lunabee.plugin.multiplatform.library", version.ref = "lbMultiplatformLibrary" }
 lbResources = { id = "studio.lunabee.plugin.resources", version.ref = "lbResources" }
 
 [versions]
 
-agp = "8.13.2"
+agp = "9.0.0"
 androidxActivityCompose = "1.12.2"
 androidxAppcompat = "1.7.1"
 androidxComposeBom = "2026.01.00"
@@ -31,6 +32,7 @@ lbAndroidFlavors = "1.1.0"
 lbAndroidLibrary = "1.1.0"
 lbDetekt = "2.0.4"
 lbDokka = "1.0.0"
+lbMultiplatformAndroidLibrary = "1.0.0"
 lbMultiplatformLibrary = "1.0.0"
 lbResources = "1.2.0"
 
@@ -49,4 +51,5 @@ jreleaserGradlePlugin = { group = "org.jreleaser", name = "org.jreleaser.gradle.
 kotlinCompose = { group = "org.jetbrains.kotlin", name = "compose-compiler-gradle-plugin", version.ref = "kotlin" }
 kotlinGradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlinMultiplatform = { group = "org.jetbrains.kotlin.multiplatform", name = "org.jetbrains.kotlin.multiplatform.gradle.plugin", version.ref = "kotlin" }
+kotlinMultiplatformAndroid = { group = "com.android.kotlin.multiplatform.library", name = "com.android.kotlin.multiplatform.library.gradle.plugin", version.ref = "agp" }
 kotlinTest = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }

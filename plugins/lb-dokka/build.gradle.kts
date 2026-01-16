@@ -17,8 +17,6 @@
  * Last modified 1/9/26, 5:10 PM
  */
 
-@file:Suppress("UnstableApiUsage")
-
 plugins {
     `java-gradle-plugin`
     `kotlin-dsl`

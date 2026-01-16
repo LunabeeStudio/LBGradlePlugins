@@ -21,7 +21,7 @@
 
 package studio.lunabee.plugins
 
-import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
+import com.android.build.api.dsl.ApplicationExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
@@ -44,7 +44,7 @@ class LBAndroidFlavorsPlugin : Plugin<Project> {
     }
 
     private fun setupFlavors(target: Project) {
-        target.extensions.configure<BaseAppModuleExtension>("android") {
+        target.extensions.configure<ApplicationExtension>("android") {
             // Configure flavors for the app: dev, prod and client, internal. By default, devInternal will be used.
             flavorDimensions += LBFlavorDimension.Environment.Key
             flavorDimensions += LBFlavorDimension.App.Key

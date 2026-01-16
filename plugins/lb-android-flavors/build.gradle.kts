@@ -17,8 +17,6 @@
  * Last modified 1/9/26, 5:10 PM
  */
 
-@file:Suppress("UnstableApiUsage")
-
 plugins {
     `java-gradle-plugin`
     `kotlin-dsl`
@@ -37,7 +35,7 @@ gradlePlugin {
         create("studio.lunabee.plugin.android.flavors") {
             id = "studio.lunabee.plugin.android.flavors"
             implementationClass = "studio.lunabee.plugins.LBAndroidFlavorsPlugin"
-            version = "1.1.1"
+            version = "1.2.0"
             displayName = "LBAndroidFlavors"
             description = project.description
             tags = listOf("android", "flavors", "lunabee")

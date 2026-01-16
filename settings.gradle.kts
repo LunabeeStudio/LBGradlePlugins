@@ -17,8 +17,6 @@
  * Last modified 9/23/25, 3:41 PM
  */
 
-@file:Suppress("UnstableApiUsage")
-
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
@@ -38,7 +36,6 @@ dependencyResolutionManagement {
         gradlePluginPortal()
     }
 }
-
 plugins {
     id("studio.lunabee.plugin.cache") version "1.0.0"
 }

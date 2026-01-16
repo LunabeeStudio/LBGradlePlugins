@@ -17,8 +17,6 @@
  * Last modified 9/25/25, 10:11 AM
  */
 
-@file:Suppress("UnstableApiUsage")
-
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
@@ -54,5 +52,6 @@ include(":lb-android-flavors")
 include(":lb-detekt")
 include(":lb-dokka")
 include(":lb-multiplatform-library")
+include(":lb-multiplatform-android-library")
 include(":lb-resources")
 include(":lb-cache")
