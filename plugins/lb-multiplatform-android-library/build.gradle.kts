@@ -25,21 +25,21 @@ plugins {
 
 dependencies {
     implementation(libs.gradleAndroid)
-    implementation(libs.kotlinCompose)
     implementation(libs.kotlinGradlePlugin)
+    implementation(libs.kotlinMultiplatformAndroid)
 }
 
-description = "This plugin allows you to configure an Android application in a simple and fast way."
+description = "This plugin allows you to configure a multiplatform library with Android target in a simple and fast way."
 
 gradlePlugin {
     plugins {
-        create("studio.lunabee.plugin.android.application") {
-            id = "studio.lunabee.plugin.android.application"
-            implementationClass = "studio.lunabee.plugins.LBAndroidApplicationPlugin"
-            version = "1.2.0"
-            displayName = "LBAndroidApplication"
+        create("studio.lunabee.plugin.multiplatform.android.library") {
+            id = "studio.lunabee.plugin.multiplatform.android.library"
+            implementationClass = "studio.lunabee.plugins.LBMultiplatformAndroidLibraryPlugin"
+            version = "1.0.0"
+            displayName = "LBMultiplatformAndroidLibrary"
             description = project.description
-            tags = listOf("android", "application", "lunabee")
+            tags = listOf("android", "ios", "jvm", "multiplatform", "library", "lunabee")
         }
     }
 }

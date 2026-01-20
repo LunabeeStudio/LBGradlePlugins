@@ -19,12 +19,17 @@
 
 package studio.lunabee.plugins
 
+import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.Framework
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 
 sealed interface TargetPlatform {
     data class Ios(
         val frameworkConfig: Framework.() -> Unit = { },
+    ) : TargetPlatform
+
+    data class Android(
+        val configure: KotlinMultiplatformAndroidLibraryTarget.() -> Unit = { },
     ) : TargetPlatform
 
     data class Jvm(

@@ -13,28 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Created by Lunabee Studio / Date - 1/12/2026
- * Last modified 1/9/26, 5:10 PM
+ * Created by Lunabee Studio / Date - 1/19/2026
+ * Last modified 1/19/26, 9:24 AM
  */
 
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import studio.lunabee.plugins.TargetPlatform
 
 plugins {
-    alias(libs.plugins.lbMultiplatformLibrary)
-    alias(libs.plugins.lbAndroidLibrary)
+    alias(libs.plugins.lbMultiplatformAndroidLibrary)
     alias(libs.plugins.lbDokka)
-}
-
-lbAndroidLibrary {
-    android {
-        namespace = "studio.lunabee.plugin.demo.shared"
-        withCompose = false
-    }
 }
 
 lbMultiplatformLibrary {
     multiplatform {
+        compileSdk = 36
+        namespace = "studio.lunabee.plugin.demo.shared"
+        withCompose = false
         jvmTarget = JvmTarget.JVM_21
         targets = listOf(
             TargetPlatform.Android(),

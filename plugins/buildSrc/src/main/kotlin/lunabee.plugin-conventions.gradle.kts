@@ -20,7 +20,6 @@
 import org.jreleaser.model.Signing
 import studio.lunabee.VersionTask
 import java.util.Locale
-
 plugins {
     `java-gradle-plugin`
     `maven-publish`
