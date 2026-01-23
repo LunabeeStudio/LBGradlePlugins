@@ -20,6 +20,7 @@
 import org.jreleaser.model.Signing
 import studio.lunabee.VersionTask
 import java.util.Locale
+
 plugins {
     `java-gradle-plugin`
     `maven-publish`
@@ -174,7 +175,14 @@ signing {
  * Tasks
  * ============================================================ */
 
+// TODO replace by PrintCoordinates (align CI with LBAndroid library)
 tasks.register("${project.name}Version", VersionTask::class.java)
+
+tasks.register("PrintCoordinates") {
+    doLast {
+        println("${project.group}:${project.name}:${project.version}")
+    }
+}
 
 private fun String.capitalized(): String =
     if (isEmpty()) this else this[0].titlecase(Locale.getDefault()) + substring(1)
