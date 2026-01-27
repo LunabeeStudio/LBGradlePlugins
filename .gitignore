@@ -100,9 +100,6 @@ lint/tmp/
 *.hprof
 .idea/androidTestResultsUserPreferences.xml
 
-# Unused
-versions.properties
-
 .DS_Store
 **.DS_Store
 /.kotlin/sessions/*.salive

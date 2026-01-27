@@ -1,4 +1,6 @@
 comments:
   AbsentOrWrongFileLicense:
     active: true
-    licenseTemplateFile: "lunabee-license.template"
+    licenseTemplate: |
+      /*
+       * Copyright (c)

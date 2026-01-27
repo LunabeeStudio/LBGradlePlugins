@@ -68,6 +68,7 @@ open class LBMultiplatformLibraryExtension @Inject constructor(private val proje
                         }
                     }
                 }
+
                 is TargetPlatform.Jvm -> jvm {
                     compilerOptions.jvmTarget.set(propertiesReceiver.jvmTarget)
                     targetPlatform.configure(this)
