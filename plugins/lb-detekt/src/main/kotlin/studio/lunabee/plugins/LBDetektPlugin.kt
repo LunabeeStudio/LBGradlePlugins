@@ -175,7 +175,6 @@ class LBDetektPlugin : Plugin<Project> {
             }
         }
     }
-
 }
 
 private const val SkipDependencySortingProperty = "studio.lunabee.detekt.skipDependencySorting"
