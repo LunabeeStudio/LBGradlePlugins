@@ -44,6 +44,7 @@ import org.gradle.kotlin.dsl.withType
  * ```
  */
 class LBDetektPlugin : Plugin<Project> {
+
     override fun apply(project: Project) {
         // Register sort dependencies tasks.
         registerSortDependencies(project)
@@ -102,6 +103,13 @@ class LBDetektPlugin : Plugin<Project> {
      * Apply default and custom values to the extension
      */
     private fun setupDetektPlugin(project: Project, extension: LBDetektExtension) {
+        val skipDependencySorting = project.providers
+            .gradleProperty(SkipDependencySortingProperty)
+            .map { propertyValue ->
+                propertyValue.isBlank() || propertyValue.toBoolean()
+            }
+            .orElse(false)
+
         with(extension) {
             verbose.set(false)
             lunabeeConfig.set(
@@ -155,7 +163,18 @@ class LBDetektPlugin : Plugin<Project> {
 
             project.project.tasks.withType<SortBuildDependenciesTask>().configureEach {
                 verboseProp.set(verbose)
+                onlyIf("Dependency sorting disabled with -P$SkipDependencySortingProperty") {
+                    !skipDependencySorting.get()
+                }
+            }
+
+            project.project.tasks.withType<SortLibsVersionsTomlTask>().configureEach {
+                onlyIf("Toml sorting disabled with -P$SkipDependencySortingProperty") {
+                    !skipDependencySorting.get()
+                }
             }
         }
     }
 }
+
+private const val SkipDependencySortingProperty = "studio.lunabee.detekt.skipDependencySorting"
