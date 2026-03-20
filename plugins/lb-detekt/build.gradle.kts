@@ -36,7 +36,7 @@ gradlePlugin {
         create("studio.lunabee.plugin.detekt") {
             id = "studio.lunabee.plugin.detekt"
             implementationClass = "studio.lunabee.plugins.LBDetektPlugin"
-            version = "2.0.6"
+            version = "2.1.0"
             displayName = "LBDetekt"
             description = project.description
             tags = listOf("detekt", "android", "lunabee", "code", "style")

@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2026-03-20
+
+### LBDetekt 2.1.0
+
+- Add `studio.lunabee.detekt.skipDependencySorting` Gradle property to run Detekt without dependency sorting
+
 ## 2026-01-27
 
 ### LBDetekt 2.0.6
