@@ -172,8 +172,12 @@ private fun MavenPublication.setupSigning() {
  * ============================================================ */
 
 tasks.register("PrintCoordinates") {
+    val group = project.group.toString()
+    val name = project.name
+    val version = project.version.toString()
+
     doLast {
-        println("${project.group}:${project.name}:${project.version}")
+        println("$group:$name:$version")
     }
 }
 
