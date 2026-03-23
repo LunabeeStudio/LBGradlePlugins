@@ -17,8 +17,6 @@
  * Last modified 1/12/26, 10:30 AM
  */
 
-import org.jreleaser.model.Signing
-import studio.lunabee.VersionTask
 import java.util.Locale
 
 plugins {
@@ -47,14 +45,6 @@ private val stagingDir = layout.buildDirectory
 
 jreleaser {
     gitRootSearch.set(true)
-
-    signing {
-        active.set(org.jreleaser.model.Active.ALWAYS)
-        pgp {
-            armored.set(true)
-            mode.set(Signing.Mode.FILE)
-        }
-    }
 
     deploy {
         maven {
@@ -104,6 +94,7 @@ publishing {
         withType<MavenPublication>().configureEach {
             setProjectDetails()
             setPom()
+            setupSigning()
         }
     }
 
@@ -164,19 +155,21 @@ fun MavenPublication.setPom() {
  * Signing
  * ============================================================ */
 
-signing {
-    setRequired {
-        gradle.taskGraph.hasTask("publish")
+private fun MavenPublication.setupSigning() {
+    val signingKey: String? by project
+    val signingPassword: String? by project
+    if (signingKey != null) {
+        signing {
+            isRequired = true
+            useInMemoryPgpKeys(signingKey, signingPassword)
+            sign(this@setupSigning)
+        }
     }
-    sign(publishing.publications)
 }
 
 /* ============================================================
  * Tasks
  * ============================================================ */
-
-// TODO replace by PrintCoordinates (align CI with LBAndroid library)
-tasks.register("${project.name}Version", VersionTask::class.java)
 
 tasks.register("PrintCoordinates") {
     doLast {
