@@ -112,7 +112,7 @@ publishing {
  * ============================================================ */
 
 fun MavenPublication.setProjectDetails() {
-    groupId = "studio.lunabee.plugin"
+    groupId = project.group.toString()
     artifactId = project.name
     version = project.version.toString()
 }
@@ -175,7 +175,7 @@ private fun MavenPublication.setupSigning() {
 
 tasks.register("PrintCoordinates") {
     val group = project.group.toString()
-    val name = project.name
+    val name = project.group.toString() + ".gradle.plugin"
     val version = project.version.toString()
 
     doLast {

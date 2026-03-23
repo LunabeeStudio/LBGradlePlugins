@@ -28,6 +28,7 @@ dependencies {
 }
 
 description = "This plugin allows you to configure Dokka to ensure consistent doc generation across all projects."
+group = "studio.lunabee.plugin.dokka"
 
 gradlePlugin {
     plugins {

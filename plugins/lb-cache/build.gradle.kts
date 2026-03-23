@@ -24,6 +24,7 @@ plugins {
 }
 
 description = "This plugin allows you to configure the Lunabee remote Gradle cache"
+group = "studio.lunabee.plugin.cache"
 
 gradlePlugin {
     plugins {

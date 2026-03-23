@@ -30,6 +30,7 @@ dependencies {
 }
 
 description = "This plugin allows you to configure Detekt to ensure consistent code style across all projects."
+group = "studio.lunabee.plugin.detekt"
 
 gradlePlugin {
     plugins {
