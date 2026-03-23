@@ -29,6 +29,7 @@ dependencies {
 }
 
 description = "This plugin allows you to configure an Android library in a simple and fast way."
+group = "studio.lunabee.plugin.android.library"
 
 gradlePlugin {
     plugins {

@@ -30,6 +30,7 @@ dependencies {
 }
 
 description = "This plugin allows you to configure a multiplatform library with Android target in a simple and fast way."
+group = "studio.lunabee.plugin.multiplatform.android.library"
 
 gradlePlugin {
     plugins {

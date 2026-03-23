@@ -24,6 +24,7 @@ plugins {
 }
 
 description = "This plugin allows you to configure a task to download resources from any provider."
+group = "studio.lunabee.plugin.resources"
 
 gradlePlugin {
     plugins {

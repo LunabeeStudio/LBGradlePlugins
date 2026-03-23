@@ -29,6 +29,7 @@ dependencies {
 }
 
 description = "This plugin allows you to configure usual Android flavors in a simple and fast way."
+group = "studio.lunabee.plugin.android.flavors"
 
 gradlePlugin {
     plugins {

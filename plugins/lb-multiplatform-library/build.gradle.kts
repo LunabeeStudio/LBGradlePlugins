@@ -29,6 +29,7 @@ dependencies {
 }
 
 description = "This plugin allows you to configure a multiplatform library in a simple and fast way."
+group = "studio.lunabee.plugin.multiplatform.library"
 
 gradlePlugin {
     plugins {
