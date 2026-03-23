@@ -55,7 +55,8 @@ jreleaser {
                     stagingRepository(stagingDir.path)
                     username.set(mavenCentralUsername)
                     password.set(mavenCentralPassword)
-                    verifyPom.set(false)
+                    verifyPom.set(false) // FIXME https://github.com/jreleaser/jreleaser.github.io/issues/85
+                    applyMavenCentralRules = false // FIXME https://github.com/jreleaser/jreleaser/issues/1746
                 }
             }
             nexus2 {
@@ -69,7 +70,8 @@ jreleaser {
                     releaseRepository = true
                     username.set(mavenCentralUsername)
                     password.set(mavenCentralPassword)
-                    verifyPom.set(false)
+                    verifyPom.set(false) // FIXME https://github.com/jreleaser/jreleaser.github.io/issues/85
+                    applyMavenCentralRules = false // FIXME https://github.com/jreleaser/jreleaser/issues/1746
                     stagingRepository(stagingDir.path)
                 }
             }
