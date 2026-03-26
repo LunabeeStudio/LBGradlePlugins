@@ -22,3 +22,8 @@ After this configuration, you should be able to run
 ```bash
 ./gradlew detekt
 ```
+
+To run Detekt without the dependency-sorting prerequisite, pass:
+```bash
+./gradlew detekt -Pstudio.lunabee.detekt.skipDependencySorting
+```
