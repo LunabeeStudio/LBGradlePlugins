@@ -33,11 +33,18 @@ plugins {
 
 private val mavenCentralUsername = project.properties["mavenCentralUsername"]?.toString()
 private val mavenCentralPassword = project.properties["mavenCentralPassword"]?.toString()
+private val isPublishingToMavenLocal = gradle.startParameter.taskNames.any { taskName ->
+    taskName == "publishToMavenLocal" || taskName.endsWith(":publishToMavenLocal")
+}
 
 private val stagingDir = layout.buildDirectory
     .dir("staging-deploy")
     .get()
     .asFile
+
+signing {
+    setRequired { !isPublishingToMavenLocal }
+}
 
 /* ============================================================
  * JReleaser configuration
@@ -160,9 +167,8 @@ fun MavenPublication.setPom() {
 private fun MavenPublication.setupSigning() {
     val signingKey: String? by project
     val signingPassword: String? by project
-    if (signingKey != null) {
+    if (!signingKey.isNullOrBlank()) {
         signing {
-            isRequired = true
             useInMemoryPgpKeys(signingKey, signingPassword)
             sign(this@setupSigning)
         }
