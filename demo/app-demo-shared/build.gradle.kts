@@ -18,14 +18,14 @@
  */
 
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import studio.lunabee.plugins.TargetPlatform
+import studio.lunabee.plugin.multiplatform.android.TargetPlatform
 
 plugins {
     alias(libs.plugins.lbMultiplatformAndroidLibrary)
     alias(libs.plugins.lbDokka)
 }
 
-lbMultiplatformLibrary {
+lbMultiplatformAndroidLibrary {
     multiplatform {
         compileSdk = 36
         namespace = "studio.lunabee.plugin.demo.shared"

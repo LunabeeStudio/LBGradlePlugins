@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2026 Lunabee Studio
+ * Copyright (c) 2026-2026 Lunabee Studio
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Created by Lunabee Studio / Date - 1/12/2026
- * Last modified 9/25/25, 10:11 AM
+ * Created by Lunabee Studio / Date - 3/27/2026
+ * Last modified 3/23/26, 12:53 PM
  */
 
 @file:Suppress("unused")
 
-package studio.lunabee.plugins
+package studio.lunabee.plugin.multiplatform.android
 
 import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryTarget
 import org.gradle.api.JavaVersion
@@ -81,7 +81,7 @@ open class LBMultiplatformAndroidLibraryExtension @Inject constructor(private va
                     }
 
                     is TargetPlatform.Android -> {
-                        extensions.configure<KotlinMultiplatformAndroidLibraryTarget>("androidLibrary") {
+                        extensions.configure<KotlinMultiplatformAndroidLibraryTarget>("android") {
                             // Set Android HtmlStyle.parameters from [propertiesReceiver] object.
                             namespace = propertiesReceiver.namespace
                             compileSdk = propertiesReceiver.compileSdk
@@ -116,7 +116,7 @@ open class LBMultiplatformAndroidLibraryExtension @Inject constructor(private va
  *
  * // In app `build.gradle.kts`:
  * import org.jetbrains.kotlin.gradle.dsl.JvmTarget
- * import studio.lunabee.plugins.TargetPlatform
+ * import studio.lunabee.plugin.multiplatform.android.TargetPlatform
  *
  * plugins {
  *     alias(libs.plugins.lbMultiplatformLibrary)
@@ -138,7 +138,7 @@ open class LBMultiplatformAndroidLibraryExtension @Inject constructor(private va
  */
 class LBMultiplatformAndroidLibraryPlugin : Plugin<Project> {
     override fun apply(target: Project) {
-        target.extensions.create("lbMultiplatformLibrary", LBMultiplatformAndroidLibraryExtension::class.java)
+        target.extensions.create("lbMultiplatformAndroidLibrary", LBMultiplatformAndroidLibraryExtension::class.java)
         target.pluginManager.apply("org.jetbrains.kotlin.multiplatform")
         target.pluginManager.apply("com.android.kotlin.multiplatform.library")
     }

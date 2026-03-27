@@ -17,7 +17,7 @@
  * Last modified 1/22/25, 7:52 AM
  */
 
-package studio.lunabee.plugins
+package studio.lunabee.plugin.multiplatform
 
 import org.jetbrains.kotlin.gradle.plugin.mpp.Framework
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget

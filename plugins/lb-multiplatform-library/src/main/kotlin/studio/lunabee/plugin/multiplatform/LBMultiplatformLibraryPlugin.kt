@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2026 Lunabee Studio
+ * Copyright (c) 2026-2026 Lunabee Studio
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Created by Lunabee Studio / Date - 1/12/2026
- * Last modified 9/25/25, 10:11 AM
+ * Created by Lunabee Studio / Date - 3/27/2026
+ * Last modified 3/23/26, 12:53 PM
  */
 
 @file:Suppress("unused")
 
-package studio.lunabee.plugins
+package studio.lunabee.plugin.multiplatform
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -88,7 +88,7 @@ open class LBMultiplatformLibraryExtension @Inject constructor(private val proje
  *
  * // In app `build.gradle.kts`:
  * import org.jetbrains.kotlin.gradle.dsl.JvmTarget
- * import studio.lunabee.plugins.TargetPlatform
+ * import studio.lunabee.plugin.multiplatform.TargetPlatform
  *
  * plugins {
  *     alias(libs.plugins.lbMultiplatformLibrary)
