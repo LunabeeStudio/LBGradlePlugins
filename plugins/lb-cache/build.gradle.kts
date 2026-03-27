@@ -31,7 +31,7 @@ gradlePlugin {
         create("studio.lunabee.plugin.cache") {
             id = "studio.lunabee.plugin.cache"
             implementationClass = "studio.lunabee.plugins.LBCachePlugin"
-            version = "1.0.0"
+            version = "1.0.0-${libs.versions.kotlin.get()}"
             displayName = "LBCache"
             description = project.description
             tags = listOf("gradle", "lunabee", "cache")

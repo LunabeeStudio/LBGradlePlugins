@@ -36,7 +36,7 @@ gradlePlugin {
         create("studio.lunabee.plugin.multiplatform.library") {
             id = "studio.lunabee.plugin.multiplatform.library"
             implementationClass = "studio.lunabee.plugin.multiplatform.LBMultiplatformLibraryPlugin"
-            version = "2.0.1"
+            version = "2.0.1-${libs.versions.kotlin.get()}"
             displayName = "LBMultiplatformLibrary"
             description = project.description
             tags = listOf("android", "ios", "jvm", "multiplatform", "library", "lunabee")

@@ -35,7 +35,7 @@ gradlePlugin {
         create("studio.lunabee.plugin.dokka") {
             id = "studio.lunabee.plugin.dokka"
             implementationClass = "studio.lunabee.plugins.LBDokkaPlugin"
-            version = "1.0.0"
+            version = "1.0.0-${libs.versions.kotlin.get()}"
             displayName = "LBDokka"
             description = project.description
             tags = listOf("dokka", "android", "lunabee", "doc")

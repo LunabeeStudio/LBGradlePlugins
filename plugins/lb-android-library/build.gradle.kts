@@ -36,7 +36,7 @@ gradlePlugin {
         create("studio.lunabee.plugin.android.library") {
             id = "studio.lunabee.plugin.android.library"
             implementationClass = "studio.lunabee.plugins.LBAndroidLibraryPlugin"
-            version = "1.2.0"
+            version = "1.2.0-${libs.versions.kotlin.get()}"
             displayName = "LBAndroidLibrary"
             description = project.description
             tags = listOf("android", "library", "lunabee")
