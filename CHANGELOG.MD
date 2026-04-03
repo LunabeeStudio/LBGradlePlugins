@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2026-04-02
+
+```
+lb-multiplatform-library v2.0.1-2.3.20"
+lb-multiplatform-android-library v1.0.1-2.3.20"
+lb-android-library v1.2.1"
+lb-android-flavors v1.2.1"
+lb-cache v1.0.1"
+lb-resources v1.2.1"
+lb-detekt v2.1.1"
+lb-dokka v1.0.1"
+lb-android-application v1.2.1"
+```
+
+- Include Kotlin version in Kotlin-dependant plugins
+- Bump all plugins to supersed versions *-2.3.10
+
 ## 2026-03-27
 
 ```
