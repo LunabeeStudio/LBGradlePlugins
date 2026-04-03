@@ -37,7 +37,7 @@ dependencyResolutionManagement {
     }
 }
 plugins {
-    id("studio.lunabee.plugin.cache") version "1.0.0"
+    id("studio.lunabee.plugin.cache") version "1.0.1"
 }
 
 rootProject.name = "LBGradlePluginsDemo"
