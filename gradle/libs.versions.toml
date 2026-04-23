@@ -32,8 +32,8 @@ lbAndroidFlavors = "1.2.1"
 lbAndroidLibrary = "1.2.1"
 lbDetekt = "2.1.1"
 lbDokka = "1.0.1"
-lbMultiplatformAndroidLibrary = "1.0.1-2.3.20"
-lbMultiplatformLibrary = "2.0.1-2.3.20"
+lbMultiplatformAndroidLibrary = "1.0.1-2.3.21"
+lbMultiplatformLibrary = "2.0.1-2.3.21"
 lbResources = "1.2.1"
 
 [libraries]
