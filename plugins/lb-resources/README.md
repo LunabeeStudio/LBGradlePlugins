@@ -27,4 +27,11 @@ After this configuration, you should be able to run:
 ./gradlew downloadStrings
 ```
 
+You can also synchronize strings with Loco (upload locally-deleted resources, then refresh strings):
+```bash
+./gradlew synchronizeStrings
+```
+
+The `synchronizeStrings` task requires `python3` to be available on `PATH`.
+
 Note: currently, only Loco is handle as string provider.

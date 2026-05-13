@@ -40,5 +40,16 @@ class LBResourcesPlugin : Plugin<Project> {
             replaceQuotes.set(extension.replaceQuotes)
             replaceApostrophes.set(extension.replaceApostrophes)
         }
+
+        val synchronizeTask = target.tasks.register("synchronizeStrings", SynchronizeStringsTask::class.java) {
+            group = "Lunabee"
+            description = "Synchronize strings with Loco: upload deleted resources then refresh local strings."
+        }
+        synchronizeTask.configure {
+            when (val provider = extension.provider) {
+                is StringsProvider.Loco -> providerApiKey.set(provider.key)
+                null -> throw IllegalArgumentException("provider must be set")
+            }
+        }
     }
 }
