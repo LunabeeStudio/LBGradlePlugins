@@ -26,7 +26,7 @@ import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.jvm.toolchain.JavaLanguageVersion
 import javax.inject.Inject
 
-private const val DefaultCompileSdk: Int = 36
+private const val DefaultCompileSdk: Int = 37
 private const val DefaultMinSdk: Int = 23
 private const val DefaultVersionCode: Int = 1
 private const val DefaultVersionName: String = "1.0.0"
