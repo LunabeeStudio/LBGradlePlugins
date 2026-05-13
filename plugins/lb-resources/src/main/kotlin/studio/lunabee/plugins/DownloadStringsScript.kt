@@ -23,15 +23,15 @@ import org.gradle.process.ExecOperations
 import java.io.File
 
 internal object DownloadStringsScript {
-    const val RESOURCE_NAME: String = "downloadStrings.sh"
+    const val ResourceName: String = "downloadStrings.sh"
 
     fun extract(destFolder: File): File {
         val body = this::class.java.classLoader
-            .getResource(RESOURCE_NAME)
+            .getResource(ResourceName)
             ?.readText()
-            ?: throw GradleException("Unable to locate bundled script '$RESOURCE_NAME'.")
+            ?: throw GradleException("Unable to locate bundled script '$ResourceName'.")
         if (!destFolder.exists()) destFolder.mkdirs()
-        val destFile = File(destFolder, RESOURCE_NAME)
+        val destFile = File(destFolder, ResourceName)
         if (destFile.exists()) destFile.delete()
         destFile.createNewFile()
         destFile.setExecutable(true)
