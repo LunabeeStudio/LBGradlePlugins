@@ -52,15 +52,18 @@ abstract class SynchronizeStringsTask : DefaultTask() {
     fun synchronizeStrings() {
         ensurePython3Available()
 
-        val workDir = File(projectLayout.buildDirectory.asFile.get(), "lbResources").apply { mkdirs() }
-        val downloadScript = extractResource("downloadStrings.sh", workDir)
-        val synchronizeScript = extractResource("synchronize_new_strings.py", workDir)
+        val workDir = File(projectLayout.buildDirectory.asFile.get(), "lbResources")
+        val downloadScript = DownloadStringsScript.extract(workDir)
+        val synchronizeScript = extractSynchronizeScript(workDir)
 
         val projectDirectory = projectDir.get()
-        val locoApiKey = providerApiKey.get()
+        val apiKey = providerApiKey.get()
         val stringsPath = File(projectDirectory, "/src/main/")
         val stringsFilename = "strings"
         val stringsFile = File(stringsPath, "res/values/$stringsFilename.xml")
+        val replaceApostrophesValue = replaceApostrophes.get()
+        val replaceQuotesValue = replaceQuotes.get()
+
         if (!stringsFile.exists()) {
             throw GradleException("Expected strings file not found: ${stringsFile.absolutePath}")
         }
@@ -69,13 +72,13 @@ abstract class SynchronizeStringsTask : DefaultTask() {
         val deletedResourcesFile = File(workDir, "$stringsFilename-to-upload.xml")
         stringsFile.copyTo(snapshotFile, overwrite = true)
 
-        runDownloadStrings(downloadScript, locoApiKey, stringsPath, stringsFilename)
+        runDownload(downloadScript, apiKey, stringsPath, stringsFilename, replaceApostrophesValue, replaceQuotesValue)
 
         eo.exec {
             commandLine(
                 "python3",
                 synchronizeScript.absolutePath,
-                "--api-key", locoApiKey,
+                "--api-key", apiKey,
                 "--before", snapshotFile.absolutePath,
                 "--after", stringsFile.absolutePath,
                 "--output", deletedResourcesFile.absolutePath,
@@ -83,32 +86,40 @@ abstract class SynchronizeStringsTask : DefaultTask() {
         }
 
         if (hasUploadedResources(deletedResourcesFile)) {
-            runDownloadStrings(downloadScript, locoApiKey, stringsPath, stringsFilename)
+            runDownload(downloadScript, apiKey, stringsPath, stringsFilename, replaceApostrophesValue, replaceQuotesValue)
         }
 
         snapshotFile.delete()
         deletedResourcesFile.delete()
     }
 
-    private fun runDownloadStrings(script: File, locoApiKey: String, stringsPath: File, stringsFilename: String) {
-        eo.exec {
-            commandLine(
-                script.absolutePath,
-                locoApiKey,
-                stringsPath,
-                stringsFilename,
-                replaceApostrophes.get().toString(),
-                replaceQuotes.get().toString(),
-            )
-        }
+    private fun runDownload(
+        script: File,
+        apiKey: String,
+        stringsPath: File,
+        stringsFilename: String,
+        replaceApostrophes: Boolean,
+        replaceQuotes: Boolean,
+    ) {
+        DownloadStringsScript.run(
+            eo = eo,
+            script = script,
+            apiKey = apiKey,
+            stringsPath = stringsPath,
+            stringsFilename = stringsFilename,
+            replaceApostrophes = replaceApostrophes,
+            replaceQuotes = replaceQuotes,
+        )
     }
 
-    private fun extractResource(name: String, destFolder: File): File {
+    private fun extractSynchronizeScript(destFolder: File): File {
+        val resourceName = "synchronize_new_strings.py"
         val body = this::class.java.classLoader
-            .getResource(name)
+            .getResource(resourceName)
             ?.readText()
-            ?: throw GradleException("Unable to locate bundled script '$name'.")
-        val destFile = File(destFolder, name)
+            ?: throw GradleException("Unable to locate bundled script '$resourceName'.")
+        if (!destFolder.exists()) destFolder.mkdirs()
+        val destFile = File(destFolder, resourceName)
         if (destFile.exists()) destFile.delete()
         destFile.createNewFile()
         destFile.setExecutable(true)
