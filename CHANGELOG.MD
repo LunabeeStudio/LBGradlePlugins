@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 lb-android-application v1.3.0
 ```
 
-- Bump detekt to 2.0.0-alpha.3
+- Update compile SDK to 37
 
 ## 2026-04-27
 
