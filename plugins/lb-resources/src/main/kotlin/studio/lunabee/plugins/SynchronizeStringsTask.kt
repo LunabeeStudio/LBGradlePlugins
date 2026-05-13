@@ -33,6 +33,15 @@ abstract class SynchronizeStringsTask : DefaultTask() {
     @get:Input
     abstract val providerApiKey: Property<String>
 
+    @get:Input
+    abstract val replaceQuotes: Property<Boolean>
+
+    @get:Input
+    abstract val replaceApostrophes: Property<Boolean>
+
+    @get:Input
+    abstract val projectDir: Property<File>
+
     @get:Inject
     abstract val eo: ExecOperations
 
@@ -43,24 +52,72 @@ abstract class SynchronizeStringsTask : DefaultTask() {
     fun synchronizeStrings() {
         ensurePython3Available()
 
-        val scriptName = "synchronize_new_strings.py"
-        val scriptBody = this::class.java.classLoader
-            .getResource(scriptName)
-            ?.readText()
-            ?: throw GradleException("Unable to locate bundled script '$scriptName'.")
+        val workDir = File(projectLayout.buildDirectory.asFile.get(), "lbResources").apply { mkdirs() }
+        val downloadScript = extractResource("downloadStrings.sh", workDir)
+        val synchronizeScript = extractResource("synchronize_new_strings.py", workDir)
 
-        val destFolder = File("${projectLayout.buildDirectory.asFile.get().absolutePath}/lbResources")
-        if (!destFolder.exists()) destFolder.mkdirs()
-        val destFile = File(destFolder, scriptName)
+        val projectDirectory = projectDir.get()
+        val locoApiKey = providerApiKey.get()
+        val stringsPath = File(projectDirectory, "/src/main/")
+        val stringsFilename = "strings"
+        val stringsFile = File(stringsPath, "res/values/$stringsFilename.xml")
+        if (!stringsFile.exists()) {
+            throw GradleException("Expected strings file not found: ${stringsFile.absolutePath}")
+        }
+
+        val snapshotFile = File(workDir, "$stringsFilename-snapshot.xml")
+        val deletedResourcesFile = File(workDir, "$stringsFilename-to-upload.xml")
+        stringsFile.copyTo(snapshotFile, overwrite = true)
+
+        runDownloadStrings(downloadScript, locoApiKey, stringsPath, stringsFilename)
+
+        eo.exec {
+            commandLine(
+                "python3",
+                synchronizeScript.absolutePath,
+                "--api-key", locoApiKey,
+                "--before", snapshotFile.absolutePath,
+                "--after", stringsFile.absolutePath,
+                "--output", deletedResourcesFile.absolutePath,
+            )
+        }
+
+        if (hasUploadedResources(deletedResourcesFile)) {
+            runDownloadStrings(downloadScript, locoApiKey, stringsPath, stringsFilename)
+        }
+
+        snapshotFile.delete()
+        deletedResourcesFile.delete()
+    }
+
+    private fun runDownloadStrings(script: File, locoApiKey: String, stringsPath: File, stringsFilename: String) {
+        eo.exec {
+            commandLine(
+                script.absolutePath,
+                locoApiKey,
+                stringsPath,
+                stringsFilename,
+                replaceApostrophes.get().toString(),
+                replaceQuotes.get().toString(),
+            )
+        }
+    }
+
+    private fun extractResource(name: String, destFolder: File): File {
+        val body = this::class.java.classLoader
+            .getResource(name)
+            ?.readText()
+            ?: throw GradleException("Unable to locate bundled script '$name'.")
+        val destFile = File(destFolder, name)
         if (destFile.exists()) destFile.delete()
         destFile.createNewFile()
         destFile.setExecutable(true)
-        destFile.writeText(scriptBody)
-
-        eo.exec {
-            commandLine("python3", destFile.absolutePath, "--api-key", providerApiKey.get())
-        }
+        destFile.writeText(body)
+        return destFile
     }
+
+    private fun hasUploadedResources(deletedResourcesFile: File): Boolean =
+        deletedResourcesFile.exists() && deletedResourcesFile.readText().contains("name=\"")
 
     private fun ensurePython3Available() {
         val stdout = ByteArrayOutputStream()
