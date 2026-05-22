@@ -9,9 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ```
 lb-android-application v1.3.0
+lb-resources v1.3.0
 ```
 
 - Update compile SDK to 37
+- `lb-resources`: add `synchronizeStrings` task that uploads deleted local resources to Loco then refreshes strings (requires `python3`)
 
 ## 2026-04-27
 

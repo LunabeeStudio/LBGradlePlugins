@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  * Created by Lunabee Studio / Date - 1/12/2026
- * Last modified 12/17/25, 10:14 AM
+ * Last modified 12/17/25, 10:14 AM
  */
 
 package studio.lunabee.plugins
@@ -49,21 +49,16 @@ abstract class DownloadStringsTask : DefaultTask() {
 
     @TaskAction
     fun downloadStrings() {
-        val projectDir = projectDir.get()
-        val locoApiKey = providerApiKey.get()
-        val scriptName = "downloadStrings.sh"
-        val configFile = this::class.java.classLoader
-            .getResource(scriptName)!!
-            .readText()
         val destFolder = File("${projectLayout.buildDirectory.asFile.get().absolutePath}/lbResources")
-        if (!destFolder.exists()) destFolder.mkdirs()
-        val destFile = File(destFolder, scriptName)
-        if (destFile.exists()) destFile.delete()
-        destFile.createNewFile()
-        destFile.setExecutable(true)
-        destFile.writeText(configFile)
-        val stringsPath = File(projectDir, "/src/main/")
-        val stringsFilename = "strings"
-        eo.exec { commandLine(destFile.absolutePath, locoApiKey, stringsPath, stringsFilename, replaceApostrophes, replaceQuotes) }
+        val script = DownloadStringsScript.extract(destFolder)
+        DownloadStringsScript.run(
+            eo = eo,
+            script = script,
+            apiKey = providerApiKey.get(),
+            stringsPath = File(projectDir.get(), "/src/main/"),
+            stringsFilename = "strings",
+            replaceApostrophes = replaceApostrophes.get(),
+            replaceQuotes = replaceQuotes.get(),
+        )
     }
 }
