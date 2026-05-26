@@ -189,6 +189,7 @@ naming:
       - 'js'
       - 'jvm'
       - 'native'
+      - 'apple'
       - 'macos'
       - 'mingwX64'
       - 'linuxX64'

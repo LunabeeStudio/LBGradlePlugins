@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 lb-detekt v2.2.0
 ```
 
-- Allow `.macos.kt` suffix
+- Allow `.macos.kt` and `.apple.kt` suffixes
 
 ## 2026-05-13
 
