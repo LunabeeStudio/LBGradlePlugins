@@ -182,6 +182,17 @@ naming:
     ignoreAnnotated: [ 'Composable', 'Test' ]
   TopLevelPropertyNaming:
     constantPattern: '[A-Z][A-Za-z0-9]*'
+  MatchingDeclarationName:
+    multiplatformTargets:
+      - 'ios'
+      - 'android'
+      - 'js'
+      - 'jvm'
+      - 'native'
+      - 'apple'
+      - 'macos'
+      - 'mingwX64'
+      - 'linuxX64'
 
 performance:
   SpreadOperator:
