@@ -53,6 +53,7 @@ class LBResourcesPlugin : Plugin<Project> {
             projectDir.set(extension.targetDirectory)
             replaceQuotes.set(extension.replaceQuotes)
             replaceApostrophes.set(extension.replaceApostrophes)
+            baselineRef.set(extension.baselineRef)
         }
     }
 }

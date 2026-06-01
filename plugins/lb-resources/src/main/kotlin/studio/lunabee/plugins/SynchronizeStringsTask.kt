@@ -42,6 +42,14 @@ abstract class SynchronizeStringsTask : DefaultTask() {
     @get:Input
     abstract val projectDir: Property<File>
 
+    /**
+     * Git ref used as the conflict-detection baseline (the last synced state). Empty means
+     * auto-resolve the repository's default branch (origin/HEAD, then origin/main, origin/master,
+     * main, master). Override to pin a specific branch/ref.
+     */
+    @get:Input
+    abstract val baselineRef: Property<String>
+
     @get:Inject
     abstract val eo: ExecOperations
 
@@ -73,9 +81,9 @@ abstract class SynchronizeStringsTask : DefaultTask() {
         val baseFile = File(workDir, "$stringsFilename-base.xml")
         val conflictsFile = File(workDir, "$stringsFilename-conflicts.tsv")
 
-        // Baseline = committed (git HEAD) strings file = last synced state, captured before the download
-        // overwrites the working file. Enables modification sync + conflict detection. Local modifications
-        // are expected to be uncommitted so that HEAD still represents the baseline.
+        // Baseline = the strings file on the default branch (e.g. origin/master) = last synced state.
+        // Enables modification sync + conflict detection. A local modification is detected as long as it
+        // is not yet merged into that branch, so devs can freely commit on their feature branch.
         val hasBase = extractGitBase(stringsFile, projectDirectory, baseFile)
 
         stringsFile.copyTo(snapshotFile, overwrite = true)
@@ -126,8 +134,9 @@ abstract class SynchronizeStringsTask : DefaultTask() {
     }
 
     /**
-     * Write the git HEAD version of [stringsFile] to [baseFile]. Returns false (modification sync
-     * disabled) when the file is untracked, HEAD is unavailable, or git is missing.
+     * Write the version of [stringsFile] on the baseline branch to [baseFile]. Returns false
+     * (modification sync disabled) when the file is untracked, the baseline ref is unavailable,
+     * or git is missing.
      */
     private fun extractGitBase(stringsFile: File, projectDir: File, baseFile: File): Boolean {
         val relPath = gitOutput(projectDir, listOf("ls-files", "--full-name", "--", stringsFile.absolutePath))
@@ -135,11 +144,13 @@ abstract class SynchronizeStringsTask : DefaultTask() {
             ?.takeIf { it.isNotEmpty() }
             ?: return false
 
+        val ref = resolveBaselineRef(projectDir) ?: return false
+
         return runCatching {
             val stdout = ByteArrayOutputStream()
             val result = eo.exec {
                 workingDir = projectDir
-                commandLine("git", "show", "HEAD:$relPath")
+                commandLine("git", "show", "$ref:$relPath")
                 standardOutput = stdout
                 errorOutput = ByteArrayOutputStream()
                 isIgnoreExitValue = true
@@ -153,6 +164,27 @@ abstract class SynchronizeStringsTask : DefaultTask() {
             }
         }.getOrDefault(false)
     }
+
+    /**
+     * Resolve the git ref used as baseline: the configured [baselineRef] if set, otherwise the
+     * repository's default branch (origin/HEAD), falling back to the first existing of
+     * origin/main, origin/master, main, master.
+     */
+    private fun resolveBaselineRef(projectDir: File): String? {
+        val configured = baselineRef.get().trim()
+        if (configured.isNotEmpty()) return configured
+
+        gitOutput(projectDir, listOf("rev-parse", "--abbrev-ref", "origin/HEAD"))
+            ?.trim()
+            ?.takeIf { it.isNotEmpty() && it != "origin/HEAD" }
+            ?.let { return it }
+
+        return listOf("origin/main", "origin/master", "main", "master")
+            .firstOrNull { refExists(projectDir, it) }
+    }
+
+    private fun refExists(projectDir: File, ref: String): Boolean =
+        gitOutput(projectDir, listOf("rev-parse", "--verify", "--quiet", "$ref^{commit}")) != null
 
     private fun gitOutput(dir: File, args: List<String>): String? = runCatching {
         val stdout = ByteArrayOutputStream()
