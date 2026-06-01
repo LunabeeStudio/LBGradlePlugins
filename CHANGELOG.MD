@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2026-06-01
+
+```
+lb-resources v1.4.0
+```
+
+- `lb-resources`: `synchronizeStrings` now also uploads **modified** local strings to Loco, not just new ones. A modification is pushed only when it is safe: the local value differs from the git HEAD baseline and the remote value still matches that baseline. When both local and remote changed, the conflict is logged as a visible error and the string is left untouched while the others keep syncing. Requires local modifications to be uncommitted (git HEAD is the baseline).
+
 ## 2026-05-26
 
 ```

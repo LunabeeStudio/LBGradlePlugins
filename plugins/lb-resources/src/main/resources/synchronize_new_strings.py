@@ -28,44 +28,109 @@ def resource_key(element: ET.Element) -> tuple[str, str] | None:
     return element.tag, name
 
 
-def build_deleted_resources(before_path: Path, after_path: Path) -> ET.ElementTree:
-    before_tree = ET.parse(before_path)
-    after_tree = ET.parse(after_path)
-
-    before_root = before_tree.getroot()
-    after_root = after_tree.getroot()
-
-    after_keys = {
-        key
-        for child in after_root
-        if (key := resource_key(child)) is not None
-    }
-
-    output_root = ET.Element(before_root.tag, before_root.attrib)
-    output_root.text = "\n    "
-
-    deleted_resources = []
-    for child in before_root:
+def index_resources(root: ET.Element) -> dict[tuple[str, str], ET.Element]:
+    mapping: dict[tuple[str, str], ET.Element] = {}
+    for child in root:
         key = resource_key(child)
-        if key is None or key in after_keys:
+        if key is not None:
+            mapping[key] = child
+    return mapping
+
+
+def normalized_value(element: ET.Element) -> str:
+    clone = copy.deepcopy(element)
+    clone.tail = None
+    return ET.tostring(clone, encoding="unicode")
+
+
+def values_equal(a: ET.Element, b: ET.Element) -> bool:
+    return normalized_value(a) == normalized_value(b)
+
+
+def display_value(element: ET.Element) -> str:
+    if len(list(element)) == 0:
+        return (element.text or "").strip()
+    return ET.tostring(element, encoding="unicode").strip()
+
+
+def dotted_name(name: str) -> str:
+    return name.replace("_", ".")
+
+
+def build_payload(
+    local_root: ET.Element,
+    remote_root: ET.Element,
+    base_root: ET.Element | None,
+) -> tuple[list[ET.Element], list[tuple[str, str, str]], list[str]]:
+    """Return (elements to upload, conflicts, unverified keys).
+
+    - New local keys (present locally, absent remotely) are always uploaded.
+    - A key whose value differs between local and remote is a modification:
+      it is uploaded only when the dev changed it locally (local != base) and
+      the remote value is still the baseline (remote == base). When both sides
+      changed it is reported as a conflict and left untouched.
+    """
+    local_map = index_resources(local_root)
+    remote_map = index_resources(remote_root)
+    base_map = index_resources(base_root) if base_root is not None else None
+
+    upload: list[ET.Element] = []
+    conflicts: list[tuple[str, str, str]] = []
+    unverified: list[str] = []
+
+    for key, local_el in local_map.items():
+        remote_el = remote_map.get(key)
+        if remote_el is None:
+            # New local resource (missing on remote): always push.
+            upload.append(local_el)
             continue
 
-        deleted_child = copy.deepcopy(child)
-        deleted_child.attrib["name"] = deleted_child.attrib["name"].replace("_", ".")
-        deleted_resources.append(deleted_child)
+        if values_equal(local_el, remote_el):
+            continue
 
-    for index, child in enumerate(deleted_resources):
-        child.tail = "\n    " if index < len(deleted_resources) - 1 else "\n"
+        # Local and remote disagree -> potential modification.
+        if base_map is None:
+            # No baseline available: modification sync disabled, skip safely.
+            continue
+
+        base_el = base_map.get(key)
+        if base_el is None:
+            # No baseline entry for this key: cannot verify, skip safely.
+            unverified.append(dotted_name(key[1]))
+            continue
+
+        local_changed = not values_equal(local_el, base_el)
+        remote_changed = not values_equal(remote_el, base_el)
+
+        if not local_changed:
+            # Only remote changed; the fresh download already applied it.
+            continue
+        if remote_changed:
+            # Both sides changed since the baseline -> conflict, do not touch.
+            conflicts.append((dotted_name(key[1]), display_value(local_el), display_value(remote_el)))
+            continue
+
+        # Local modified, remote untouched -> safe to push the local value.
+        upload.append(local_el)
+
+    return upload, conflicts, unverified
+
+
+def build_upload_tree(template_root: ET.Element, elements: list[ET.Element]) -> ET.ElementTree:
+    output_root = ET.Element(template_root.tag, template_root.attrib)
+    output_root.text = "\n    " if elements else "\n"
+
+    uploaded = []
+    for element in elements:
+        clone = copy.deepcopy(element)
+        clone.attrib["name"] = dotted_name(clone.attrib["name"])
+        uploaded.append(clone)
+
+    for index, child in enumerate(uploaded):
+        child.tail = "\n    " if index < len(uploaded) - 1 else "\n"
         output_root.append(child)
 
-    if not deleted_resources:
-        output_root.text = "\n"
-
     return ET.ElementTree(output_root)
-
-
-def has_deleted_resources(tree: ET.ElementTree) -> bool:
-    return any(resource_key(child) is not None for child in tree.getroot())
 
 
 def serialize_tree(tree: ET.ElementTree) -> bytes:
@@ -84,7 +149,7 @@ def extract_loco_error_message(body: str) -> str | None:
     return None
 
 
-def upload_deleted_resources(file_path: Path, api_key: str) -> None:
+def upload_resources(file_path: Path, api_key: str) -> None:
     credentials = f"{api_key}:".encode("utf-8")
     request = urllib.request.Request(
         LOCO_IMPORT_URL,
@@ -117,7 +182,7 @@ def upload_deleted_resources(file_path: Path, api_key: str) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Diff two Android strings.xml files and upload the new local entries to Loco.",
+        description="Diff Android strings.xml files and upload new/modified local entries to Loco.",
     )
     parser.add_argument("--api-key", required=True, help="Loco API key.")
     parser.add_argument(
@@ -133,10 +198,18 @@ def main() -> None:
         help="Strings file as it stands after downloadStrings (remote state).",
     )
     parser.add_argument(
+        "--base",
+        type=Path,
+        help=(
+            "Baseline strings file (e.g. git HEAD) representing the last synced state. "
+            "Required to enable modification sync and conflict detection."
+        ),
+    )
+    parser.add_argument(
         "--output",
         required=True,
         type=Path,
-        help="Path where the diff XML payload uploaded to Loco is written.",
+        help="Path where the XML payload uploaded to Loco is written.",
     )
     parser.add_argument(
         "--dry-run",
@@ -145,14 +218,36 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    output_tree = build_deleted_resources(args.before, args.after)
-    output_payload = serialize_tree(output_tree)
+    local_root = ET.parse(args.before).getroot()
+    remote_root = ET.parse(args.after).getroot()
+    base_root = (
+        ET.parse(args.base).getroot()
+        if args.base is not None and args.base.exists()
+        else None
+    )
 
+    upload, conflicts, unverified = build_payload(local_root, remote_root, base_root)
+
+    output_tree = build_upload_tree(local_root, upload)
+    output_payload = serialize_tree(output_tree)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_bytes(output_payload)
 
-    if not has_deleted_resources(output_tree):
-        print("No new local resources to upload.")
+    for name in unverified:
+        print(
+            f"⚠️  '{name}' differs between local and remote but has no baseline entry; left untouched.",
+            file=sys.stderr,
+        )
+    for name, local_value, remote_value in conflicts:
+        print(
+            f"❌ Conflict on '{name}': modified both locally and remotely; left untouched.\n"
+            f"   local:  {local_value}\n"
+            f"   remote: {remote_value}",
+            file=sys.stderr,
+        )
+
+    if not upload:
+        print("No new or modified local resources to upload.")
         return
 
     if args.dry_run:
@@ -160,11 +255,11 @@ def main() -> None:
         return
 
     try:
-        upload_deleted_resources(args.output, args.api_key)
+        upload_resources(args.output, args.api_key)
     except RuntimeError as error:
         print(f"❌ {error}", file=sys.stderr)
         sys.exit(1)
-    print("Uploaded new local resources to Loco.")
+    print(f"Uploaded {len(upload)} new/modified local resource(s) to Loco.")
 
 
 if __name__ == "__main__":

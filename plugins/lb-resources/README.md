@@ -27,10 +27,18 @@ After this configuration, you should be able to run:
 ./gradlew downloadStrings
 ```
 
-You can also synchronize strings with Loco (upload locally-deleted resources, then refresh strings):
+You can also synchronize strings with Loco, then refresh strings:
 ```bash
 ./gradlew synchronizeStrings
 ```
+
+`synchronizeStrings` uploads both **new** local strings (absent from Loco) and **modified** local strings.
+A modification is pushed only when it is safe: the local value differs from the git `HEAD` baseline and the
+remote value still matches that baseline. If both the local and the remote value changed, the conflict is
+logged as a visible error and that string is left untouched while the other strings keep syncing.
+
+Because the baseline is git `HEAD`, your local string modifications must be **uncommitted** for them to be
+detected and pushed.
 
 The `synchronizeStrings` task requires `python3` to be available on `PATH`.
 

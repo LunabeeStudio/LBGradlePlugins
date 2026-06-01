@@ -70,18 +70,30 @@ abstract class SynchronizeStringsTask : DefaultTask() {
 
         val snapshotFile = File(workDir, "$stringsFilename-snapshot.xml")
         val deletedResourcesFile = File(workDir, "$stringsFilename-to-upload.xml")
+        val baseFile = File(workDir, "$stringsFilename-base.xml")
+
+        // Baseline = committed (git HEAD) strings file = last synced state, captured before the download
+        // overwrites the working file. Enables modification sync + conflict detection. Local modifications
+        // are expected to be uncommitted so that HEAD still represents the baseline.
+        val hasBase = extractGitBase(stringsFile, projectDirectory, baseFile)
+
         stringsFile.copyTo(snapshotFile, overwrite = true)
 
         runDownload(downloadScript, apiKey, stringsPath, stringsFilename, replaceApostrophesValue, replaceQuotesValue)
 
         eo.exec {
             commandLine(
-                "python3",
-                synchronizeScript.absolutePath,
-                "--api-key", apiKey,
-                "--before", snapshotFile.absolutePath,
-                "--after", stringsFile.absolutePath,
-                "--output", deletedResourcesFile.absolutePath,
+                buildList {
+                    add("python3")
+                    add(synchronizeScript.absolutePath)
+                    add("--api-key"); add(apiKey)
+                    add("--before"); add(snapshotFile.absolutePath)
+                    add("--after"); add(stringsFile.absolutePath)
+                    add("--output"); add(deletedResourcesFile.absolutePath)
+                    if (hasBase) {
+                        add("--base"); add(baseFile.absolutePath)
+                    }
+                },
             )
         }
 
@@ -91,7 +103,49 @@ abstract class SynchronizeStringsTask : DefaultTask() {
 
         snapshotFile.delete()
         deletedResourcesFile.delete()
+        baseFile.delete()
     }
+
+    /**
+     * Write the git HEAD version of [stringsFile] to [baseFile]. Returns false (modification sync
+     * disabled) when the file is untracked, HEAD is unavailable, or git is missing.
+     */
+    private fun extractGitBase(stringsFile: File, projectDir: File, baseFile: File): Boolean {
+        val relPath = gitOutput(projectDir, listOf("ls-files", "--full-name", "--", stringsFile.absolutePath))
+            ?.trim()
+            ?.takeIf { it.isNotEmpty() }
+            ?: return false
+
+        return runCatching {
+            val stdout = ByteArrayOutputStream()
+            val result = eo.exec {
+                workingDir = projectDir
+                commandLine("git", "show", "HEAD:$relPath")
+                standardOutput = stdout
+                errorOutput = ByteArrayOutputStream()
+                isIgnoreExitValue = true
+            }
+            val bytes = stdout.toByteArray()
+            if (result.exitValue != 0 || bytes.isEmpty()) {
+                false
+            } else {
+                baseFile.writeBytes(bytes)
+                true
+            }
+        }.getOrDefault(false)
+    }
+
+    private fun gitOutput(dir: File, args: List<String>): String? = runCatching {
+        val stdout = ByteArrayOutputStream()
+        val result = eo.exec {
+            workingDir = dir
+            commandLine(listOf("git") + args)
+            standardOutput = stdout
+            errorOutput = ByteArrayOutputStream()
+            isIgnoreExitValue = true
+        }
+        if (result.exitValue == 0) stdout.toString("UTF-8") else null
+    }.getOrNull()
 
     private fun runDownload(
         script: File,
