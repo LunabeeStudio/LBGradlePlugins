@@ -71,6 +71,7 @@ abstract class SynchronizeStringsTask : DefaultTask() {
         val snapshotFile = File(workDir, "$stringsFilename-snapshot.xml")
         val deletedResourcesFile = File(workDir, "$stringsFilename-to-upload.xml")
         val baseFile = File(workDir, "$stringsFilename-base.xml")
+        val conflictsFile = File(workDir, "$stringsFilename-conflicts.tsv")
 
         // Baseline = committed (git HEAD) strings file = last synced state, captured before the download
         // overwrites the working file. Enables modification sync + conflict detection. Local modifications
@@ -86,10 +87,12 @@ abstract class SynchronizeStringsTask : DefaultTask() {
                 buildList {
                     add("python3")
                     add(synchronizeScript.absolutePath)
+                    add("sync")
                     add("--api-key"); add(apiKey)
                     add("--before"); add(snapshotFile.absolutePath)
                     add("--after"); add(stringsFile.absolutePath)
                     add("--output"); add(deletedResourcesFile.absolutePath)
+                    add("--conflicts-output"); add(conflictsFile.absolutePath)
                     if (hasBase) {
                         add("--base"); add(baseFile.absolutePath)
                     }
@@ -101,9 +104,25 @@ abstract class SynchronizeStringsTask : DefaultTask() {
             runDownload(downloadScript, apiKey, stringsPath, stringsFilename, replaceApostrophesValue, replaceQuotesValue)
         }
 
+        // Restore the dev's local value for any conflicting key so it survives the download(s) that
+        // overwrote the working file with the remote value. Runs last, after the final re-download.
+        if (hasConflicts(conflictsFile)) {
+            eo.exec {
+                commandLine(
+                    "python3",
+                    synchronizeScript.absolutePath,
+                    "restore",
+                    "--target", stringsFile.absolutePath,
+                    "--source", snapshotFile.absolutePath,
+                    "--conflicts", conflictsFile.absolutePath,
+                )
+            }
+        }
+
         snapshotFile.delete()
         deletedResourcesFile.delete()
         baseFile.delete()
+        conflictsFile.delete()
     }
 
     /**
@@ -183,6 +202,9 @@ abstract class SynchronizeStringsTask : DefaultTask() {
 
     private fun hasUploadedResources(deletedResourcesFile: File): Boolean =
         deletedResourcesFile.exists() && deletedResourcesFile.readText().contains("name=\"")
+
+    private fun hasConflicts(conflictsFile: File): Boolean =
+        conflictsFile.exists() && conflictsFile.readText().isNotBlank()
 
     private fun ensurePython3Available() {
         val stdout = ByteArrayOutputStream()

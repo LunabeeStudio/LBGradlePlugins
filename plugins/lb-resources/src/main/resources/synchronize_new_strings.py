@@ -6,6 +6,7 @@ import argparse
 import base64
 import copy
 import json
+import re
 import sys
 import urllib.error
 import urllib.request
@@ -61,21 +62,21 @@ def build_payload(
     local_root: ET.Element,
     remote_root: ET.Element,
     base_root: ET.Element | None,
-) -> tuple[list[ET.Element], list[tuple[str, str, str]], list[str]]:
+) -> tuple[list[ET.Element], list[tuple[ET.Element, ET.Element]], list[str]]:
     """Return (elements to upload, conflicts, unverified keys).
 
     - New local keys (present locally, absent remotely) are always uploaded.
     - A key whose value differs between local and remote is a modification:
       it is uploaded only when the dev changed it locally (local != base) and
       the remote value is still the baseline (remote == base). When both sides
-      changed it is reported as a conflict and left untouched.
+      changed it is reported as a conflict (local, remote) and left untouched.
     """
     local_map = index_resources(local_root)
     remote_map = index_resources(remote_root)
     base_map = index_resources(base_root) if base_root is not None else None
 
     upload: list[ET.Element] = []
-    conflicts: list[tuple[str, str, str]] = []
+    conflicts: list[tuple[ET.Element, ET.Element]] = []
     unverified: list[str] = []
 
     for key, local_el in local_map.items():
@@ -107,7 +108,7 @@ def build_payload(
             continue
         if remote_changed:
             # Both sides changed since the baseline -> conflict, do not touch.
-            conflicts.append((dotted_name(key[1]), display_value(local_el), display_value(remote_el)))
+            conflicts.append((local_el, remote_el))
             continue
 
         # Local modified, remote untouched -> safe to push the local value.
@@ -180,44 +181,23 @@ def upload_resources(file_path: Path, api_key: str) -> None:
         raise RuntimeError(f"Loco upload failed: {payload['error']}")
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser(
-        description="Diff Android strings.xml files and upload new/modified local entries to Loco.",
-    )
-    parser.add_argument("--api-key", required=True, help="Loco API key.")
-    parser.add_argument(
-        "--before",
-        required=True,
-        type=Path,
-        help="Strings file snapshot taken before the latest downloadStrings (local state).",
-    )
-    parser.add_argument(
-        "--after",
-        required=True,
-        type=Path,
-        help="Strings file as it stands after downloadStrings (remote state).",
-    )
-    parser.add_argument(
-        "--base",
-        type=Path,
-        help=(
-            "Baseline strings file (e.g. git HEAD) representing the last synced state. "
-            "Required to enable modification sync and conflict detection."
-        ),
-    )
-    parser.add_argument(
-        "--output",
-        required=True,
-        type=Path,
-        help="Path where the XML payload uploaded to Loco is written.",
-    )
-    parser.add_argument(
-        "--dry-run",
-        action="store_true",
-        help="Print the XML payload instead of uploading it.",
-    )
-    args = parser.parse_args()
+def find_resource_block(lines: list[str], tag: str, name: str) -> tuple[int, int] | None:
+    """Return (start, end) inclusive line indices of the resource block, or None."""
+    open_re = re.compile(rf'<{re.escape(tag)}\b[^>]*\bname="{re.escape(name)}"')
+    close_tag = f"</{tag}>"
+    for index, line in enumerate(lines):
+        if not open_re.search(line):
+            continue
+        if re.search(r"/>\s*$", line) or close_tag in line:
+            return index, index
+        for end in range(index + 1, len(lines)):
+            if close_tag in lines[end]:
+                return index, end
+        return index, len(lines) - 1
+    return None
 
+
+def run_sync(args: argparse.Namespace) -> None:
     local_root = ET.parse(args.before).getroot()
     remote_root = ET.parse(args.after).getroot()
     base_root = (
@@ -233,16 +213,25 @@ def main() -> None:
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_bytes(output_payload)
 
+    if args.conflicts_output is not None:
+        # One "tag\tname" per conflicting key, consumed by the restore step.
+        conflict_lines = "".join(
+            f"{local_el.tag}\t{local_el.attrib['name']}\n" for local_el, _ in conflicts
+        )
+        args.conflicts_output.parent.mkdir(parents=True, exist_ok=True)
+        args.conflicts_output.write_text(conflict_lines, encoding="utf-8")
+
     for name in unverified:
         print(
             f"⚠️  '{name}' differs between local and remote but has no baseline entry; left untouched.",
             file=sys.stderr,
         )
-    for name, local_value, remote_value in conflicts:
+    for local_el, remote_el in conflicts:
         print(
-            f"❌ Conflict on '{name}': modified both locally and remotely; left untouched.\n"
-            f"   local:  {local_value}\n"
-            f"   remote: {remote_value}",
+            f"❌ Conflict on '{dotted_name(local_el.attrib['name'])}': modified both locally and "
+            f"remotely. Your local value is kept on disk; Loco is left untouched.\n"
+            f"   local:  {display_value(local_el)}\n"
+            f"   remote: {display_value(remote_el)}",
             file=sys.stderr,
         )
 
@@ -260,6 +249,104 @@ def main() -> None:
         print(f"❌ {error}", file=sys.stderr)
         sys.exit(1)
     print(f"Uploaded {len(upload)} new/modified local resource(s) to Loco.")
+
+
+def run_restore(args: argparse.Namespace) -> None:
+    """Splice the local (source) value of each conflicting key back into the target file.
+
+    Works on raw text lines so the rest of the freshly-downloaded file keeps its exact
+    formatting; only the conflicting resource blocks are replaced.
+    """
+    if not args.conflicts.exists():
+        return
+    entries = [
+        line.split("\t", 1)
+        for line in args.conflicts.read_text(encoding="utf-8").splitlines()
+        if "\t" in line
+    ]
+    if not entries:
+        return
+
+    source_lines = args.source.read_text(encoding="utf-8").splitlines(keepends=True)
+    target_lines = args.target.read_text(encoding="utf-8").splitlines(keepends=True)
+
+    restored = 0
+    for tag, name in entries:
+        source_block = find_resource_block(source_lines, tag, name)
+        target_block = find_resource_block(target_lines, tag, name)
+        if source_block is None or target_block is None:
+            continue
+        replacement = source_lines[source_block[0]: source_block[1] + 1]
+        target_lines[target_block[0]: target_block[1] + 1] = replacement
+        restored += 1
+
+    if restored:
+        args.target.write_text("".join(target_lines), encoding="utf-8")
+        print(f"Restored {restored} conflicting local value(s) in {args.target.name}.")
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(
+        description="Sync new/modified Android strings with Loco and resolve conflicts locally.",
+    )
+    subparsers = parser.add_subparsers(dest="command", required=True)
+
+    sync = subparsers.add_parser(
+        "sync",
+        help="Diff strings files and upload new/modified local entries to Loco.",
+    )
+    sync.add_argument("--api-key", required=True, help="Loco API key.")
+    sync.add_argument(
+        "--before",
+        required=True,
+        type=Path,
+        help="Strings file snapshot taken before the latest downloadStrings (local state).",
+    )
+    sync.add_argument(
+        "--after",
+        required=True,
+        type=Path,
+        help="Strings file as it stands after downloadStrings (remote state).",
+    )
+    sync.add_argument(
+        "--base",
+        type=Path,
+        help=(
+            "Baseline strings file (e.g. git HEAD) representing the last synced state. "
+            "Required to enable modification sync and conflict detection."
+        ),
+    )
+    sync.add_argument(
+        "--output",
+        required=True,
+        type=Path,
+        help="Path where the XML payload uploaded to Loco is written.",
+    )
+    sync.add_argument(
+        "--conflicts-output",
+        type=Path,
+        dest="conflicts_output",
+        help="Path where conflicting keys (tag\\tname per line) are written for the restore step.",
+    )
+    sync.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Print the XML payload instead of uploading it.",
+    )
+
+    restore = subparsers.add_parser(
+        "restore",
+        help="Splice local values of conflicting keys back into the downloaded strings file.",
+    )
+    restore.add_argument("--target", required=True, type=Path, help="Freshly downloaded strings file to patch.")
+    restore.add_argument("--source", required=True, type=Path, help="Local snapshot holding the values to keep.")
+    restore.add_argument("--conflicts", required=True, type=Path, help="Conflicts file produced by the sync step.")
+
+    args = parser.parse_args()
+    if args.command == "sync":
+        run_sync(args)
+    else:
+        run_restore(args)
 
 
 if __name__ == "__main__":

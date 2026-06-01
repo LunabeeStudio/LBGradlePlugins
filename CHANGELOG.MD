@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 lb-resources v1.4.0
 ```
 
-- `lb-resources`: `synchronizeStrings` now also uploads **modified** local strings to Loco, not just new ones. A modification is pushed only when it is safe: the local value differs from the git HEAD baseline and the remote value still matches that baseline. When both local and remote changed, the conflict is logged as a visible error and the string is left untouched while the others keep syncing. Requires local modifications to be uncommitted (git HEAD is the baseline).
+- `lb-resources`: `synchronizeStrings` now also uploads **modified** local strings to Loco, not just new ones. A modification is pushed only when it is safe: the local value differs from the git HEAD baseline and the remote value still matches that baseline. When both local and remote changed, the conflict is logged as a visible error, Loco is left untouched, and the dev's local value is restored on disk (so it is not lost to the download) while the other strings keep syncing. Requires local modifications to be uncommitted (git HEAD is the baseline).
 
 ## 2026-05-26
 
