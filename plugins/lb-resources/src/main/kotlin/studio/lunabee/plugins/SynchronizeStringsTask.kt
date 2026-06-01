@@ -148,9 +148,8 @@ abstract class SynchronizeStringsTask : DefaultTask() {
         val relPath = gitOutput(projectDir, listOf("ls-files", "--full-name", "--", stringsFile.absolutePath))
             ?.trim()
             ?.takeIf { it.isNotEmpty() }
-            ?: return false
-
-        val ref = resolveBaselineRef(projectDir) ?: return false
+        val ref = resolveBaselineRef(projectDir)
+        if (relPath == null || ref == null) return false
 
         return runCatching {
             val stdout = ByteArrayOutputStream()
@@ -177,16 +176,12 @@ abstract class SynchronizeStringsTask : DefaultTask() {
      * origin/main, origin/master, main, master.
      */
     private fun resolveBaselineRef(projectDir: File): String? {
-        val configured = baselineRef.get().trim()
-        if (configured.isNotEmpty()) return configured
-
-        gitOutput(projectDir, listOf("rev-parse", "--abbrev-ref", "origin/HEAD"))
-            ?.trim()
-            ?.takeIf { it.isNotEmpty() && it != "origin/HEAD" }
-            ?.let { return it }
-
-        return listOf("origin/main", "origin/master", "main", "master")
-            .firstOrNull { refExists(projectDir, it) }
+        return baselineRef.get().trim().takeIf { it.isNotEmpty() }
+            ?: gitOutput(projectDir, listOf("rev-parse", "--abbrev-ref", "origin/HEAD"))
+                ?.trim()
+                ?.takeIf { it.isNotEmpty() && it != "origin/HEAD" }
+            ?: listOf("origin/main", "origin/master", "main", "master")
+                .firstOrNull { refExists(projectDir, it) }
     }
 
     private fun refExists(projectDir: File, ref: String): Boolean =
