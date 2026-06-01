@@ -96,18 +96,18 @@ abstract class SynchronizeStringsTask : DefaultTask() {
                     add("python3")
                     add(synchronizeScript.absolutePath)
                     add("sync")
-                    add("--api-key");
+                    add("--api-key")
                     add(apiKey)
-                    add("--before");
+                    add("--before")
                     add(snapshotFile.absolutePath)
-                    add("--after");
+                    add("--after")
                     add(stringsFile.absolutePath)
-                    add("--output");
+                    add("--output")
                     add(deletedResourcesFile.absolutePath)
-                    add("--conflicts-output");
+                    add("--conflicts-output")
                     add(conflictsFile.absolutePath)
                     if (hasBase) {
-                        add("--base");
+                        add("--base")
                         add(baseFile.absolutePath)
                     }
                 },
