@@ -30,10 +30,14 @@ import javax.inject.Inject
  * @property provider provider (currently, we only handle [StringsProvider.Loco]).
  * @property replaceQuotes true if you want to replace \" by “
  * @property replaceApostrophes true if you want to replace \' by ’ or ‘
+ * @property baselineRef git ref used by `synchronizeStrings` as the conflict-detection baseline (the last
+ * synced state). Empty (default) auto-resolves the repository's default branch (origin/HEAD, then
+ * origin/main, origin/master, main, master). Set it to pin a specific branch/ref.
  */
 open class LBResourcesExtension @Inject constructor(project: Project) {
     var targetDirectory: File = project.projectDir
     var provider: StringsProvider? = null
     var replaceQuotes: Boolean = true // true by default to not break existing project if not desired
     var replaceApostrophes: Boolean = true // true by default to not break existing project if not desired
+    var baselineRef: String = ""
 }

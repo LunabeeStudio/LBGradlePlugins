@@ -42,6 +42,14 @@ abstract class SynchronizeStringsTask : DefaultTask() {
     @get:Input
     abstract val projectDir: Property<File>
 
+    /**
+     * Git ref used as the conflict-detection baseline (the last synced state). Empty means
+     * auto-resolve the repository's default branch (origin/HEAD, then origin/main, origin/master,
+     * main, master). Override to pin a specific branch/ref.
+     */
+    @get:Input
+    abstract val baselineRef: Property<String>
+
     @get:Inject
     abstract val eo: ExecOperations
 
@@ -70,18 +78,39 @@ abstract class SynchronizeStringsTask : DefaultTask() {
 
         val snapshotFile = File(workDir, "$stringsFilename-snapshot.xml")
         val deletedResourcesFile = File(workDir, "$stringsFilename-to-upload.xml")
+        val baseFile = File(workDir, "$stringsFilename-base.xml")
+        val conflictsFile = File(workDir, "$stringsFilename-conflicts.tsv")
+
+        // Baseline = the strings file on the default branch (e.g. origin/master) = last synced state.
+        // Enables modification sync + conflict detection. A local modification is detected as long as it
+        // is not yet merged into that branch, so devs can freely commit on their feature branch.
+        val hasBase = extractGitBase(stringsFile, projectDirectory, baseFile)
+
         stringsFile.copyTo(snapshotFile, overwrite = true)
 
         runDownload(downloadScript, apiKey, stringsPath, stringsFilename, replaceApostrophesValue, replaceQuotesValue)
 
         eo.exec {
             commandLine(
-                "python3",
-                synchronizeScript.absolutePath,
-                "--api-key", apiKey,
-                "--before", snapshotFile.absolutePath,
-                "--after", stringsFile.absolutePath,
-                "--output", deletedResourcesFile.absolutePath,
+                buildList {
+                    add("python3")
+                    add(synchronizeScript.absolutePath)
+                    add("sync")
+                    add("--api-key")
+                    add(apiKey)
+                    add("--before")
+                    add(snapshotFile.absolutePath)
+                    add("--after")
+                    add(stringsFile.absolutePath)
+                    add("--output")
+                    add(deletedResourcesFile.absolutePath)
+                    add("--conflicts-output")
+                    add(conflictsFile.absolutePath)
+                    if (hasBase) {
+                        add("--base")
+                        add(baseFile.absolutePath)
+                    }
+                },
             )
         }
 
@@ -89,9 +118,86 @@ abstract class SynchronizeStringsTask : DefaultTask() {
             runDownload(downloadScript, apiKey, stringsPath, stringsFilename, replaceApostrophesValue, replaceQuotesValue)
         }
 
+        // Restore the dev's local value for any conflicting key so it survives the download(s) that
+        // overwrote the working file with the remote value. Runs last, after the final re-download.
+        if (hasConflicts(conflictsFile)) {
+            eo.exec {
+                commandLine(
+                    "python3",
+                    synchronizeScript.absolutePath,
+                    "restore",
+                    "--target", stringsFile.absolutePath,
+                    "--source", snapshotFile.absolutePath,
+                    "--conflicts", conflictsFile.absolutePath,
+                )
+            }
+        }
+
         snapshotFile.delete()
         deletedResourcesFile.delete()
+        baseFile.delete()
+        conflictsFile.delete()
     }
+
+    /**
+     * Write the version of [stringsFile] on the baseline branch to [baseFile]. Returns false
+     * (modification sync disabled) when the file is untracked, the baseline ref is unavailable,
+     * or git is missing.
+     */
+    private fun extractGitBase(stringsFile: File, projectDir: File, baseFile: File): Boolean {
+        val relPath = gitOutput(projectDir, listOf("ls-files", "--full-name", "--", stringsFile.absolutePath))
+            ?.trim()
+            ?.takeIf { it.isNotEmpty() }
+        val ref = resolveBaselineRef(projectDir)
+        if (relPath == null || ref == null) return false
+
+        return runCatching {
+            val stdout = ByteArrayOutputStream()
+            val result = eo.exec {
+                workingDir = projectDir
+                commandLine("git", "show", "$ref:$relPath")
+                standardOutput = stdout
+                errorOutput = ByteArrayOutputStream()
+                isIgnoreExitValue = true
+            }
+            val bytes = stdout.toByteArray()
+            if (result.exitValue != 0 || bytes.isEmpty()) {
+                false
+            } else {
+                baseFile.writeBytes(bytes)
+                true
+            }
+        }.getOrDefault(false)
+    }
+
+    /**
+     * Resolve the git ref used as baseline: the configured [baselineRef] if set, otherwise the
+     * repository's default branch (origin/HEAD), falling back to the first existing of
+     * origin/main, origin/master, main, master.
+     */
+    private fun resolveBaselineRef(projectDir: File): String? {
+        return baselineRef.get().trim().takeIf { it.isNotEmpty() }
+            ?: gitOutput(projectDir, listOf("rev-parse", "--abbrev-ref", "origin/HEAD"))
+                ?.trim()
+                ?.takeIf { it.isNotEmpty() && it != "origin/HEAD" }
+            ?: listOf("origin/main", "origin/master", "main", "master")
+                .firstOrNull { refExists(projectDir, it) }
+    }
+
+    private fun refExists(projectDir: File, ref: String): Boolean =
+        gitOutput(projectDir, listOf("rev-parse", "--verify", "--quiet", "$ref^{commit}")) != null
+
+    private fun gitOutput(dir: File, args: List<String>): String? = runCatching {
+        val stdout = ByteArrayOutputStream()
+        val result = eo.exec {
+            workingDir = dir
+            commandLine(listOf("git") + args)
+            standardOutput = stdout
+            errorOutput = ByteArrayOutputStream()
+            isIgnoreExitValue = true
+        }
+        if (result.exitValue == 0) stdout.toString("UTF-8") else null
+    }.getOrNull()
 
     private fun runDownload(
         script: File,
@@ -129,6 +235,9 @@ abstract class SynchronizeStringsTask : DefaultTask() {
 
     private fun hasUploadedResources(deletedResourcesFile: File): Boolean =
         deletedResourcesFile.exists() && deletedResourcesFile.readText().contains("name=\"")
+
+    private fun hasConflicts(conflictsFile: File): Boolean =
+        conflictsFile.exists() && conflictsFile.readText().isNotBlank()
 
     private fun ensurePython3Available() {
         val stdout = ByteArrayOutputStream()
