@@ -16,7 +16,7 @@ from pathlib import Path
 
 TOOLS_NAMESPACE = "http://schemas.android.com/tools"
 XLIFF_NAMESPACE = "urn:oasis:names:tc:xliff:document:1.2"
-LOCO_IMPORT_URL = "https://localise.biz/api/import/xml?index=id&locale=en&format=android"
+LOCO_IMPORT_URL_TEMPLATE = "https://localise.biz/api/import/xml?index=id&locale={locale}&format=android"
 
 ET.register_namespace("tools", TOOLS_NAMESPACE)
 ET.register_namespace("xliff", XLIFF_NAMESPACE)
@@ -62,14 +62,16 @@ def build_payload(
     local_root: ET.Element,
     remote_root: ET.Element,
     base_root: ET.Element | None,
-) -> tuple[list[ET.Element], list[tuple[ET.Element, ET.Element]], list[str]]:
-    """Return (elements to upload, conflicts, unverified keys).
+) -> tuple[list[ET.Element], list[tuple[ET.Element, ET.Element]], list[ET.Element]]:
+    """Return (elements to upload, conflicts, unverified elements).
 
     - New local keys (present locally, absent remotely) are always uploaded.
     - A key whose value differs between local and remote is a modification:
       it is uploaded only when the dev changed it locally (local != base) and
       the remote value is still the baseline (remote == base). When both sides
       changed it is reported as a conflict (local, remote) and left untouched.
+    - A differing key with no baseline entry is unverified: Loco is left
+      untouched, but the local value is kept on disk (restored after download).
     """
     local_map = index_resources(local_root)
     remote_map = index_resources(remote_root)
@@ -77,7 +79,7 @@ def build_payload(
 
     upload: list[ET.Element] = []
     conflicts: list[tuple[ET.Element, ET.Element]] = []
-    unverified: list[str] = []
+    unverified: list[ET.Element] = []
 
     for key, local_el in local_map.items():
         remote_el = remote_map.get(key)
@@ -96,8 +98,8 @@ def build_payload(
 
         base_el = base_map.get(key)
         if base_el is None:
-            # No baseline entry for this key: cannot verify, skip safely.
-            unverified.append(dotted_name(key[1]))
+            # No baseline entry for this key: cannot verify, keep the local value on disk.
+            unverified.append(local_el)
             continue
 
         local_changed = not values_equal(local_el, base_el)
@@ -150,10 +152,10 @@ def extract_loco_error_message(body: str) -> str | None:
     return None
 
 
-def upload_resources(file_path: Path, api_key: str) -> None:
+def upload_resources(file_path: Path, api_key: str, locale: str) -> None:
     credentials = f"{api_key}:".encode("utf-8")
     request = urllib.request.Request(
-        LOCO_IMPORT_URL,
+        LOCO_IMPORT_URL_TEMPLATE.format(locale=locale),
         data=file_path.read_bytes(),
         headers={
             "Accept": "application/json",
@@ -199,7 +201,13 @@ def find_resource_block(lines: list[str], tag: str, name: str) -> tuple[int, int
 
 def run_sync(args: argparse.Namespace) -> None:
     local_root = ET.parse(args.before).getroot()
-    remote_root = ET.parse(args.after).getroot()
+    # A locale with no translated entry on the provider may be missing from the download:
+    # treat it as an empty remote so every local entry is seen as new and uploaded.
+    remote_root = (
+        ET.parse(args.after).getroot()
+        if args.after.exists()
+        else ET.Element(local_root.tag)
+    )
     base_root = (
         ET.parse(args.base).getroot()
         if args.base is not None and args.base.exists()
@@ -214,21 +222,24 @@ def run_sync(args: argparse.Namespace) -> None:
     args.output.write_bytes(output_payload)
 
     if args.conflicts_output is not None:
-        # One "tag\tname" per conflicting key, consumed by the restore step.
+        # One "tag\tname" per key whose local value must survive the download (conflicts and
+        # unverified modifications), consumed by the restore step.
+        restore_elements = [local_el for local_el, _ in conflicts] + unverified
         conflict_lines = "".join(
-            f"{local_el.tag}\t{local_el.attrib['name']}\n" for local_el, _ in conflicts
+            f"{el.tag}\t{el.attrib['name']}\n" for el in restore_elements
         )
         args.conflicts_output.parent.mkdir(parents=True, exist_ok=True)
         args.conflicts_output.write_text(conflict_lines, encoding="utf-8")
 
-    for name in unverified:
+    for el in unverified:
         print(
-            f"⚠️  '{name}' differs between local and remote but has no baseline entry; left untouched.",
+            f"⚠️  [{args.locale}] '{dotted_name(el.attrib['name'])}' differs between local and remote but has no "
+            f"baseline entry; your local value is kept on disk, Loco is left untouched.",
             file=sys.stderr,
         )
     for local_el, remote_el in conflicts:
         print(
-            f"❌ Conflict on '{dotted_name(local_el.attrib['name'])}': modified both locally and "
+            f"❌ [{args.locale}] Conflict on '{dotted_name(local_el.attrib['name'])}': modified both locally and "
             f"remotely. Your local value is kept on disk; Loco is left untouched.\n"
             f"   local:  {display_value(local_el)}\n"
             f"   remote: {display_value(remote_el)}",
@@ -236,7 +247,7 @@ def run_sync(args: argparse.Namespace) -> None:
         )
 
     if not upload:
-        print("No new or modified local resources to upload.")
+        print(f"[{args.locale}] No new or modified local resources to upload.")
         return
 
     if args.dry_run:
@@ -244,11 +255,11 @@ def run_sync(args: argparse.Namespace) -> None:
         return
 
     try:
-        upload_resources(args.output, args.api_key)
+        upload_resources(args.output, args.api_key, args.locale)
     except RuntimeError as error:
         print(f"❌ {error}", file=sys.stderr)
         sys.exit(1)
-    print(f"Uploaded {len(upload)} new/modified local resource(s) to Loco.")
+    print(f"Uploaded {len(upload)} new/modified local resource(s) to Loco ({args.locale}).")
 
 
 def run_restore(args: argparse.Namespace) -> None:
@@ -296,6 +307,11 @@ def main() -> None:
         help="Diff strings files and upload new/modified local entries to Loco.",
     )
     sync.add_argument("--api-key", required=True, help="Loco API key.")
+    sync.add_argument(
+        "--locale",
+        default="en",
+        help="Loco locale code the diffed files belong to (used for the upload).",
+    )
     sync.add_argument(
         "--before",
         required=True,

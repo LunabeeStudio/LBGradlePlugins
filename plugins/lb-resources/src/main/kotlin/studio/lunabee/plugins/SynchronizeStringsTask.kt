@@ -56,6 +56,20 @@ abstract class SynchronizeStringsTask : DefaultTask() {
     @get:Inject
     abstract val projectLayout: ProjectLayout
 
+    /**
+     * One locale to synchronize: the local strings file of a `values*` resource directory plus
+     * the per-locale work files used by the diff/upload/restore steps.
+     */
+    private data class LocaleSync(
+        val locale: String,
+        val stringsFile: File,
+        val snapshotFile: File,
+        val uploadFile: File,
+        val baseFile: File,
+        val conflictsFile: File,
+        var hasBase: Boolean = false,
+    )
+
     @TaskAction
     fun synchronizeStrings() {
         ensurePython3Available()
@@ -68,75 +82,108 @@ abstract class SynchronizeStringsTask : DefaultTask() {
         val apiKey = providerApiKey.get()
         val stringsPath = File(projectDirectory, "/src/main/")
         val stringsFilename = "strings"
-        val stringsFile = File(stringsPath, "res/values/$stringsFilename.xml")
+        val resDir = File(stringsPath, "res")
         val replaceApostrophesValue = replaceApostrophes.get()
         val replaceQuotesValue = replaceQuotes.get()
 
-        if (!stringsFile.exists()) {
-            throw GradleException("Expected strings file not found: ${stringsFile.absolutePath}")
+        if (!File(resDir, "values/$stringsFilename.xml").exists()) {
+            throw GradleException("Expected strings file not found: ${File(resDir, "values/$stringsFilename.xml").absolutePath}")
         }
 
-        val snapshotFile = File(workDir, "$stringsFilename-snapshot.xml")
-        val deletedResourcesFile = File(workDir, "$stringsFilename-to-upload.xml")
-        val baseFile = File(workDir, "$stringsFilename-base.xml")
-        val conflictsFile = File(workDir, "$stringsFilename-conflicts.tsv")
+        // Every locale present locally is synchronized: the default `values` dir maps to the
+        // provider's source locale (en), `values-XX` dirs map to their translation locale.
+        val locales = (resDir.listFiles().orEmpty())
+            .filter { it.isDirectory && (it.name == "values" || it.name.startsWith("values-")) }
+            .filter { File(it, "$stringsFilename.xml").exists() }
+            .sortedBy { it.name }
+            .map { dir ->
+                val locale = localeOf(dir.name)
+                LocaleSync(
+                    locale = locale,
+                    stringsFile = File(dir, "$stringsFilename.xml"),
+                    snapshotFile = File(workDir, "$stringsFilename-${dir.name}-snapshot.xml"),
+                    uploadFile = File(workDir, "$stringsFilename-${dir.name}-to-upload.xml"),
+                    baseFile = File(workDir, "$stringsFilename-${dir.name}-base.xml"),
+                    conflictsFile = File(workDir, "$stringsFilename-${dir.name}-conflicts.tsv"),
+                )
+            }
 
         // Baseline = the strings file on the default branch (e.g. origin/master) = last synced state.
         // Enables modification sync + conflict detection. A local modification is detected as long as it
         // is not yet merged into that branch, so devs can freely commit on their feature branch.
-        val hasBase = extractGitBase(stringsFile, projectDirectory, baseFile)
-
-        stringsFile.copyTo(snapshotFile, overwrite = true)
+        locales.forEach { entry ->
+            entry.hasBase = extractGitBase(entry.stringsFile, projectDirectory, entry.baseFile)
+            entry.stringsFile.copyTo(entry.snapshotFile, overwrite = true)
+        }
 
         runDownload(downloadScript, apiKey, stringsPath, stringsFilename, replaceApostrophesValue, replaceQuotesValue)
 
-        eo.exec {
-            commandLine(
-                buildList {
-                    add("python3")
-                    add(synchronizeScript.absolutePath)
-                    add("sync")
-                    add("--api-key")
-                    add(apiKey)
-                    add("--before")
-                    add(snapshotFile.absolutePath)
-                    add("--after")
-                    add(stringsFile.absolutePath)
-                    add("--output")
-                    add(deletedResourcesFile.absolutePath)
-                    add("--conflicts-output")
-                    add(conflictsFile.absolutePath)
-                    if (hasBase) {
-                        add("--base")
-                        add(baseFile.absolutePath)
-                    }
-                },
-            )
+        locales.forEach { entry ->
+            eo.exec {
+                commandLine(
+                    buildList {
+                        add("python3")
+                        add(synchronizeScript.absolutePath)
+                        add("sync")
+                        add("--api-key")
+                        add(apiKey)
+                        add("--locale")
+                        add(entry.locale)
+                        add("--before")
+                        add(entry.snapshotFile.absolutePath)
+                        add("--after")
+                        add(entry.stringsFile.absolutePath)
+                        add("--output")
+                        add(entry.uploadFile.absolutePath)
+                        add("--conflicts-output")
+                        add(entry.conflictsFile.absolutePath)
+                        if (entry.hasBase) {
+                            add("--base")
+                            add(entry.baseFile.absolutePath)
+                        }
+                    },
+                )
+            }
         }
 
-        if (hasUploadedResources(deletedResourcesFile)) {
+        if (locales.any { hasUploadedResources(it.uploadFile) }) {
             runDownload(downloadScript, apiKey, stringsPath, stringsFilename, replaceApostrophesValue, replaceQuotesValue)
         }
 
         // Restore the dev's local value for any conflicting key so it survives the download(s) that
         // overwrote the working file with the remote value. Runs last, after the final re-download.
-        if (hasConflicts(conflictsFile)) {
-            eo.exec {
-                commandLine(
-                    "python3",
-                    synchronizeScript.absolutePath,
-                    "restore",
-                    "--target", stringsFile.absolutePath,
-                    "--source", snapshotFile.absolutePath,
-                    "--conflicts", conflictsFile.absolutePath,
-                )
+        locales.forEach { entry ->
+            if (hasConflicts(entry.conflictsFile)) {
+                eo.exec {
+                    commandLine(
+                        "python3",
+                        synchronizeScript.absolutePath,
+                        "restore",
+                        "--target", entry.stringsFile.absolutePath,
+                        "--source", entry.snapshotFile.absolutePath,
+                        "--conflicts", entry.conflictsFile.absolutePath,
+                    )
+                }
             }
         }
 
-        snapshotFile.delete()
-        deletedResourcesFile.delete()
-        baseFile.delete()
-        conflictsFile.delete()
+        locales.forEach { entry ->
+            entry.snapshotFile.delete()
+            entry.uploadFile.delete()
+            entry.baseFile.delete()
+            entry.conflictsFile.delete()
+        }
+    }
+
+    /**
+     * Map an Android `values*` resource directory name to its Loco locale code:
+     * `values` → `en` (source locale), `values-fr` → `fr`, `values-zh-rTW` → `zh-TW`,
+     * `values-b+zh+Hans` → `zh-Hans`.
+     */
+    private fun localeOf(dirName: String): String = when {
+        dirName == "values" -> "en"
+        dirName.startsWith("values-b+") -> dirName.removePrefix("values-b+").replace('+', '-')
+        else -> dirName.removePrefix("values-").replace("-r", "-")
     }
 
     /**
