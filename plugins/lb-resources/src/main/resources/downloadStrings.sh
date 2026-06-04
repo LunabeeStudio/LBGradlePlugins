@@ -25,6 +25,14 @@ STRING_FILENAME_WITHOUT_EXT=$3
 REPLACE_APOSTROPHES=$4
 REPLACE_QUOTES=$5
 
+# Directory holding this script and the bundled python helpers.
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+
+if ! command -v python3 >/dev/null 2>&1; then
+  echo "python3 is required by downloadStrings.sh but was not found on PATH." >&2
+  exit 1
+fi
+
 EXTRACT_DIRECTORY_NAME="tmpextract"
 LOCO_API_ARCHIVE_URL="https://localise.biz:443/api/export/archive/xml.zip"
 DOWNLOAD_ZIP_DESTINATION="${EXTRACT_DIRECTORY_NAME}.zip"
@@ -78,35 +86,11 @@ function import_language() {
     sedi "s~\\\\\"~“~g" "$file"
   fi
 
-  # TODO for plurals form duplication, we should check if the form already exist before duplicating (switch to python)
-
-  if [[ "$localizable_file" == *values-ar ]]; then
-    echo "Duplicate plural form two to few for $localizable_file"
-    sedi "s~(.*<item quantity=\")(two)(.*)~\1\2\3\n\1few\3~g" "$file"
-    echo "Duplicate plural form two to many for $localizable_file"
-    sedi "s~(.*<item quantity=\")(two)(.*)~\1\2\3\n\1many\3~g" "$file"
-    echo "Duplicate plural form two to other for $localizable_file"
-    sedi "s~(.*<item quantity=\")(two)(.*)~\1\2\3\n\1other\3~g" "$file"
-  fi
-
-  # It's not clear what Android required/support for French
+  # Duplicate missing plural forms (e.g. fr `many` from `other`). The python script only adds
+  # a form when it is not already present, so complete plurals are left untouched (idempotent).
+  # It's not clear what Android requires/supports for French:
   # https://issuetracker.google.com/issues?q=componentid:192718%20many%20french
-  if [[ "$localizable_file" == *values-fr ||
-    "$localizable_file" == *values-es ||
-    "$localizable_file" == *values-pt ||
-    "$localizable_file" == *values-it ]] \
-    ; then
-    echo "Duplicate plural form other to many for $localizable_file"
-    sedi "s~(.*<item quantity=\")(other)(.*)~\1\2\3\n\1many\3~g" "$file"
-  fi
-
-  if [[ "$localizable_file" == *values-pl ||
-    "$localizable_file" == *values-ru ||
-    "$localizable_file" == *values-uk ]] \
-    ; then
-    echo "Duplicate plural form few to many for $localizable_file"
-    sedi "s~(.*<item quantity=\")(few)(.*)~\1\2\3\n\1many\3~g" "$file"
-  fi
+  python3 "${SCRIPT_DIR}/duplicate_plural_forms.py" "$file" "$(basename "$localizable_file")"
 
   echo "Done import of $localizable_file"
 }
