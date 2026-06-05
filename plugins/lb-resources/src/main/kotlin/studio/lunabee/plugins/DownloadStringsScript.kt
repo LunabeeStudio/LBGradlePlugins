@@ -24,14 +24,21 @@ import java.io.File
 
 internal object DownloadStringsScript {
     const val ResourceName: String = "downloadStrings.sh"
+    private const val PluralsScriptResourceName: String = "duplicate_plural_forms.py"
 
     fun extract(destFolder: File): File {
+        // The plurals helper is invoked by downloadStrings.sh from its own directory.
+        extractResource(PluralsScriptResourceName, destFolder)
+        return extractResource(ResourceName, destFolder)
+    }
+
+    private fun extractResource(resourceName: String, destFolder: File): File {
         val body = this::class.java.classLoader
-            .getResource(ResourceName)
+            .getResource(resourceName)
             ?.readText()
-            ?: throw GradleException("Unable to locate bundled script '$ResourceName'.")
+            ?: throw GradleException("Unable to locate bundled script '$resourceName'.")
         if (!destFolder.exists()) destFolder.mkdirs()
-        val destFile = File(destFolder, ResourceName)
+        val destFile = File(destFolder, resourceName)
         if (destFile.exists()) destFile.delete()
         destFile.createNewFile()
         destFile.setExecutable(true)

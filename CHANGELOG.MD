@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2026-06-04
+
+```
+lb-resources v1.5.0
+```
+
+- `lb-resources`: `synchronizeStrings` now synchronizes **every locale**, not just the default `values` directory. Each local `values*` directory containing a strings file is diffed against the freshly downloaded remote state and its new/modified entries are uploaded to Loco with the matching locale (`values` → `en`, `values-fr` → `fr`, `values-zh-rTW` → `zh-TW`, `values-b+zh+Hans` → `zh-Hans`). Previously only the default locale was pushed (hardcoded `locale=en`), so local translations added in `values-XX` files were never uploaded — and were silently wiped by the download step. Conflict detection/restore applies per locale with the same baseline rules.
+- `lb-resources`: a modified key with no baseline entry (e.g. the key is not merged into the default branch yet) now keeps its **local value on disk** after the download, instead of being silently overwritten by the remote value. Loco is still left untouched for such keys, and a warning lists them.
+- `lb-resources`: plural form duplication in `downloadStrings.sh` (e.g. fr `many` from `other`, ar `few`/`many`/`other` from `two`) is now **idempotent**: a form is only added when missing, instead of being blindly duplicated. Complete plurals coming from Loco are left untouched, which stops `synchronizeStrings` from flagging them as modified on every run. Duplicated forms are inserted in CLDR order (`few`, `many`, `other`). Implemented by the bundled `duplicate_plural_forms.py` (resolves the old sed TODO); `downloadStrings.sh` now requires `python3`.
+
 ## 2026-06-01
 
 ```
