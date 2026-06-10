@@ -25,10 +25,12 @@ import java.io.File
 internal object DownloadStringsScript {
     const val ResourceName: String = "downloadStrings.sh"
     private const val PluralsScriptResourceName: String = "duplicate_plural_forms.py"
+    private const val DeduplicateScriptResourceName: String = "deduplicate_strings.py"
 
     fun extract(destFolder: File): File {
-        // The plurals helper is invoked by downloadStrings.sh from its own directory.
+        // The python helpers are invoked by downloadStrings.sh from its own directory.
         extractResource(PluralsScriptResourceName, destFolder)
+        extractResource(DeduplicateScriptResourceName, destFolder)
         return extractResource(ResourceName, destFolder)
     }
 

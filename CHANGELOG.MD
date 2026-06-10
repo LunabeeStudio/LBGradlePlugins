@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## 2026-06-10
 
 ```
+lb-resources v1.5.2
+```
+
+- `lb-resources`: `downloadStrings` no longer emits duplicate resources. Loco stores some keys under several asset ids that differ only by their separators (e.g. `alert.past.training.title` and `alert_past_training.title`); normalising every `.` to `_` collapsed those ids to the same Android name, producing duplicate `<string>`/`<plurals>` entries in the downloaded file. The download now drops the resulting duplicates, keeping the first occurrence. Implemented by the bundled `deduplicate_strings.py`. `synchronizeStrings` benefits too, as it runs the same download step.
+
+## 2026-06-10
+
+```
 lb-resources v1.5.1
 ```
 

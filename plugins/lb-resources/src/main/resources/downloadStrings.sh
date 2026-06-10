@@ -66,6 +66,11 @@ function import_language() {
   s~(<(string|plurals) name=\".*)\\.(.*\">)~\1_\3~
   t loop" "$file"
 
+  # Loco may store the same key under several asset ids differing only by their separators
+  # (e.g. `a.b.c` and `a_b.c`); normalising dots to underscores above collapses them to the
+  # same Android name. Drop the resulting duplicate entries, keeping the first occurrence.
+  python3 "${SCRIPT_DIR}/deduplicate_strings.py" "$file" "$(basename "$localizable_file")"
+
   # Replace ... by …
   sedi "s~\.\.\.~…~g" "$file"
 
