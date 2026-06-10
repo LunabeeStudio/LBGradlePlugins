@@ -31,7 +31,7 @@ gradlePlugin {
         create("studio.lunabee.plugin.resources") {
             id = "studio.lunabee.plugin.resources"
             implementationClass = "studio.lunabee.plugins.LBResourcesPlugin"
-            version = "1.5.0"
+            version = "1.5.1"
             displayName = "LBResources"
             description = project.description
             tags = listOf("android", "lunabee", "resources")

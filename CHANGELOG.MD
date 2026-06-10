@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2026-06-10
+
+```
+lb-resources v1.5.1
+```
+
+- `lb-resources`: the Java format-specifier validator in `downloadStrings.sh` no longer rejects valid strings using a precision/width (e.g. `%.1f%%`). The allowed character set after `%` now includes `.` and `0`.
+
 ## 2026-06-04
 
 ```
