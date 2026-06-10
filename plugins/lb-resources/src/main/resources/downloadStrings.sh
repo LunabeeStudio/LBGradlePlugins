@@ -48,7 +48,7 @@ function import_language() {
   file="$localizable_file/$STRING_FILENAME_WITHOUT_EXT.xml"
 
   # Check for wrong java format specifiers
-  bad_templates=$(grep "[^%]%[^abcdefghnostxABCEGHNSTX123456789%]" "$file")
+  bad_templates=$(grep "[^%]%[^abcdefghnostxABCEGHNSTX0123456789.%]" "$file")
   if [ -n "$bad_templates" ]; then
       printf "⛔️ Found strings with bad Java template in %s \n%s\n\n" "$localizable_file" "$bad_templates" >&2
       exit 1
