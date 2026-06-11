@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2026-06-11
+
+```
+lb-resources v1.5.2
+```
+
+- `lb-resources`: `synchronizeStrings` no longer loses locally added strings when a step fails. The task downloads (overwriting the local files) before uploading, so newly added keys — absent from the provider — were dropped from disk and only recovered via the upload + re-download round trip; any failure in that chain left them lost and unpushed. Two safeguards: `downloadStrings.sh` now skips the copy and aborts **without** overwriting the working tree when any locale import fails, and `synchronizeStrings` rolls every working file back to its pre-run snapshot if the download or upload fails.
+
 ## 2026-06-10
 
 ```

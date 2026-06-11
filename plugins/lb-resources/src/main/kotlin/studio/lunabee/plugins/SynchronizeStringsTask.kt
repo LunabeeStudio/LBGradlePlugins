@@ -70,6 +70,9 @@ abstract class SynchronizeStringsTask : DefaultTask() {
         var hasBase: Boolean = false,
     )
 
+    // The download/upload flow catches every failure to roll the working files back to their snapshot;
+    // a broad catch is intentional so no error path can leave locally added strings dropped on disk.
+    @Suppress("TooGenericExceptionCaught")
     @TaskAction
     fun synchronizeStrings() {
         ensurePython3Available()
@@ -116,62 +119,77 @@ abstract class SynchronizeStringsTask : DefaultTask() {
             entry.stringsFile.copyTo(entry.snapshotFile, overwrite = true)
         }
 
-        runDownload(downloadScript, apiKey, stringsPath, stringsFilename, replaceApostrophesValue, replaceQuotesValue)
-
-        locales.forEach { entry ->
-            eo.exec {
-                commandLine(
-                    buildList {
-                        add("python3")
-                        add(synchronizeScript.absolutePath)
-                        add("sync")
-                        add("--api-key")
-                        add(apiKey)
-                        add("--locale")
-                        add(entry.locale)
-                        add("--before")
-                        add(entry.snapshotFile.absolutePath)
-                        add("--after")
-                        add(entry.stringsFile.absolutePath)
-                        add("--output")
-                        add(entry.uploadFile.absolutePath)
-                        add("--conflicts-output")
-                        add(entry.conflictsFile.absolutePath)
-                        if (entry.hasBase) {
-                            add("--base")
-                            add(entry.baseFile.absolutePath)
-                        }
-                    },
-                )
-            }
-        }
-
-        if (locales.any { hasUploadedResources(it.uploadFile) }) {
+        // From here on the working files are overwritten by the download. If anything fails (a failed
+        // download, an upload error), roll every working file back to its pre-run snapshot so locally
+        // added strings — which don't exist remotely yet and are dropped by the download — are never
+        // lost. The per-locale work files are always cleaned up.
+        try {
             runDownload(downloadScript, apiKey, stringsPath, stringsFilename, replaceApostrophesValue, replaceQuotesValue)
-        }
 
-        // Restore the dev's local value for any conflicting key so it survives the download(s) that
-        // overwrote the working file with the remote value. Runs last, after the final re-download.
-        locales.forEach { entry ->
-            if (hasConflicts(entry.conflictsFile)) {
+            locales.forEach { entry ->
                 eo.exec {
                     commandLine(
-                        "python3",
-                        synchronizeScript.absolutePath,
-                        "restore",
-                        "--target", entry.stringsFile.absolutePath,
-                        "--source", entry.snapshotFile.absolutePath,
-                        "--conflicts", entry.conflictsFile.absolutePath,
+                        buildList {
+                            add("python3")
+                            add(synchronizeScript.absolutePath)
+                            add("sync")
+                            add("--api-key")
+                            add(apiKey)
+                            add("--locale")
+                            add(entry.locale)
+                            add("--before")
+                            add(entry.snapshotFile.absolutePath)
+                            add("--after")
+                            add(entry.stringsFile.absolutePath)
+                            add("--output")
+                            add(entry.uploadFile.absolutePath)
+                            add("--conflicts-output")
+                            add(entry.conflictsFile.absolutePath)
+                            if (entry.hasBase) {
+                                add("--base")
+                                add(entry.baseFile.absolutePath)
+                            }
+                        },
                     )
                 }
             }
-        }
 
-        locales.forEach { entry ->
-            entry.snapshotFile.delete()
-            entry.uploadFile.delete()
-            entry.baseFile.delete()
-            entry.conflictsFile.delete()
+            if (locales.any { hasUploadedResources(it.uploadFile) }) {
+                runDownload(downloadScript, apiKey, stringsPath, stringsFilename, replaceApostrophesValue, replaceQuotesValue)
+            }
+
+            // Restore the dev's local value for any conflicting key so it survives the download(s) that
+            // overwrote the working file with the remote value. Runs last, after the final re-download.
+            locales.forEach { entry ->
+                if (hasConflicts(entry.conflictsFile)) {
+                    eo.exec {
+                        commandLine(
+                            "python3",
+                            synchronizeScript.absolutePath,
+                            "restore",
+                            "--target", entry.stringsFile.absolutePath,
+                            "--source", entry.snapshotFile.absolutePath,
+                            "--conflicts", entry.conflictsFile.absolutePath,
+                        )
+                    }
+                }
+            }
+        } catch (error: Exception) {
+            // A failed download/upload may have left the working files holding remote content with the
+            // locally added strings dropped. Restore each locale from its pre-run snapshot, then fail.
+            locales.forEach { entry ->
+                if (entry.snapshotFile.exists()) {
+                    entry.snapshotFile.copyTo(entry.stringsFile, overwrite = true)
+                }
+            }
+            throw error
+        } finally {
+            locales.forEach { entry ->
+                entry.snapshotFile.delete()
+                entry.uploadFile.delete()
+                entry.baseFile.delete()
+                entry.conflictsFile.delete()
+            }
         }
     }
 

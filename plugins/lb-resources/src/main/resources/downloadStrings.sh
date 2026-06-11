@@ -134,15 +134,19 @@ wait # Wait all languages
 elapsed=$((SECONDS - start_time))
 echo "Import took $elapsed seconds"
 
+# Bail out BEFORE copying when any import failed: overwriting the local files with a
+# partial/failed download would silently drop local-only strings (e.g. newly added keys
+# not yet on the provider). Leave the working tree untouched and let the caller fail.
+if [ "$failed" = true ]; then
+    rm -Rf "${EXTRACT_DIRECTORY_NAME}"
+    rm -f "${DOWNLOAD_ZIP_DESTINATION}"
+    echo "Download strings finish with error"
+    exit 1
+fi
+
 cp -R "$language_dir" "${DESTINATION_DIRECTORY}/"
 
 rm -Rf "${EXTRACT_DIRECTORY_NAME}"
 rm -f "${DOWNLOAD_ZIP_DESTINATION}"
-
-# Check if any process failed and exit with an error
-if [ "$failed" = true ]; then
-    echo "Download strings finish with error"
-    exit 1
-fi
 
 popd || exit
