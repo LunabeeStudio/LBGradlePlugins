@@ -34,6 +34,9 @@ dependencyResolutionManagement {
         mavenCentral()
         gradlePluginPortal()
         maven {
+            url = uri("https://repo.gradle.org/gradle/libs-releases/")
+        }
+        maven {
             url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
         }
     }
