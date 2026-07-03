@@ -59,7 +59,6 @@ open class LBMultiplatformLibraryExtension @Inject constructor(private val proje
             when (targetPlatform) {
                 is TargetPlatform.Ios -> {
                     listOf(
-                        iosX64(),
                         iosArm64(),
                         iosSimulatorArm64(),
                     ).forEach {
