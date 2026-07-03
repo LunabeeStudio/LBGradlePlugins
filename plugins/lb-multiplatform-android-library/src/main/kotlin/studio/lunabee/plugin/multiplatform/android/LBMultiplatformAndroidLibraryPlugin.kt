@@ -70,7 +70,6 @@ open class LBMultiplatformAndroidLibraryExtension @Inject constructor(private va
                 when (targetPlatform) {
                     is TargetPlatform.Ios -> {
                         listOf(
-                            iosX64(),
                             iosArm64(),
                             iosSimulatorArm64(),
                         ).forEach {
