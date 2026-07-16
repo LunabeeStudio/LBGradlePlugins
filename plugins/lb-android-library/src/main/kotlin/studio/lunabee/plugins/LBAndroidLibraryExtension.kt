@@ -46,7 +46,7 @@ open class LBAndroidLibraryExtension @Inject constructor(private val project: Pr
      */
     data class PropertiesReceiver(
         var namespace: String = "",
-        var compileSdk: Int = 36,
+        var compileSdk: Int = 37,
         var withCompose: Boolean = false,
         var enableBuildConfig: Boolean = false,
         var minSdk: Int = 23,
