@@ -27,7 +27,7 @@ plugins {
 lbAndroidApplication {
     android {
         namespace = "studio.lunabee.lbplugin"
-        compileSdk = 36
+        compileSdk = 37
         defaultConfig {
             minSdk = 26
             versionCode = 1

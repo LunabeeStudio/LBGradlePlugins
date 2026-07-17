@@ -24,7 +24,7 @@ lbAndroidApplication {
     android {
         applicationId = "my.application.id"
         namespace = "my.application.namespace"
-        compileSdk = 35
+        compileSdk = 37
         minSdk = 26
         versionCode = 1
         versionName = "1.0.0"
