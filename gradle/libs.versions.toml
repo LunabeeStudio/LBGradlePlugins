@@ -18,7 +18,7 @@ lbResources = { id = "studio.lunabee.plugin.resources", version.ref = "lbResourc
 
 [versions]
 
-agp = "9.4.0"
+agp = "9.4.1"
 androidxActivityCompose = "1.13.0"
 androidxAppcompat = "1.8.0"
 androidxComposeBom = "2026.09.00"
