@@ -51,3 +51,13 @@ publishing {
 tasks.test {
     useJUnitPlatform()
 }
+
+tasks.register("PrintCoordinates") {
+    val group = project.group.toString()
+    val name = project.name
+    val version = project.version.toString()
+
+    doLast {
+        println("$group:$name:$version")
+    }
+}
