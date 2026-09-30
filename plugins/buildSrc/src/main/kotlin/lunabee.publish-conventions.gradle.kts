@@ -113,6 +113,21 @@ publishing {
 }
 
 /* ============================================================
+ * Tasks
+ * ============================================================ */
+
+tasks.register("PrintCoordinates") {
+    val group = project.group.toString()
+    // Gradle plugins are resolved through their marker artifact, plain libraries through their own artifact.
+    val name = if (pluginManager.hasPlugin("java-gradle-plugin")) "$group.gradle.plugin" else project.name
+    val version = project.version.toString()
+
+    doLast {
+        println("$group:$name:$version")
+    }
+}
+
+/* ============================================================
  * Maven Publication helpers
  * ============================================================ */
 

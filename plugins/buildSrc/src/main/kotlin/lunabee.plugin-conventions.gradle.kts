@@ -22,17 +22,3 @@ plugins {
     id("lunabee.publish-conventions")
     id("com.gradle.plugin-publish")
 }
-
-/* ============================================================
- * Tasks
- * ============================================================ */
-
-tasks.register("PrintCoordinates") {
-    val group = project.group.toString()
-    val name = project.group.toString() + ".gradle.plugin"
-    val version = project.version.toString()
-
-    doLast {
-        println("$group:$name:$version")
-    }
-}
