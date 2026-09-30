@@ -8,8 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## 2026-09-30
 
 ```
-lb-detekt v2.3.0
-lb-detekt-rules v1.0.0
+lb-detekt v2.3.0-beta01
+lb-detekt-rules v1.0.0-beta01
 ```
 
 - `lb-detekt-rules`: new artifact holding Lunabee custom detekt rules (rule set `lunabee`), active by default.

@@ -33,7 +33,7 @@ dependencies {
 
 description = "Lunabee custom Detekt rules, loaded by the studio.lunabee.plugin.detekt plugin."
 group = "studio.lunabee.plugin.detekt"
-version = "1.0.0"
+version = "1.0.0-beta01"
 
 java {
     withSourcesJar()
