@@ -68,6 +68,12 @@ class LBDetektPlugin : Plugin<Project> {
             "dev.detekt:detekt-rules-ktlint-wrapper:${extension.toolVersion.get()}",
         )
 
+        // Add Lunabee custom rules
+        project.dependencies.add(
+            "detektPlugins",
+            "studio.lunabee.plugin.detekt:lb-detekt-rules:$LBDetektRulesVersion",
+        )
+
         // Configure Detekt task
         project.project.tasks.withType<dev.detekt.gradle.Detekt> {
             outputs.upToDateWhen { false } // always re-run
@@ -177,4 +183,5 @@ class LBDetektPlugin : Plugin<Project> {
     }
 }
 
+private const val LBDetektRulesVersion = "1.0.0"
 private const val SkipDependencySortingProperty = "studio.lunabee.detekt.skipDependencySorting"

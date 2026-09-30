@@ -41,6 +41,10 @@ plugins {
 }
 
 rootProject.name = "LBGradlePluginsDemo"
+
+// Substitutes studio.lunabee.plugin.detekt:lb-detekt-rules with the local project for the demo detekt run.
+includeBuild("plugins")
+
 include(":app")
 project(":app").projectDir = File("./demo/app")
 include(":app-demo-core-ui")

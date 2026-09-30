@@ -22,9 +22,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Two distinct Gradle builds live side-by-side, with the root build consuming the inner one via `includeBuild`:
 
-- **`plugins/`** — the actual Gradle plugin sources published to Maven Central. Standalone Gradle build (`plugins/settings.gradle.kts`) with one subproject per plugin (`lb-android-application`, `lb-android-library`, `lb-android-flavors`, `lb-multiplatform-library`, `lb-multiplatform-android-library`, `lb-cache`, `lb-detekt`, `lb-dokka`, `lb-resources`, plus a `docs` aggregator).
+- **`plugins/`** — the actual Gradle plugin sources published to Maven Central. Standalone Gradle build (`plugins/settings.gradle.kts`) with one subproject per plugin (`lb-android-application`, `lb-android-library`, `lb-android-flavors`, `lb-multiplatform-library`, `lb-multiplatform-android-library`, `lb-cache`, `lb-detekt`, `lb-dokka`, `lb-resources`, plus a `docs` aggregator). `lb-detekt-rules` is not a plugin: it is the plain JVM library of Lunabee custom detekt rules that `lb-detekt` adds to `detektPlugins`.
 - **`demo/`** — sample Android/KMP apps wired into the root `settings.gradle.kts` that consume the plugins. The root build is the demo build; running `./gradlew` from the repo root targets these apps.
-- **`plugins/buildSrc/`** — single convention plugin `lunabee.plugin-conventions` applied by every plugin module. It centralizes JReleaser + Maven Central publishing, signing, Gradle Plugin Portal publishing, and POM metadata. Each plugin module only declares its `gradlePlugin { plugins { create(...) } }` block, its `description`, and its `group` — version lives there too (not in `libs.versions.toml`).
+- **`plugins/buildSrc/`** — convention plugins. `lunabee.publish-conventions` centralizes JReleaser + Maven Central publishing, signing, and POM metadata. `lunabee.plugin-conventions` applies it plus Gradle Plugin Portal publishing and is applied by every plugin module; `lb-detekt-rules` applies `lunabee.publish-conventions` directly. Each plugin module only declares its `gradlePlugin { plugins { create(...) } }` block, its `description`, and its `group` — version lives there too (not in `libs.versions.toml`).
 - **`gradle/libs.versions.toml`** — shared version catalog. Imported by both builds (the inner `plugins/settings.gradle.kts` reads it via `from(files("../gradle/libs.versions.toml"))`). Plugin versions listed in `[versions]` describe what the *demo* consumes, not what the plugin publishes.
 
 ## Common commands
@@ -36,11 +36,12 @@ cd plugins
 ./gradlew publishToMavenLocal
 ```
 
-Run plugin tests (only `lb-detekt` has tests currently):
+Run plugin tests (`lb-detekt` and `lb-detekt-rules` have tests):
 
 ```bash
 cd plugins
 ./gradlew :lb-detekt:test
+./gradlew :lb-detekt-rules:test
 ./gradlew :lb-detekt:test --tests "studio.lunabee.plugins.DependencyComparatorTest"
 ```
 
@@ -80,6 +81,7 @@ cd plugins && ./gradlew wrapper --gradle-version latest
 - Each plugin's published version is hard-coded inside its module `build.gradle.kts` under `gradlePlugin { plugins { create(...) { version = "..." } } }`. There is **no single source of truth** — bumping a plugin means editing that file and updating `CHANGELOG.MD`.
 - KMP plugins (`lb-multiplatform-library`, `lb-multiplatform-android-library`) embed the Kotlin version in their plugin version (e.g. `2.0.1-2.3.21`) because they expose Kotlin compiler APIs and must be ABI-matched to the consumer's Kotlin version.
 - After bumping, update `libs.versions.toml` only if you want the demo to consume the new version.
+- `lb-detekt-rules` has its own version, pinned in `LBDetektPlugin` (`LBDetektRulesVersion`). Releasing a new rule means releasing `lb-detekt-rules` first, then bumping that constant and releasing `lb-detekt`.
 
 ## Plugin architecture pattern
 

@@ -1,0 +1,19 @@
+lunabee:
+  active: true
+  DispatcherSwitchOutsideDataLayer:
+    active: true
+    forbiddenClassSuffixes:
+      - 'Presenter'
+      - 'Reducer'
+      - 'UseCase'
+      - 'Repository'
+      - 'ViewModel'
+      - 'Fragment'
+      - 'Activity'
+    excludes:
+      - '**/test/**'
+      - '**/androidTest/**'
+      - '**/androidDeviceTest/**'
+      - '**/commonTest/**'
+      - '**/jvmTest/**'
+      - '**/iosTest/**'

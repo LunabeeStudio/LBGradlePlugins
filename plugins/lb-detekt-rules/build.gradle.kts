@@ -13,34 +13,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Created by Lunabee Studio / Date - 1/12/2026
- * Last modified 1/9/26, 5:10 PM
+ * Created by Lunabee Studio / Date - 9/30/2026
+ * Last modified 9/30/26, 10:00 AM
  */
 
 plugins {
-    `java-gradle-plugin`
-    `kotlin-dsl`
-    id("lunabee.plugin-conventions")
+    `java-library`
+    kotlin("jvm")
+    id("lunabee.publish-conventions")
 }
 
 dependencies {
-    implementation(libs.detekt)
+    compileOnly(libs.detektApi)
 
+    testImplementation(libs.detektApi)
+    testImplementation(libs.detektTest)
     testImplementation(libs.kotlinTest)
 }
 
-description = "This plugin allows you to configure Detekt to ensure consistent code style across all projects."
+description = "Lunabee custom Detekt rules, loaded by the studio.lunabee.plugin.detekt plugin."
 group = "studio.lunabee.plugin.detekt"
+version = "1.0.0"
 
-gradlePlugin {
-    plugins {
-        create("studio.lunabee.plugin.detekt") {
-            id = "studio.lunabee.plugin.detekt"
-            implementationClass = "studio.lunabee.plugins.LBDetektPlugin"
-            version = "2.3.0"
-            displayName = "LBDetekt"
-            description = project.description
-            tags = listOf("detekt", "android", "lunabee", "code", "style")
+java {
+    withSourcesJar()
+    withJavadocJar()
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("release") {
+            from(components["java"])
         }
     }
+}
+
+tasks.test {
+    useJUnitPlatform()
 }
