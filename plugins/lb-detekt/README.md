@@ -36,11 +36,11 @@ The plugin adds the `studio.lunabee.plugin.detekt:lb-detekt-rules` rule set (`lu
 
 Reports `withContext`, `flowOn`, `launch` and `async` calls that switch to a background dispatcher (`Dispatchers.IO`, `Dispatchers.Default`, an injected `ioDispatcher`, …) from a presenter, reducer, use case, repository, view model, fragment, activity or composable. Datasources, DAOs and remote clients are [main-safe](https://developer.android.com/kotlin/coroutines/coroutines-best-practices#main-safe): they switch the context themselves, so their callers never need to.
 
-Classes are matched by name suffix. Override the list, or scope the rule by path, in your project detekt config:
+Classes are matched when their name contains one of the entries (`UserRepositoryImpl` matches `Repository`). Override the list, or scope the rule by path, in your project detekt config:
 
 ```yaml
 lunabee:
   DispatcherSwitchOutsideDataLayer:
-    forbiddenClassSuffixes: [ 'Presenter', 'Reducer', 'UseCase', 'Repository', 'ViewModel', 'Fragment', 'Activity', 'Interactor' ]
+    forbiddenClassNameParts: [ 'Presenter', 'Reducer', 'UseCase', 'Repository', 'ViewModel', 'Fragment', 'Activity', 'Interactor' ]
     excludes: [ '**/test/**', '**/legacy/**' ]
 ```

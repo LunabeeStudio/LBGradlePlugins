@@ -36,8 +36,8 @@ import org.jetbrains.kotlin.psi.psiUtil.parents
 import java.net.URI
 
 /**
- * Reports a switch to a background dispatcher (`withContext`, `flowOn`, `launch`, `async`) made from a class whose name ends
- * with one of [forbiddenClassSuffixes] (presenter, reducer, use case, repository, view model, fragment, activity) or from a
+ * Reports a switch to a background dispatcher (`withContext`, `flowOn`, `launch`, `async`) made from a class whose name contains
+ * one of [forbiddenClassNameParts] (presenter, reducer, use case, repository, view model, fragment, activity) or from a
  * composable. Datasources, DAOs and remote clients are main-safe and own the dispatcher switch.
  *
  * Detection is syntactic (no type resolution): the context argument is flagged when one of its `+` terms mentions a dispatcher
@@ -48,7 +48,7 @@ class DispatcherSwitchOutsideDataLayer(config: Config) : Rule(
     "Only datasources, DAOs and remote clients switch dispatcher. Callers above them stay dispatcher-agnostic.",
     URI("https://developer.android.com/kotlin/coroutines/coroutines-best-practices#main-safe"),
 ) {
-    private val forbiddenClassSuffixes: List<String> by config(
+    private val forbiddenClassNameParts: List<String> by config(
         listOf("Presenter", "Reducer", "UseCase", "Repository", "ViewModel", "Fragment", "Activity"),
     )
 
@@ -91,7 +91,7 @@ class DispatcherSwitchOutsideDataLayer(config: Config) : Rule(
 
     private fun isInForbiddenScope(expression: KtCallExpression): Boolean = expression.parents.any { parent ->
         when (parent) {
-            is KtClassOrObject -> parent.name?.let { name -> forbiddenClassSuffixes.any(name::endsWith) } == true
+            is KtClassOrObject -> parent.name?.let { name -> forbiddenClassNameParts.any(name::contains) } == true
             is KtNamedFunction -> parent.annotationEntries.any { it.shortName?.asString() == ComposableAnnotation }
             else -> false
         }

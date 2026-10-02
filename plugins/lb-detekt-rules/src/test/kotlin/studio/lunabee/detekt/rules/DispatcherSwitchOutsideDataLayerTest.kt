@@ -77,6 +77,21 @@ class DispatcherSwitchOutsideDataLayerTest {
     }
 
     @Test
+    fun impl_class_is_reported() {
+        val code = """
+            class UserRepositoryImpl {
+                suspend fun load() = withContext(Dispatchers.IO) { fetch() }
+            }
+
+            class HomeViewModelImpl {
+                fun start() = scope.launch(Dispatchers.IO) { fetch() }
+            }
+        """.trimIndent()
+
+        assertEquals(2, rule.lint(code).size)
+    }
+
+    @Test
     fun named_and_combined_context_is_reported() {
         val code = """
             class HomeViewModel {
@@ -152,8 +167,8 @@ class DispatcherSwitchOutsideDataLayerTest {
     }
 
     @Test
-    fun forbidden_class_suffixes_are_configurable() {
-        val customRule = DispatcherSwitchOutsideDataLayer(TestConfig("forbiddenClassSuffixes" to listOf("Interactor")))
+    fun forbidden_class_name_parts_are_configurable() {
+        val customRule = DispatcherSwitchOutsideDataLayer(TestConfig("forbiddenClassNameParts" to listOf("Interactor")))
         val code = """
             class LoginInteractor {
                 suspend fun run() = withContext(Dispatchers.IO) { load() }
