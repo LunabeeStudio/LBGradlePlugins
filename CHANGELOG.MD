@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2026-10-02
+
+```
+lb-detekt v2.3.0-beta02
+lb-detekt-rules v1.0.0-beta02
+```
+
+- `lb-detekt-rules`: `DispatcherSwitchOutsideDataLayer` matches classes whose name contains a forbidden entry instead of ending with it, so implementations such as `UserRepositoryImpl` are reported.
+  - **Breaking**: config key `forbiddenClassSuffixes` renamed to `forbiddenClassNameParts`.
+- `lb-detekt`: uses `lb-detekt-rules` 1.0.0-beta02.
+
 ## 2026-09-30
 
 ```
