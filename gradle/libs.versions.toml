@@ -44,6 +44,8 @@ androidxComposeBom = { group = "androidx.compose", name = "compose-bom", version
 androidxComposeFoundation = { group = "androidx.compose.foundation", name = "foundation" }
 androidxComposeMaterial3 = { group = "androidx.compose.material3", name = "material3" }
 detekt = { group = "dev.detekt", name = "detekt-gradle-plugin", version.ref = "detekt" }
+detektApi = { group = "dev.detekt", name = "detekt-api", version.ref = "detekt" }
+detektTest = { group = "dev.detekt", name = "detekt-test", version.ref = "detekt" }
 dokkaGradlePlugin = { group = "org.jetbrains.dokka", name = "org.jetbrains.dokka.gradle.plugin", version.ref = "dokka" }
 gradleAndroid = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
 gradlePublishPlugin = { group = "com.gradle.plugin-publish", name = "com.gradle.plugin-publish.gradle.plugin", version.ref = "gradlePublish" }

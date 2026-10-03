@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2026-10-02
+
+```
+lb-detekt v2.3.0-beta02
+lb-detekt-rules v1.0.0-beta02
+```
+
+- `lb-detekt-rules`: `DispatcherSwitchOutsideDataLayer` matches classes whose name contains a forbidden entry instead of ending with it, so implementations such as `UserRepositoryImpl` are reported.
+  - **Breaking**: config key `forbiddenClassSuffixes` renamed to `forbiddenClassNameParts`.
+- `lb-detekt`: uses `lb-detekt-rules` 1.0.0-beta02.
+
+## 2026-09-30
+
+```
+lb-detekt v2.3.0-beta01
+lb-detekt-rules v1.0.0-beta01
+```
+
+- `lb-detekt-rules`: new artifact holding Lunabee custom detekt rules (rule set `lunabee`), active by default.
+  - `DispatcherSwitchOutsideDataLayer`: reports `withContext`/`flowOn`/`launch`/`async` switching to a background dispatcher from a presenter, reducer, use case, repository, view model, fragment, activity or composable. Only datasources, DAOs and remote clients switch dispatcher ([main-safe](https://developer.android.com/kotlin/coroutines/coroutines-best-practices#main-safe)).
+- `lb-detekt`: adds `lb-detekt-rules` to `detektPlugins`.
+
 ## 2026-07-16
 
 ```

@@ -13,12 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Created by Lunabee Studio / Date - 1/12/2026
- * Last modified 1/12/26, 10:30 AM
+ * Created by Lunabee Studio / Date - 9/30/2026
+ * Last modified 9/30/26, 10:00 AM
  */
 
-plugins {
-    `java-gradle-plugin`
-    id("lunabee.publish-conventions")
-    id("com.gradle.plugin-publish")
+package studio.lunabee.detekt.rules
+
+import dev.detekt.api.RuleSet
+import dev.detekt.api.RuleSetId
+import dev.detekt.api.RuleSetProvider
+
+class LunabeeRuleSetProvider : RuleSetProvider {
+    override val ruleSetId: RuleSetId = RuleSetId("lunabee")
+
+    override fun instance(): RuleSet = RuleSet(
+        ruleSetId,
+        listOf(::DispatcherSwitchOutsideDataLayer),
+    )
 }
