@@ -28,6 +28,7 @@ plugins {
 lbMultiplatformAndroidLibrary {
     multiplatform {
         compileSdk = 37
+        compileSdkMinor = 2
         namespace = "studio.lunabee.plugin.demo.shared"
         withCompose = false
         jvmTarget = JvmTarget.JVM_21

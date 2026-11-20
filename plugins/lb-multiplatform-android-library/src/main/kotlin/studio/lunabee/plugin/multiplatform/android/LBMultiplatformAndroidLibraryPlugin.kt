@@ -40,7 +40,8 @@ open class LBMultiplatformAndroidLibraryExtension @Inject constructor(private va
      * @param jvmTarget The target JVM version to use. Default is [JvmTarget.JVM_21].
      * @param targets List of targets you want to enable for your Multiplatform module.
      * @param namespace The namespace for your library. Error will be thrown is not set.
-     * @param compileSdk The SDK version used to compile the library. Default is 36.
+     * @param compileSdk The SDK version used to compile the library. Default is 37.
+     * @param compileSdkMinor The minor API level of [compileSdk]. Default is 2.
      * @param withCompose Whether to apply the Compose plugin. Default is false.
      * @param minSdk The minimum SDK version required to run the application. Default is 23.
      * @param jdkVersion The version of the Java Development Kit (JDK) to be used. Default is [JavaVersion.VERSION_21].
@@ -51,6 +52,7 @@ open class LBMultiplatformAndroidLibraryExtension @Inject constructor(private va
         var targets: List<TargetPlatform> = emptyList(),
         var namespace: String = "",
         var compileSdk: Int = 37,
+        var compileSdkMinor: Int = 2,
         var withCompose: Boolean = false,
         var minSdk: Int = 23,
         var jdkVersion: JavaVersion = JavaVersion.VERSION_21,
@@ -83,7 +85,11 @@ open class LBMultiplatformAndroidLibraryExtension @Inject constructor(private va
                         extensions.configure<KotlinMultiplatformAndroidLibraryTarget>("android") {
                             // Set Android HtmlStyle.parameters from [propertiesReceiver] object.
                             namespace = propertiesReceiver.namespace
-                            compileSdk = propertiesReceiver.compileSdk
+                            compileSdk {
+                                version = release(propertiesReceiver.compileSdk) {
+                                    minorApiLevel = propertiesReceiver.compileSdkMinor
+                                }
+                            }
 
                             // Set default configuration parameters from [propertiesReceiver] object.
                             minSdk = propertiesReceiver.minSdk

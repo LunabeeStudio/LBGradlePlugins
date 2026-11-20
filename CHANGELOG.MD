@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2026-11-20
+
+```
+lb-android-application v1.4.0
+lb-android-library v1.4.0
+lb-multiplatform-android-library v1.2.0
+```
+
+- `lb-android-application`: default compile SDK is now 37.2 (`compileSdk { version = release(37) { minorApiLevel = 2 } }`), required by Compose BOM 2026.11.01.
+- `lb-android-library`: new `compileSdkMinor` property (default 2), default compile SDK is now 37.2.
+- `lb-multiplatform-android-library`: new `compileSdkMinor` property (default 2), default compile SDK is now 37.2.
+
 ## 2026-10-02
 
 ```

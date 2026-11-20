@@ -27,6 +27,7 @@ import org.gradle.jvm.toolchain.JavaLanguageVersion
 import javax.inject.Inject
 
 private const val DefaultCompileSdk: Int = 37
+private const val DefaultCompileSdkMinor: Int = 2
 private const val DefaultMinSdk: Int = 23
 private const val DefaultVersionCode: Int = 1
 private const val DefaultVersionName: String = "1.0.0"
@@ -45,7 +46,11 @@ open class LBAndroidApplicationExtension @Inject constructor(private val project
 
         // Set default values
         project.extensions.configure<ApplicationExtension>("android") {
-            compileSdk = DefaultCompileSdk
+            compileSdk {
+                version = release(DefaultCompileSdk) {
+                    minorApiLevel = DefaultCompileSdkMinor
+                }
+            }
 
             defaultConfig.versionCode = DefaultVersionCode
             defaultConfig.versionName = DefaultVersionName
